@@ -118,14 +118,15 @@ export interface IAutocompleteProps<TValue = any>
   dataSourceType: AutocompleteDataSourceType;
   className?: string;
 
+  entityReferenceEnabled?: boolean;
   entityReferenceType?: EntityReferenceTypes;
   formSelectionMode?: "name" | "dynamic";
   handleSuccess?: boolean;
   handleFail?: boolean;
   displayProperty?: string;
   formIdentifier?: FormIdentifier;
-
-
+  getEntityUrl?: string;
+  entityType?: string;
 }
 
 export interface IEntityAutocompleteProps<TValue = any> extends ICommonAutocompleteProps<TValue> {

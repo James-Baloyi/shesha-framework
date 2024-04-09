@@ -45,7 +45,6 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
   icon: <FileSearchOutlined />,
   dataTypeSupported: ({ dataType }) => dataType === DataTypes.entityReference,
   Factory: ({ model, form }) => {
-
     const { queryParams, filter } = model;
     const { formMode, setFormData } = useForm();
     const { data } = useFormData();
@@ -194,7 +193,9 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
       handleSuccess: model.handleSuccess,
       handleFail: model.handleFail,
       displayProperty: model.displayProperty,
-      formIdentifier: model.formIdentifier
+      formIdentifier: model.formIdentifier,
+      getEntityUrl: model.getEntityUrl,
+      entityType: model.entityType,
     };
 
     const formProps = defaultValue ? { model, initialValue: getDefaultValue() } : { model };
@@ -211,7 +212,7 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
               onChange(...args);
           };
           
-          if(model?.readOnly === false){
+          if(model?.readOnly !== false){
           return (
               model.useRawValues ? (
                 <Autocomplete.Raw {...autocompleteProps} {...customEvent} value={value} onChange={onChangeInternal}/>
@@ -220,7 +221,7 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
               ));
             }else{
               return(
-                  <EntityReference {...model}  value={value} />
+                  <EntityReference {...autocompleteProps}  value={value} />
               );
             }
         }}
@@ -234,11 +235,6 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
       ...prev,
       dataSourceType: prev['dataSourceType'] ?? 'entitiesList',
       useRawValues: prev['useRawValues'] ?? false,
-      quickviewDisplayPropertyName: prev['quickviewDisplayPropertyName'] ?? false,
-      quickviewGetEntityUrl: prev['quickviewGetEntityUrl'] ?? '',
-      quickviewWidth: prev['quickviewWidth'] ?? '600',
-      quickviewFormPath: prev['quickviewFormPath'] ?? '',
-      quickviewEnabled: prev['quickviewEnabled'] ?? false
     }))
     .add<IAutocompleteComponentProps>(1, (prev) => {
       const result = { ...prev };
@@ -249,13 +245,21 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
         const migratedExpression = migrateDynamicExpression(prev.filter);
         result.filter = migratedExpression;
       }
-
       return result;
     })
     .add<IAutocompleteComponentProps>(2, (prev) => migratePropertyName(migrateCustomFunctions(prev)))
     .add<IAutocompleteComponentProps>(3, (prev) => migrateVisibility(prev))
     .add<IAutocompleteComponentProps>(4, (prev) => migrateReadOnly(prev))
+    .add<IAutocompleteComponentProps>(5, (prev) => ({
+      ...prev,
+      quickviewDisplayPropertyName: prev['quickviewDisplayPropertyName'] ?? '',
+      quickviewGetEntityUrl: prev['quickviewGetEntityUrl'] ?? '',
+      quickviewWidth: prev['quickviewWidth'] ?? 600,
+      quickviewFormPath: prev['quickviewFormPath'] ?? '',
+      quickviewEnabled: prev['quickviewEnabled'] ?? false
+    }))
   ,
+  
   linkToModelMetadata: (model, propMetadata): IAutocompleteComponentProps => {
     return {
       ...model,

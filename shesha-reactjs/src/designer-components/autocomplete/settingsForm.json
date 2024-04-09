@@ -322,28 +322,13 @@
             "settingsValidationErrors": [],
             "components": [
               {
-                "id": "c1ffda30-8eea-4621-aae7-0af583143df6",
-                "type": "autocomplete",
-                "propertyName": "entityTypeShortAlias",
-                "label": "Entity Type",
-                "labelAlign": "right",
-                "parentId": "uEFBpy19tApJMiBuFyj9s",
-                "hidden": false,
-                "dataSourceType": "url",
-                "validate": {},
-                "dataSourceUrl": "/api/services/app/Metadata/EntityTypeAutocomplete",
-                "entityTypeShortAlias": "",
-                "useRawValues": true,
-                "version": 1
-              },
-              {
                 "id": "hpm6rN_aj-L_KaG5MLIZt",
                 "type": "propertyAutocomplete",
                 "propertyName": "displayProperty",
                 "label": "Display Property",
                 "labelAlign": "right",
                 "parentId": "uEFBpy19tApJMiBuFyj9s",
-                "hidden": {"_code": "return !getSettingValue(data?.entityTypeShortAlias);", "_mode": "code", "_value": false},
+                "hidden": {"_code": "return !getSettingValue(data?.entityType);", "_mode": "code", "_value": false},
 
                 "isDynamic": false,
                 "placeholder": "",
@@ -364,7 +349,7 @@
                 "isDynamic": false,
                 "validate": {},
                 "settingsValidationErrors": [],
-                "modelType": "{{data.entityTypeShortAlias}}",
+                "modelType": "{{data.entityType}}",
                 "fieldsUnavailableHint": "Please select `Entity Type` to be able to configure this filter."
               }
             ],
@@ -591,7 +576,7 @@
           {
             "id": "e4758785-b894-46be-84c4-a42e4aaasasd",
             "type": "autocomplete",
-            "propertyName": "entityTypeShortAlias",
+            "propertyName": "entityType",
             "label": "Entity Type",
             "labelAlign": "right",
             "parentId": "6Vw9iiDw9d0MD_Rh5cbIx",
@@ -610,7 +595,7 @@
             "label": "Display Property",
             "labelAlign": "right",
             "parentId": "6Vw9iiDw9d0MD_Rh5cbIx",
-            "hidden": {"_code": "return (!getSettingValue(data?.entityTypeShortAlias) || !getSettingValue(data?.entityReferenceEnabled));", "_mode": "code", "_value": false},
+            "hidden": {"_code": "return (!getSettingValue(data?.entityType) || !getSettingValue(data?.entityReferenceEnabled));", "_mode": "code", "_value": false},
 
             "isDynamic": false,
             "placeholder": "",

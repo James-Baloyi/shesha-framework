@@ -78,6 +78,8 @@ export interface IEntityReferenceProps {
 
 export const EntityReference: FC<IEntityReferenceProps> = (props) => {
 
+  console.log("ER_PROPS", props);
+
   const { executeAction } = useConfigurableActionDispatcher();
   const { globalState } = useGlobalState();
   const { styles } = useStyles();

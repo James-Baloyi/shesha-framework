@@ -99,6 +99,7 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
       return queryParamObj;
     };
 
+
     const getFetchedItemData = (
       item: object,
       useRawValues: boolean,
@@ -213,7 +214,7 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
               onChange(...args);
           };
           
-          if(model?.readOnly === false){
+          if(formMode == 'designer'){
           return (
               model.useRawValues ? (
                 <Autocomplete.Raw {...autocompleteProps} {...customEvent} value={value} onChange={onChangeInternal}/>
@@ -222,7 +223,7 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
               ));
             }else{
               return(
-                  <EntityReference {...autocompleteProps}  value={value} />
+                  <EntityReference {...model}  value={value} />
               );
             }
         }}

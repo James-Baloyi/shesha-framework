@@ -36,6 +36,7 @@ interface IQueryParams {
 
 const settingsForm = settingsFormJson as FormMarkup;
 
+
 const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
   type: 'autocomplete',
   isInput: true,
@@ -212,7 +213,7 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
               onChange(...args);
           };
           
-          if(model?.readOnly !== false){
+          if(model?.readOnly === false){
           return (
               model.useRawValues ? (
                 <Autocomplete.Raw {...autocompleteProps} {...customEvent} value={value} onChange={onChangeInternal}/>

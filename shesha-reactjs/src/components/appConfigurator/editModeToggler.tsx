@@ -5,7 +5,7 @@ import { RebaseEditOutlined } from '@/icons/rebaseEditOutlined';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { useStyles } from './styles/styles';
 
-export interface IAppEditModeTogglerProps { }
+export interface IAppEditModeTogglerProps {}
 
 export const AppEditModeToggler: FC<IAppEditModeTogglerProps> = () => {
   const { mode, switchApplicationMode } = useAppConfigurator();

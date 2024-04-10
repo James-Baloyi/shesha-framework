@@ -38,7 +38,7 @@ const LayoutHeader: FC<ILayoutHeaderProps> = ({ collapsed, onSearch, customCompo
           </ShaLink>
         ) : (
           <Fragment>
-            {icon} {text}
+            {icon}
           </Fragment>
         )
       }

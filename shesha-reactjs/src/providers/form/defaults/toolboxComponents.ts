@@ -93,6 +93,8 @@ import TextAreaComponent from '@/designer-components/textArea/textArea';
 import TextFieldComponent from '@/designer-components/textField/textField';
 import { TimeFieldComponent } from '@/designer-components/timeField';
 import { IToolboxComponentGroup } from '@/interfaces/formDesigner';
+import HeaderConfig from '@/designer-components/configurableHeader';
+import ConfigurableEditModeToggler from '@/components/formDesigner/components/editModeToggler';
 
 export const getToolboxComponents = (devMode: boolean): IToolboxComponentGroup[] => {
   return [
@@ -191,6 +193,7 @@ export const getToolboxComponents = (devMode: boolean): IToolboxComponentGroup[]
         Tabs,
         Wizard,
         SubForm,
+        HeaderConfig
       ],
     },
     {
@@ -230,6 +233,13 @@ export const getToolboxComponents = (devMode: boolean): IToolboxComponentGroup[]
         ScheduledJobExecutionLog,
       ],
     },
+    {
+      name: 'Header Components',
+      visible: true,
+      components: [
+        ConfigurableEditModeToggler
+      ],
+    }
   ];
 };
 

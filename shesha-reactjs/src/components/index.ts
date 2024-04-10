@@ -74,6 +74,7 @@ export { default as ValidationErrors, type IValidationErrorsProps } from './vali
 export { default as ShaIcon, type IShaIconProps, type IconType } from './shaIcon';
 export { default as IconPicker, type IIconPickerProps } from './iconPicker';
 export { default as EmptyState, type IEmptyStateProps } from './emptyState';
+export { default as ConfigurableHeader } from './configurableHeader';
 export {
   AppEditModeToggler,
   type IAppEditModeTogglerProps as IEditModeTogglerProps,

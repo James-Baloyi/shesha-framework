@@ -168,7 +168,7 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
 
       <Layout className={styles.layout}>
         <Header className={styles.antLayoutHeader} style={headerStyle}>
-          <LayoutHeader collapsed={collapsed} customComponent={customComponent} imgSrc={imgSrc} />
+          <LayoutHeader collapsed={collapsed} customComponent={customComponent} imgSrc={imgSrc} onSearch={e=>console.log(e, "IM BEING CALLED")}/>
         </Header>
         <Content className={classNames(styles.content, { collapsed })} style={contentStyle}>
           <>

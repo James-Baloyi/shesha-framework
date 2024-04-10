@@ -18,9 +18,10 @@ export interface IImageFieldProps {
 
 export const ImageField: FC<IImageFieldProps> = (props) => {
     const { value, height, width } = props;
+    console.log(value, "IMAGE URL")
     return (
         <Image
-            src={value}
+            src={"https://static.canva.com/web/images/12487a1e0770d29351bd4ce4f87ec8fe.svg"}
             height={height}
             width={width}
         />

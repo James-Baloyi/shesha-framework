@@ -49,13 +49,15 @@ const ImageComponent: IToolboxComponent<IImageProps> = {
 */
     return (
       <ConfigurableFormItem model={model}>
-        {(value, onChange) => {
+        {(onChange) => {
           return (
             <ImageField 
               storageFormat={model.storageFormat}
-              value={value}
+              value={model.url || model.storedFileId}
               onChange={onChange} 
               readOnly={model.readOnly}
+              width={model.width}
+              height={model.height}
             />
           );
           /*

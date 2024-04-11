@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { CSSProperties, FC } from 'react';
 import { Image } from 'antd';
 
 export enum ImageStorageFormat {
@@ -11,19 +11,21 @@ export interface IImageFieldProps {
     value?: string;
     onChange?: (newValue: string) => void;
     readOnly: boolean;
+    style: CSSProperties
 
     height?: string | number;
     width?: string | number;
 }
 
 export const ImageField: FC<IImageFieldProps> = (props) => {
-    const { value, height, width } = props;
-    console.log(value, "IMAGE URL")
+    const { value, height, width, style } = props;
     return (
         <Image
-            src={"https://static.canva.com/web/images/12487a1e0770d29351bd4ce4f87ec8fe.svg"}
+            src={value}
             height={height}
             width={width}
+            preview={false}
+            style={style}
         />
     );
 };

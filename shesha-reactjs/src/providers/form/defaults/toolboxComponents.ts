@@ -233,11 +233,12 @@ export const getToolboxComponents = (devMode: boolean): IToolboxComponentGroup[]
         ScheduledJobExecutionLog,
       ],
     },
+    //Non-configurable header components
     {
-      name: 'Header Components',
+      name: 'Header Components (No Config)',
       visible: true,
       components: [
-        ConfigurableEditModeToggler
+        ConfigurableEditModeToggler 
       ],
     }
   ];

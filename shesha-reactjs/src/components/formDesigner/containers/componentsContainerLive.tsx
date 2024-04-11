@@ -26,7 +26,7 @@ export const ComponentsContainerLive: FC<PropsWithChildren<IComponentsContainerP
 
   const renderComponents = () => {
     const renderedComponents = components.map((c, index) => (
-      <ConfigurableFormComponent id={c.id} index={index} key={c.id} />
+      <ConfigurableFormComponent id={c.id} index={index} key={c.id} />  
     ));
 
     return typeof render === 'function' ? render(renderedComponents) : renderedComponents;

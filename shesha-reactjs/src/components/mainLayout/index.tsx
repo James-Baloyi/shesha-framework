@@ -88,9 +88,7 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
     showHeading = true,
     reference,
     noPadding = false,
-    headerControls,
-    customComponent,
-    imgSrc,
+    headerControls
   } = props;
   const { theme: themeFromStorage } = useTheme();
   const { styles } = useStyles();
@@ -168,7 +166,7 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
 
       <Layout className={styles.layout}>
         <Header className={styles.antLayoutHeader} style={headerStyle}>
-          <LayoutHeader collapsed={collapsed} customComponent={customComponent} imgSrc={imgSrc} onSearch={e=>console.log(e, "IM BEING CALLED")}/>
+          <LayoutHeader collapsed={collapsed}/>
         </Header>
         <Content className={classNames(styles.content, { collapsed })} style={contentStyle}>
           <>

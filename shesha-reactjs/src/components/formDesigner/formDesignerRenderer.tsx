@@ -4,8 +4,10 @@ import { DesignerTitle } from './designerTitle/index';
 import { FormDesignerToolbar } from './toolbar/formDesignerToolbar';
 import { useMainStyles } from './styles/styles';
 
+
 export const FormDesignerRenderer: FC = ({ }) => {
   const { styles } = useMainStyles();
+  
 
   return (
     <div className="sha-page">

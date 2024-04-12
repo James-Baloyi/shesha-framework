@@ -8,6 +8,7 @@ import { ISidebarProps, SidebarPanelPosition } from './models';
 interface SidebarPanelProps extends ISidebarProps {
     side: SidebarPanelPosition;
     allowFullCollapse: boolean;
+    formId?: string;
 }
 export const SidebarPanel: FC<SidebarPanelProps> = (props) => {
     const { styles } = useStyles();

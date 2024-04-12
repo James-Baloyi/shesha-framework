@@ -85,7 +85,7 @@ export const TableViewSelectorSettingsModalInner: FC<ITableViewSelectorSettingsM
       title={readOnly ? 'View Filter' : 'Configure Filter'}
       onCancel={hideModal}
       cancelText={readOnly ? 'Close' : undefined}
-      okText="Save"
+      okText="Save Me"
       onOk={updateFilters}
       okButtonProps={{ hidden: readOnly }}
     >

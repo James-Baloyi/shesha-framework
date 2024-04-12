@@ -97,7 +97,9 @@ import HeaderConfig from '@/designer-components/configurableHeader';
 import ConfigurableEditModeToggler from '@/components/formDesigner/components/editModeToggler';
 import ProfileDropdown from '@/components/formDesigner/components/profileDropdown';
 
+
 export const getToolboxComponents = (devMode: boolean): IToolboxComponentGroup[] => {
+
   return [
     {
       name: 'Data entry',

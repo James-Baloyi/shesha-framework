@@ -27,6 +27,8 @@ export interface ISidebarContainerProps extends PropsWithChildren<any> {
   sideBarWidth?: number;
 
   allowFullCollapse?: boolean;
+
+  formId?: string;
 }
 
  export const SidebarContainer: FC<ISidebarContainerProps> = ({
@@ -36,12 +38,13 @@ export interface ISidebarContainerProps extends PropsWithChildren<any> {
   children,
   allowFullCollapse = false,
   noPadding,
+  formId
 }) => {
   const { styles } = useStyles();
   const renderSidebar = (side: SidebarPanelPosition) => {
     const sidebarProps = side === 'left' ? leftSidebarProps : rightSidebarProps;
     return sidebarProps
-      ? (<SidebarPanel {...sidebarProps} allowFullCollapse={allowFullCollapse} side={side} />)
+      ? (<SidebarPanel {...sidebarProps} formId={formId} allowFullCollapse={allowFullCollapse} side={side} />)
       : null;
   };
 

@@ -11,9 +11,11 @@ import { useStyles } from './styles/styles';
 
 const { Panel } = Collapse;
 
-export interface IToolboxComponentsProps {}
+export interface IToolboxComponentsProps {
+  formId?: string;
+}
 
-export const ToolboxComponents: FC<IToolboxComponentsProps> = () => {
+export const ToolboxComponents: FC<IToolboxComponentsProps> = ({formId}) => {
   const [openedKeys, setOpenedKeys] = useLocalStorage('shaDesigner.toolbox.components.openedKeys', ['']);
   const [searchText, setSearchText] = useLocalStorage('shaDesigner.toolbox.components.search', '');
   const { styles }  = useStyles();
@@ -21,6 +23,12 @@ export const ToolboxComponents: FC<IToolboxComponentsProps> = () => {
   const { toolboxComponentGroups, startDraggingNewItem, endDraggingNewItem } = useFormDesigner();
 
   const filteredGroups = useMemo<IToolboxComponentGroup[]>(() => {
+  
+    if(formId !== "d9f81f76-1e67-4f51-b019-a3aaa02fa84c") {
+      toolboxComponentGroups.pop();
+    }
+
+    
     if (!Boolean(searchText)) return [...toolboxComponentGroups];
 
     const result: IToolboxComponentGroup[] = [];

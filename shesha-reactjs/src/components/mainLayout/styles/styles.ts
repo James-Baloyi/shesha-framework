@@ -45,7 +45,6 @@ export const useStyles = createStyles(({ css, cx, responsive, token, prefixCls }
         align-items: center;
     `;
   const antLayoutHeader = cx(css`
-    border-bottom: ${shaBorder};
     position: fixed;
     z-index: 3;
     width: 100%;
@@ -57,11 +56,8 @@ export const useStyles = createStyles(({ css, cx, responsive, token, prefixCls }
 
   const layoutHeader = cx(css`
     height: 55px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 ${sheshaStyles.paddingLG}px;
-    ${marginLeftTransition}
+    ${marginLeftTransition},
+    width: '100%
   `);
 
   const layoutHeaderLeft = css`

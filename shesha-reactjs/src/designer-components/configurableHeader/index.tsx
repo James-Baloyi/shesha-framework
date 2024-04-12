@@ -18,9 +18,10 @@ const HeaderConfig: IToolboxComponent = {
         if(model.hidden){
             return null;
         }
-        
+    
         const { styles } = useStyles();
         const { formData } = model;
+        
         const headerProps = {
             containerId: model?.id,
             direction: model?.direction,

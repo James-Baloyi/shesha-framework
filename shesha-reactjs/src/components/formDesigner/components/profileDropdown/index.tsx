@@ -47,13 +47,13 @@ const ProfileDropdown:IToolboxComponent = {
         return result;
       }, [accountDropdownListItems]);
     return(
-        <React.Fragment>
-            <Dropdown menu={{ items: accountMenuItems }} trigger={['hover']}>
+        <div style={{width: "200px",display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: "0px 5px 0px 5px"}}>
+            <Dropdown menu={{ items: accountMenuItems }} trigger={['click']}>
                 <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
                     {loginInfo?.fullName} <DownOutlined />
                 </a>
             </Dropdown><Avatar icon={<UserOutlined />} />
-        </React.Fragment>
+        </div>
     );
     }
 }

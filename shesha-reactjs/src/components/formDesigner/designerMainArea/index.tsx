@@ -10,25 +10,26 @@ import { useFormDesigner } from '@/providers/formDesigner';
 import { useStyles } from '../styles/styles';
 
 export interface IDesignerMainAreaProps {
-
+    formId?: string;
 }
 
-export const DesignerMainArea: FC<IDesignerMainAreaProps> = () => {
+export const DesignerMainArea: FC<IDesignerMainAreaProps> = ({formId}) => {
     const { isDebug, readOnly } = useFormDesigner();
-    const { form, formMode } = useForm();
-    const {width,zoom}=useCanvasConfig();
+    const { form, formMode} = useForm();
+    const { width,zoom }=useCanvasConfig();
     const { styles } = useStyles();
 
     const magnifiedWidth = useMemo(()=>width * (zoom/100), [width, zoom]);
 
     return (
         <SidebarContainer
+            formId={formId}
             leftSidebarProps={
                 readOnly
                     ? null
                     : {
                         title: 'Builder Widgets',
-                        content: () => <Toolbox />,
+                        content: () => <Toolbox formId={formId} />,
                         placeholder: 'Builder Widgets',
                     }
             }

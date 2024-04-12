@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentsContainer, IContainerComponentProps, IToolboxComponent, getLayoutStyle, validateConfigurableComponentSettings } from '@/index';
+import { ComponentsContainer, ICommonContainerProps, IContainerComponentProps, IToolboxComponent, getLayoutStyle, validateConfigurableComponentSettings } from '@/index';
 import { CheckSquareOutlined } from '@ant-design/icons';
 import ParentProvider from '@/providers/parentProvider';
 import globalState from '@/providers/globalState';
@@ -22,24 +22,30 @@ const HeaderConfig: IToolboxComponent = {
         const { styles } = useStyles();
         const { formData } = model;
         
-        const headerProps = {
-            containerId: model?.id,
-            direction: model?.direction,
+        const headerProps: ICommonContainerProps = {
             display: model?.display,
             flexDirection: model?.flexDirection,
-            alignSelf: model?.alignSelf,
+            direction: model?.direction,
             justifyContent: model?.justifyContent,
+            alignItems: model?.alignItems,
+            alignSelf: model?.alignSelf,
+            justifyItems: model?.justifyItems,
+            textJustify: model?.textJustify,
+            justifySelf: model?.justifySelf,
+            noDefaultStyling: model?.noDefaultStyling,
+            gridColumnsCount: model?.gridColumnsCount,
+            flexWrap: model?.flexWrap,
+            gap: model?.gap,
         }
 
         return (
             <ParentProvider model={model}>
                 <ComponentsContainer
+                    containerId={model?.id}
                     className={styles.shaLayoutHeading}
                     wrapperStyle={getLayoutStyle({ ...model, style: model?.wrapperStyle }, { data: formData, globalState })}
                     dynamicComponents={model?.isDynamic ? model?.components : []}
-                    {...headerProps}
-                    //move below to layout class in styles file
-                    style={{ backgroundColor: '#ffffff', padding: '10px', borderBottom: '1px lightgrey solid'}} />
+                    {...headerProps}                    />
             </ParentProvider>
         );
     },

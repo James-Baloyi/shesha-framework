@@ -20,7 +20,7 @@ import { MenuTheme } from 'antd/lib/menu/MenuContext';
 import { SIDEBAR_COLLAPSE } from './constant';
 import { SIDEBAR_MENU_NAME } from '@/shesha-constants';
 import { useLocalStorage } from '@/hooks';
-import { useSheshaApplication, useTheme } from '@/providers';
+import { useAppConfigurator, useSheshaApplication, useTheme } from '@/providers';
 import { useSidebarMenuDefaults } from '@/providers/sidebarMenu';
 import { withAuth } from '@/hocs';
 import { useStyles } from './styles/styles';
@@ -93,6 +93,8 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
   const { theme: themeFromStorage } = useTheme();
   const { styles } = useStyles();
   const sidebarDefaults = useSidebarMenuDefaults();
+
+  const { formInfoBlockVisible } = useAppConfigurator();
 
   const { setGlobalVariables } = useSheshaApplication();
 
@@ -168,6 +170,7 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
         <Header className={styles.antLayoutHeader} style={headerStyle}>
           <LayoutHeader collapsed={collapsed}/>
         </Header>
+      {formInfoBlockVisible === true && <div className={styles.spacer}></div>}
         <Content className={classNames(styles.content, { collapsed })} style={contentStyle}>
           <>
             {breadcrumb}

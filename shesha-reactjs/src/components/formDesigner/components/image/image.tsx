@@ -11,7 +11,7 @@ export interface IImageFieldProps {
     value?: string;
     onChange?: (newValue: string) => void;
     readOnly: boolean;
-    style: CSSProperties
+    style?: string;
 
     height?: string | number;
     width?: string | number;
@@ -25,7 +25,7 @@ export const ImageField: FC<IImageFieldProps> = (props) => {
             height={height}
             width={width}
             preview={false}
-            style={style}
+            style={style as unknown as CSSProperties}
         />
     );
 };

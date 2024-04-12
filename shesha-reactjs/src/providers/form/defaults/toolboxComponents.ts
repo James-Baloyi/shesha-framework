@@ -95,6 +95,7 @@ import { TimeFieldComponent } from '@/designer-components/timeField';
 import { IToolboxComponentGroup } from '@/interfaces/formDesigner';
 import HeaderConfig from '@/designer-components/configurableHeader';
 import ConfigurableEditModeToggler from '@/components/formDesigner/components/editModeToggler';
+import ProfileDropdown from '@/components/formDesigner/components/profileDropdown';
 
 export const getToolboxComponents = (devMode: boolean): IToolboxComponentGroup[] => {
   return [
@@ -238,7 +239,8 @@ export const getToolboxComponents = (devMode: boolean): IToolboxComponentGroup[]
       name: 'Header Components (No Config)',
       visible: true,
       components: [
-        ConfigurableEditModeToggler 
+        ConfigurableEditModeToggler,
+        ProfileDropdown
       ],
     }
   ];

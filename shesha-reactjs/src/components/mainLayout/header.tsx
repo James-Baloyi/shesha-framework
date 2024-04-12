@@ -4,7 +4,7 @@ import { Avatar, Dropdown, Input, MenuProps, Space } from 'antd';
 import { DownOutlined, LoginOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '@/providers/auth';
 import ShaLink from '@/components/shaLink';
-import { ProtectedContent, AppEditModeToggler, ConfigurableLogo } from '@/components';
+import { ProtectedContent, AppEditModeToggler, ConfigurableLogo, ConfigurableForm } from '@/components';
 import { PERM_APP_CONFIGURATOR } from '@/shesha-constants';
 import { useSidebarMenu } from '@/providers';
 import ConfigurationItemViewModeToggler from '../appConfigurator/configurationItemViewModeToggler';
@@ -57,47 +57,13 @@ const LayoutHeader: FC<ILayoutHeaderProps> = ({ collapsed, onSearch, customCompo
 
   return (
     <div className={classNames(styles.layoutHeader, { collapsed })}>
-      <div className={styles.layoutHeaderLeft}>
-        <ConfigurableLogo imgSrc={imgSrc} />
 
-        {onSearch && (
-          <div className="search">
-            <Search placeholder="input search text" onSearch={onSearch} style={{ width: 300 }} />
-          </div>
-        )}
-      </div>
+        
 
-      <div className={styles.layoutHeaderRight}>
-        <div className={styles.customComponents}>{customComponent}</div>
-
-        <div className="actions">
-          {actions?.map(({ icon, url }) => (
-            <span className="action-icon">
-              <ShaLink linkTo={url} icon={icon} />
-            </span>
-          ))}
-
-          <ProtectedContent permissionName={PERM_APP_CONFIGURATOR}>
-            <Space>
-              <AppEditModeToggler />
-              <ConfigurationItemViewModeToggler />
-            </Space>
-          </ProtectedContent>
-        </div>
-        <div className="account">
-          <span className="separator" />
-          <Dropdown
-            menu={{ items: accountMenuItems }}
-            trigger={['click']}
-          >
-            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-              {loginInfo?.fullName} <DownOutlined />
-            </a>
-          </Dropdown>
-
-          <Avatar icon={<UserOutlined />} />
-        </div>
-      </div>
+        <ConfigurableForm mode={'readonly'} formId={"bf048529-72f3-456f-aecf-bbd9bfa81562"}/>
+        
+       
+ 
     </div>
   );
 };

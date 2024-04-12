@@ -16,6 +16,7 @@ const DynamicContainer: FC<PropsWithChildren<IProps>> = ({ components, children,
 
   return (
     <div className={`sha-components-container ${direction} ${className}`}>
+      <>Dynamic View</>
       <div className="sha-components-container-inner">{renderComponents()}</div>
       {children}
     </div>

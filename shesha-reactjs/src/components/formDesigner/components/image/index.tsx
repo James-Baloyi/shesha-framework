@@ -58,6 +58,7 @@ const ImageComponent: IToolboxComponent<IImageProps> = {
               readOnly={model.readOnly}
               width={model.width}
               height={model.height}
+              style={model?.style}
             />
           );
           /*

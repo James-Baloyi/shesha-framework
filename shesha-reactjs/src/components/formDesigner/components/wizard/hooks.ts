@@ -1,7 +1,7 @@
-import { getActualModel, useApplicationContext } from '@/providers/form/utils';
+import { getActualModel, useAvailableConstantsData } from '@/providers/form/utils';
 import { getStepDescritpion, getWizardStep } from './utils';
 import { IConfigurableActionConfiguration } from '@/interfaces/configurableAction';
-import { IConfigurableFormComponent, useSheshaApplication } from '@/providers';
+import { IConfigurableFormComponent, useForm, useSheshaApplication } from '@/providers';
 import { IWizardComponentProps, IWizardStepProps } from './models';
 import { useConfigurableAction } from '@/providers/configurableActionsDispatcher';
 import { useDataContext } from '@/providers/dataContextProvider/contexts';
@@ -23,8 +23,10 @@ interface IWizardComponent {
 
 export const useWizard = (model: Omit<IWizardComponentProps, 'size'>): IWizardComponent => {
   const { anyOfPermissionsGranted } = useSheshaApplication();
-  const allData = useApplicationContext();
+  const allData = useAvailableConstantsData();
   const dataContext = useDataContext();
+
+  const formMode = useForm(false).formMode;
 
   const { argumentsEvaluationContext, executeBooleanExpression, executeAction } =
     useFormExpression();
@@ -109,6 +111,12 @@ export const useWizard = (model: Omit<IWizardComponentProps, 'size'>): IWizardCo
     afterAccessor: (step: IWizardStepProps) => IConfigurableActionConfiguration,
     success?: (actionResponse: any) => void,
   ) => {
+
+    if (!formMode || formMode === 'designer') {
+      if (success) success(null);
+      return;
+    }
+
     const beforeAction = beforeAccessor(currentStep);
 
     const successFunc = (response: any) => {

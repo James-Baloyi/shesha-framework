@@ -15,14 +15,23 @@ import { ISettingsFormFactoryArgs } from '@/interfaces';
 import { Option } from 'antd/lib/mentions';
 import { useForm } from '@/providers';
 import { useFormDesigner } from '@/providers/formDesigner';
+import { useAvailableConstantsMetadata } from '@/utils/metadata/useAvailableConstants';
+import { SheshaConstants } from '@/utils/metadata/standardProperties';
 
-interface IEntityReferenceSettingsState extends IAddressCompomentProps {}
+interface IEntityReferenceSettingsState extends IAddressCompomentProps { }
 
 const AddressSettings: FC<ISettingsFormFactoryArgs<IAddressCompomentProps>> = ({ readOnly }) => {
   const { values, onValuesChange } = useSettingsForm<IAddressCompomentProps>();
 
   const designerModelType = useFormDesigner(false)?.formSettings?.modelType;
   const { formSettings } = useForm();
+
+  const onChangeOrSelectConstants = useAvailableConstantsMetadata({
+    standardConstants: [],
+    onBuild: (builder) => {
+      builder.addAllStandard([SheshaConstants.selectedRow]).addObject("event", "Event callback when user input", undefined);
+    }
+  });
 
   return (
     <>
@@ -183,6 +192,11 @@ const AddressSettings: FC<ISettingsFormFactoryArgs<IAddressCompomentProps>> = ({
             label="On Change"
             description="Enter custom visibility code.  You must return true to show the component. The global variable data is provided, and allows you to access the data of any form component, by using its API key."
             exposedVariables={EXPOSED_VARIABLES}
+            wrapInTemplate={true}
+            templateSettings={{
+              functionName: 'onChange'
+            }}
+            availableConstants={onChangeOrSelectConstants}
           />
         </SettingsFormItem>
 
@@ -198,6 +212,11 @@ const AddressSettings: FC<ISettingsFormFactoryArgs<IAddressCompomentProps>> = ({
             label="On Select"
             description="Enter custom visibility code.  You must return true to show the component. The global variable data is provided, and allows you to access the data of any form component, by using its API key."
             exposedVariables={EXPOSED_VARIABLES}
+            wrapInTemplate={true}
+            templateSettings={{
+              functionName: 'onSelect'
+            }}
+            availableConstants={onChangeOrSelectConstants}
           />
         </SettingsFormItem>
       </SettingsCollapsiblePanel>

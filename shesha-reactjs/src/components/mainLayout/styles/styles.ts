@@ -27,7 +27,7 @@ export const useStyles = createStyles(({ css, cx, responsive, token, prefixCls }
   `;
 
   const spacer = css`
-    height: 30px;
+    height: 40px;
     background: ${layoutHeaderBackground};
     width: 100%;
     position: relative;
@@ -53,7 +53,6 @@ export const useStyles = createStyles(({ css, cx, responsive, token, prefixCls }
         align-items: center;
     `;
   const antLayoutHeader = cx(css`
-    border-bottom: ${shaBorder};
     position: fixed;
     z-index: 3;
     width: 100%;
@@ -66,15 +65,14 @@ export const useStyles = createStyles(({ css, cx, responsive, token, prefixCls }
   const headerWrapper = cx(css`
     background:${layoutHeaderBackground};
     width: 100%;
-    padding: 5px;
-    
+    border-bottom: ${shaBorder};
   `);
 
   const layoutHeader = cx(css`
-    backgroundColor: white;
-    height: 55px;
-    ${marginLeftTransition},
-    border-bottom: ${shaBorder};
+    background-color: white;
+    height: 50px;
+    ${marginLeftTransition};
+    padding-top: 3px;
   `);
 
   const layoutHeaderLeft = css`

@@ -107,9 +107,9 @@ export const ConfigurableForm: FC<IConfigurableFormProps> = (props) => {
     <ConfigurableComponent canConfigure={canConfigure} onStartEdit={openInDesigner}>
       {(componentState, BlockOverlay) => (
         <div className={classNames(componentState.wrapperClassName, props?.className)}>
-          <BlockOverlay>
+          {formId !== "d9f81f76-1e67-4f51-b019-a3aaa02fa84c" && <BlockOverlay>
             <EditViewMsg persistedFormProps={formProps}/>
-          </BlockOverlay>
+          </BlockOverlay>}
           {markup ? (
             renderWithMarkup({
               providedMarkup: markupWithSettings.components,

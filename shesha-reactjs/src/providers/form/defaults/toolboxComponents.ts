@@ -236,7 +236,7 @@ export const getToolboxComponents = (devMode: boolean): IToolboxComponentGroup[]
         ScheduledJobExecutionLog,
       ],
     },
-    //Non-configurable header components
+    //Non-configurable header components. These should always be at the bottom of the array
     {
       name: 'Header Components (No Config)',
       visible: true,

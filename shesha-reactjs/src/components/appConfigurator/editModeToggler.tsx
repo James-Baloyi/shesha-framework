@@ -8,14 +8,14 @@ import { useStyles } from './styles/styles';
 export interface IAppEditModeTogglerProps {}
 
 export const AppEditModeToggler: FC<IAppEditModeTogglerProps> = () => {
-  const { mode, switchApplicationMode } = useAppConfigurator();
+  const { toggleShowInfoBlock, formInfoBlockVisible} = useAppConfigurator();
   const { styles } = useStyles();
 
   const [messageApi, contextHolder] = message.useMessage();
 
   const toggleMode = (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    switchApplicationMode(checked ? 'edit' : 'live');
+    toggleShowInfoBlock(checked ? true : !true);
 
     if (checked) {
       messageApi.destroy('editModeMessage');
@@ -43,10 +43,10 @@ export const AppEditModeToggler: FC<IAppEditModeTogglerProps> = () => {
   return (
     <Space>
       {contextHolder}
-      <span className={styles.shaConfigurableModeSwitcherLabel}>{mode === 'edit' ? 'Edit Mode' : 'Live Mode'}</span>
+      <span className={styles.shaConfigurableModeSwitcherLabel}>{formInfoBlockVisible === true ? 'Edit Mode' : 'Live Mode'}</span>
       <Switch className={styles.shaConfigurableModeSwitcherSwitcher}
-        title={mode === 'edit' ? 'Switch to Live mode' : 'Switch to Edit mode'}
-        checked={mode === 'edit'}
+        title={formInfoBlockVisible === true ? 'Switch to Live mode' : 'Switch to Edit mode'}
+        checked={formInfoBlockVisible === true}
         onChange={toggleMode}
       />
     </Space>

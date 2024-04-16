@@ -65,15 +65,29 @@ export const useStyles = createStyles(({ css, cx, responsive, token, prefixCls }
   const headerWrapper = cx(css`
     background:${layoutHeaderBackground};
     width: 100%;
-    border-bottom: ${shaBorder};
   `);
 
   const layoutHeader = cx(css`
     background-color: white;
     height: 50px;
-    ${marginLeftTransition};
+    width: calc(100%-50px);
     padding-top: 3px;
+    margin-left: -20px;
+    ${marginLeftTransition};
   `);
+
+  const layoutDivider = css`
+    margin-top: 0px;
+    background-color: #d3d3d3;
+    width: 102%;
+  `;
+
+    const layoutDividerSpaced = css`
+    margin-top: 36px;
+    background-color: #d3d3d3;
+    width: 102%;
+  `;
+
 
   const layoutHeaderLeft = css`
         ${headerPart}
@@ -274,6 +288,8 @@ export const useStyles = createStyles(({ css, cx, responsive, token, prefixCls }
     shaSiteLayoutBackgroundNoPadding,
     customComponents,
     headerWrapper,
-    spacer
+    spacer,
+    layoutDivider,
+    layoutDividerSpaced
   };
 });

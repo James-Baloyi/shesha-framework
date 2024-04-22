@@ -14,13 +14,13 @@ const HeaderConfig: IToolboxComponent = {
     name: 'Configurable Header',
     icon: <CheckSquareOutlined />,
     Factory: ({ model }) => {     
-        
+       
+        const { styles } = useStyles();
+        const { formData } = model;
+
         if(model.hidden){
             return null;
         }
-    
-        const { styles } = useStyles();
-        const { formData } = model;
         
         const headerProps: ICommonContainerProps = {
             display: model?.display,
@@ -36,7 +36,7 @@ const HeaderConfig: IToolboxComponent = {
             gridColumnsCount: model?.gridColumnsCount,
             flexWrap: model?.flexWrap,
             gap: model?.gap,
-        }
+        };
 
         return (
             <ParentProvider model={model}>
@@ -63,6 +63,6 @@ const HeaderConfig: IToolboxComponent = {
       }))
       .add<IContainerComponentProps>(1, (prev) => migratePropertyName(migrateCustomFunctions(prev)))
       .add<IContainerComponentProps>(2, (prev) => migrateVisibility(prev)),
-}
+};
 
 export default HeaderConfig;

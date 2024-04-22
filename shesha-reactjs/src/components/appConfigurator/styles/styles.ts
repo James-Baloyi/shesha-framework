@@ -130,7 +130,7 @@ export const useStyles = createStyles(({ css, cx, iconPrefixCls, responsive }) =
             width: 200px;
             height: auto;
             margin: auto;
-            background-color: #fff;
+            background: none;
             text-align: center;
             border: 2px solid #fff;
             position: absolute;

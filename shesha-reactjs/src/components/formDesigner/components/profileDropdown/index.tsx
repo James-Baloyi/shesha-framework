@@ -7,7 +7,7 @@ import { useStyles } from "./styles/styles";
 type MenuItem = MenuProps['items'][number];
 
 
-const ProfileDropdown:IToolboxComponent = {
+const ProfileDropdown: IToolboxComponent = {
     type: 'subcomponent',
     canBeJsSetting: false,
     name: 'Profile Dropdown',
@@ -46,7 +46,7 @@ const ProfileDropdown:IToolboxComponent = {
         });
     
         return result;
-      }, [accountDropdownListItems]);
+      }, [accountDropdownListItems, logoutUser]);
     return(
         <div className={styles.shaProfileDropdown}>
             <Dropdown menu={{ items: accountMenuItems }} trigger={['click']}>
@@ -57,6 +57,6 @@ const ProfileDropdown:IToolboxComponent = {
         </div>
     );
     }
-}
+};
 
 export default ProfileDropdown;

@@ -51,7 +51,7 @@ export const ConfigurableComponentRenderer = <TSettings extends any>({
   settingsEditor,
 }: IConfigurableComponentRendererProps<TSettings>) => {
   const [editorIsVisible, setEditorIsVisible] = useState(false);
-  const { mode } = useAppConfigurator();
+  const { formInfoBlockVisible } = useAppConfigurator();
   const { save, settings } = contextAccessor();
 
   if (!children) return null;
@@ -67,7 +67,7 @@ export const ConfigurableComponentRenderer = <TSettings extends any>({
   }
 
   const componentState: IComponentStateProps = {
-    isEditMode: mode === 'edit',
+    isEditMode: formInfoBlockVisible,
     isSelected: false,
     wrapperClassName: 'sha-configurable-component',
     settings,
@@ -95,7 +95,7 @@ export const ConfigurableComponentRenderer = <TSettings extends any>({
   return (
     <>
       {children(componentState, ({ children: overlayChildren }) => (
-        <BlockOverlay visible={mode === 'edit'} onClick={onOverlayClick}>
+        <BlockOverlay visible={formInfoBlockVisible} onClick={onOverlayClick}>
           {overlayChildren}
         </BlockOverlay>
       ))}

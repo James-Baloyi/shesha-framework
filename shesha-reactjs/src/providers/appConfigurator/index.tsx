@@ -202,10 +202,10 @@ const AppConfiguratorProvider: FC<PropsWithChildren<IAppConfiguratorProviderProp
   useEffect(() => {
     if (!document) return;
     const classes = styles.shaAppEditMode.split(' ');
-    if (state.mode === 'live') {
+    if (state.formInfoBlockVisible === false) {
       document.body.classList.remove(...classes);
     }
-    if (state.mode === 'edit') {
+    if (state.formInfoBlockVisible === true) {
       document.body.classList.add(...classes);
     }
   }, [state.mode]);

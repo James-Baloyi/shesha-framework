@@ -9,7 +9,7 @@ export const useStyles = createStyles(({ css, cx, responsive, token, prefixCls }
   const shaPageHeadingHeight = "45px"; // @sha-page-heading-height
   const shaPageToolbarHeight = "33px"; // @sha-page-toolbar-height
   const backgroundColor = "#f0f2f5"; // @background-color
-  //const shaBorder = "1px solid #d3d3d3";
+  const shaBorder = "1px solid #d3d3d3";
   const shaSiderExpandedWidth = "250px"; // @sha-sider-expanded-width
   const shaSiderCollapsedWidth = "60px"; // @sha-sider-collapsed-width
 
@@ -58,8 +58,11 @@ export const useStyles = createStyles(({ css, cx, responsive, token, prefixCls }
     width: 100%;
     padding: 5px;
     height: ${layoutHeaderHeight};
+    max-height: ${layoutHeaderHeight};
     line-height: ${layoutHeaderHeight};
     background: ${layoutHeaderBackground};
+    overflow-y: hidden;
+    border-bottom: ${shaBorder}
   `);
 
   const headerWrapper = cx(css`

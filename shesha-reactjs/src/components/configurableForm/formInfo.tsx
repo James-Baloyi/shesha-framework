@@ -38,6 +38,7 @@ export const FormInfo: FC<FormInfoProps> = ({ formProps, onMarkupUpdated }) => {
   return (
     <Card
       className={styles.shaFormInfoCard}
+      style={{position: "absolute", top: '0px', zIndex: 5, border: '0px', borderRadius: '0px', margin: '5px', boxShadow: '0px 2px 2px 0px rgba(0,0,0,.15)'}}
       bordered
       title={
         <>

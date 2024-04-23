@@ -171,7 +171,6 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
           <LayoutHeader collapsed={collapsed}/>
         </Header>
 
-      {formInfoBlockVisible === true && <div className={styles.spacer}></div>}
         <Content className={classNames(styles.content, { collapsed })} style={contentStyle}>
           <>
             {breadcrumb}

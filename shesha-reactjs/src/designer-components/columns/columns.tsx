@@ -35,6 +35,7 @@ const ColumnsComponent: IToolboxComponent<IColumnsComponentProps> = {
                 pull={col.pull}
                 push={col.push}
                 className="sha-designer-column"
+                style={{borderRight: model?.showVerticalSeparators ? index !== columns.length - 1 ? '1px #150 solid' : 'none' : 'none'}}
               >
                 <ComponentsContainer
                   containerId={col.id}

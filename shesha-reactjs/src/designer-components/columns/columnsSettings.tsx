@@ -33,6 +33,10 @@ const ColumnsSettings: FC<ISettingsFormFactoryArgs<IColumnsComponentProps>> = (p
         <Checkbox disabled={readOnly} />
       </SettingsFormItem>
 
+      <SettingsFormItem name="showVerticalSeparators" label="Show Vertical Separators" valuePropName="checked" jsSetting>
+        <Checkbox disabled={readOnly} />
+      </SettingsFormItem>
+
       <SettingsFormItem name="columns" label="Columns">
         <ColumnsList readOnly={readOnly} />
       </SettingsFormItem>

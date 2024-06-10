@@ -13,6 +13,7 @@ export interface IConfigurableTheme {
   sidebarBackground?: string;
   layoutBackground?: string;
   text?: ITextTheme;
+  activeFormId?: string;
 }
 
 export interface IThemeStateContext {
@@ -43,9 +44,10 @@ export const THEME_CONTEXT_INITIAL_STATE: IThemeStateContext = {
       secondary: '#00000073',
       link: '',
     },
+    activeFormId: '',
   },
   prefixCls: 'antd',
-  iconPrefixCls: 'antdicon',
+  iconPrefixCls: 'antdicon'
 };
 
 export const UiStateContext = createContext<IThemeStateContext>(THEME_CONTEXT_INITIAL_STATE);

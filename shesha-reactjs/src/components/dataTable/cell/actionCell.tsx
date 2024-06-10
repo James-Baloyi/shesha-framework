@@ -13,6 +13,8 @@ import { ITableActionColumn } from '@/providers/dataTable/interfaces';
 import { MODAL_DATA } from '@/shesha-constants';
 import { axiosHttp } from '@/utils/fetchers';
 import { ICommonCellProps } from './interfaces';
+import { evaluateString } from '@/index';
+import { useTheme } from '@/index';
 
 export interface IActionCellProps<D extends object = {}, V = any> extends ICommonCellProps<ITableActionColumn, D, V> { }
 
@@ -23,6 +25,7 @@ export const ActionCell = <D extends object = {}, V = any>(props: IActionCellPro
   const { formData, formMode } = useForm();
   const { globalState, setState } = useGlobalState();
   const { executeAction } = useConfigurableActionDispatcher();
+  const { changeTheme, theme } = useTheme();
 
   const { actionConfiguration, icon, description } = columnConfig ?? {};
 
@@ -30,32 +33,45 @@ export const ActionCell = <D extends object = {}, V = any>(props: IActionCellPro
     return data?.cell?.row?.original;
   };
 
+  const selectedRow = getRowData(props);
+
+        // todo: implement generic context collector
+        const evaluationContext = {
+          selectedRow: selectedRow,
+          data: formData,
+          moment: moment,
+          formMode: formMode,
+          http: axiosHttp(backendUrl),
+          message: message,
+          globalState: globalState,
+        };
+
+        function navigateToUrl(newUrl: string): void {
+          const url = new URL(newUrl, window.location.origin);
+          window.history.pushState({}, '', url.toString());
+        }
+  
 
   const clickHandler = (event, data) => {
 
-    event.stopPropagation();
+    console.log(selectedRow, "SEL ROW")
 
-    const selectedRow = getRowData(data);
+    event.preventDefault();
+
+    
 
     if (actionConfiguration) {
+      const url = evaluateString(actionConfiguration?.actionArguments?.url, evaluationContext);
+      // navigateToUrl(url);
+      window.dispatchEvent(new CustomEvent('openModal', { detail: {id: selectedRow.id, url }}));
+      changeTheme({...theme, activeFormId: selectedRow.id})
+
       setState({ data: selectedRow, key: MODAL_DATA }); // todo: remove usage of global state
-      changeActionedRow(data.row.original);
-
-      // todo: implement generic context collector
-      const evaluationContext = {
-        selectedRow: selectedRow,
-        data: formData,
-        moment: moment,
-        formMode: formMode,
-        http: axiosHttp(backendUrl),
-        message: message,
-        globalState: globalState,
-      };
-
-      executeAction({
-        actionConfiguration: actionConfiguration,
-        argumentsEvaluationContext: evaluationContext,
-      });
+      // changeActionedRow(data.row.original);
+      // executeAction({
+      //   actionConfiguration: actionConfiguration,
+      //   argumentsEvaluationContext: evaluationContext,
+      // });
     } else console.error('Action is not configured');
   };
 
@@ -67,7 +83,7 @@ export const ActionCell = <D extends object = {}, V = any>(props: IActionCellPro
   return (
     <>
       {actionConfiguration?.actionArguments?.navigationType === "url" ?
-        <a className="sha-link" href={actionConfiguration?.actionArguments?.url} onClick={handleURLClick}>
+        <a className="sha-link" onClick={handleURLClick}>
           {icon && (
             <Tooltip title={description}>
               <ShaIcon iconName={icon as IconType} />

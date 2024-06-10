@@ -12,6 +12,7 @@ import React, {
   ReactNode,
   useEffect,
   useMemo,
+  useState
 } from 'react';
 import { IHtmlHeadProps } from '@/components/htmlHead';
 import { Layout } from 'antd';
@@ -25,6 +26,7 @@ import { useSidebarMenuDefaults } from '@/providers/sidebarMenu';
 import { withAuth } from '@/hocs';
 import { useStyles } from './styles/styles';
 import { useAppConfigurator } from '@/providers';
+import { ConfigurableForm } from '@/index';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -89,11 +91,13 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
     noPadding = false,
     headerControls,
   } = props;
-  const { theme: themeFromStorage } = useTheme();
+  const { theme: themeFromStorage, theme } = useTheme();
   const { styles } = useStyles();
   const sidebarDefaults = useSidebarMenuDefaults();
 
   const { setGlobalVariables } = useSheshaApplication();
+  const [formId, setFormId] = useState<string>();
+  const [formPath, setFormPath] = useState<any>();
 
   const sideMenuTheme = themeFromStorage?.sidebar;
   const { formInfoBlockVisible } = useAppConfigurator();
@@ -103,6 +107,29 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
   useEffect(() => {
     if (!!title) document.title = title;
   }, [title]);
+
+  function getLastTwoPathParams(): string[] {
+    const pathname = window.location.pathname;
+    const pathSegments = pathname.split('/').filter(segment => segment);
+  
+    return pathSegments.length >= 2 ? pathSegments.slice(-2) : [];
+  }
+
+  const hasQueryParams = new URLSearchParams(location.search).toString() !== '';
+  
+  useEffect(()=>{
+    const pathParams = getLastTwoPathParams();
+    console.log(pathParams);
+    const searchParams = new URLSearchParams(location.search);
+    const id = searchParams?.get('id')?.split("=")[1];
+    if(id){
+      //handle id
+    }
+    else{
+      const fp = {name: pathParams[1], module: pathParams[0]}
+      setFormPath(fp);
+    }
+  },[hasQueryParams])
 
   const hasHeading = useMemo(() => {
     return Boolean(heading);
@@ -126,6 +153,17 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
       </span>
     );
   };
+
+  const handleWillyEvent = (event: CustomEvent) => {
+    console.log('Event data:', event.detail);
+    const thisId = event?.detail?.id;
+    console.log(thisId);
+    setFormId(thisId);
+  };
+
+  window.addEventListener('openModal', handleWillyEvent as EventListener);
+
+  console.log(formPath, "FORM PATH")
 
   const headingClass = {
     'has-heading': hasHeading || (Boolean(title) && showHeading),
@@ -168,6 +206,25 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
           <LayoutHeader collapsed={collapsed} />
         </Header>
         {formInfoBlockVisible && <div style={{height: "30px"}}></div>}
+
+
+        {formId &&
+        <Content className={classNames(styles.content, { collapsed })} style={contentStyle}>
+          <>Has ID {formId}</>
+          <ConfigurableForm
+          mode={'readonly'}
+          formId={formId}
+        />
+        </Content>}
+
+        {formPath && <Content className={classNames(styles.content, { collapsed })} style={contentStyle}>
+          <>Has path {formPath?.module}/{formPath?.name}</>
+          <ConfigurableForm
+          mode={'readonly'}
+          formId={formPath}
+        />
+        </Content>}
+{/*         
         <Content className={classNames(styles.content, { collapsed })} style={contentStyle}>
           <>
             {breadcrumb}
@@ -184,7 +241,7 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
               {children}
             </div>
           </>
-        </Content>
+        </Content> */}
 
         {footer && (
           <Footer style={footerStyle}>

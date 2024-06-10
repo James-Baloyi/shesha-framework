@@ -15,4 +15,5 @@ export interface IColumnsComponentProps extends IConfigurableFormComponent {
   gutterY?: number;
   style?: string;
   customVisibility?: string;
+  showVerticalSeparators?: boolean;
 }

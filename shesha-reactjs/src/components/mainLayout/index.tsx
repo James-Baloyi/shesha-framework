@@ -207,7 +207,7 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
         </Header>
         {formInfoBlockVisible && <div style={{height: "30px"}}></div>}
 
-
+{/* 
         {formId &&
         <Content className={classNames(styles.content, { collapsed })} style={contentStyle}>
           <>Has ID {formId}</>
@@ -223,8 +223,8 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
           mode={'readonly'}
           formId={formPath}
         />
-        </Content>}
-{/*         
+        </Content>} */}
+         
         <Content className={classNames(styles.content, { collapsed })} style={contentStyle}>
           <>
             {breadcrumb}
@@ -241,7 +241,7 @@ const DefaultLayout: FC<PropsWithChildren<IMainLayoutProps>> = (props) => {
               {children}
             </div>
           </>
-        </Content> */}
+        </Content>
 
         {footer && (
           <Footer style={footerStyle}>

@@ -8,7 +8,7 @@ import { DeleteFilled, FunctionOutlined, CopyOutlined } from '@ant-design/icons'
 import { useStyles } from '../styles/styles';
 import { componentsFlatStructureToTree } from '@/index';
 import { useFormPersister } from '@/providers/formPersisterProvider';
-import './Shake.css'; // Import the CSS file for shake effect
+import './Shake.css';
 
 interface IDragWrapperProps {
   componentId: string;
@@ -22,7 +22,7 @@ export const DragWrapper: FC<PropsWithChildren<IDragWrapperProps>> = (props) => 
   const { saveForm } = useFormPersister();
   const { selectedComponentId, setSelectedComponent, isDebug, deleteComponent, duplicateComponent, readOnly, undo, redo, canRedo, canUndo } = useFormDesigner();
   const [isOpen, setIsOpen] = useState(false);
-  const [shake, setShake] = useState(false); // State for shake effect
+  const [shake, setShake] = useState(false);
 
   const metadata = useMetadata(false);
   const dataContext = useDataContext(false);
@@ -160,7 +160,7 @@ export const DragWrapper: FC<PropsWithChildren<IDragWrapperProps>> = (props) => 
   return (
     <Dropdown overlay={menu} trigger={['contextMenu']}>
       <div
-        className={`${styles.componentDragHandle} ${shake ? 'shake' : ''}`} // Apply shake class conditionally
+        className={`${styles.componentDragHandle} ${shake ? 'shake' : ''}`}
         onClick={onClick}
         onMouseOver={onMouseOver}
         onMouseOut={onMouseOut}

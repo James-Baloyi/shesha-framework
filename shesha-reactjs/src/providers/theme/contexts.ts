@@ -50,8 +50,8 @@ export const THEME_CONTEXT_INITIAL_STATE: IThemeStateContext = {
   },
   prefixCls: 'antd',
   iconPrefixCls: 'antdicon',
-  labelSpan: 6,
-  componentSpan: 18,
+  labelSpan: 0,
+  componentSpan: 0,
 };
 
 export const UiStateContext = createNamedContext<IThemeStateContext>(THEME_CONTEXT_INITIAL_STATE, "UiStateContext");

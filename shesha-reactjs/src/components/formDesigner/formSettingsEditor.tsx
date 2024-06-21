@@ -22,8 +22,8 @@ export const FormSettingsEditor: FC<IFormSettingsEditorProps> = ({ isVisible, cl
   const { updateFormSettings } = useFormDesignerActions();
   const { formProps } = useFormPersister();
 
-  formSettings.labelCol = { span: formSettings?.labelCol?.span || theme.labelSpan };
-  formSettings.wrapperCol = { span: formSettings?.wrapperCol?.span || theme.componentSpan };
+  formSettings.labelCol = { span: theme.labelSpan === formSettings?.labelCol?.span || formSettings?.labelCol?.span === 0 ? theme.labelSpan : formSettings?.labelCol?.span };
+  formSettings.wrapperCol = { span: theme.componentSpan  === formSettings?.wrapperCol?.span || formSettings?.wrapperCol?.span === 0 ? theme.componentSpan : formSettings?.wrapperCol?.span };
 
   const onSave = values => {
     if (!readOnly) {

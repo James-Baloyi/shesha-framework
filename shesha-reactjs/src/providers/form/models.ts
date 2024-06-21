@@ -391,8 +391,8 @@ export interface IFormValidationRulesOptions {
 export const DEFAULT_FORM_SETTINGS: IFormSettings = {
   layout: 'horizontal',
   colon: true,
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 0 },
+  wrapperCol: { span: 0 },
 };
 
 export type ActionParametersJs = string;

@@ -22,9 +22,11 @@ export const FormSettingsEditor: FC<IFormSettingsEditorProps> = ({ isVisible, cl
   const { updateFormSettings } = useFormDesignerActions();
   const { formProps } = useFormPersister();
 
-  formSettings.labelCol = { span: theme.labelSpan === formSettings?.labelCol?.span || formSettings?.labelCol?.span === 0 ? theme.labelSpan : formSettings?.labelCol?.span };
-  formSettings.wrapperCol = { span: theme.componentSpan  === formSettings?.wrapperCol?.span || formSettings?.wrapperCol?.span === 0 ? theme.componentSpan : formSettings?.wrapperCol?.span };
+  const getSpanValue = (themeSpan, formSpan) => themeSpan === formSpan || (formSpan === 0 || !formSpan) ? themeSpan : formSpan;
 
+  formSettings.labelCol = { span: getSpanValue(theme.labelSpan, formSettings?.labelCol?.span) };
+  formSettings.wrapperCol = { span: getSpanValue(theme.componentSpan, formSettings?.wrapperCol?.span) };
+  
   const onSave = values => {
     if (!readOnly) {
       updateFormSettings(values);

@@ -45,7 +45,7 @@ export const DesignerMainArea: FC<IDesignerMainAreaProps> = () => {
                     style={{
                         display: 'flex',
                         transform: `translateX(-${currentIndex * 340}px)`,
-                        transition: 'transform 0.5s ease'
+                        transition: 'transform 0.3s ease'
                     }}
                 >
                     {components}
@@ -56,7 +56,7 @@ export const DesignerMainArea: FC<IDesignerMainAreaProps> = () => {
                         Toggle View
                     </button>
                 </div>
-            <div style={{width: "calc(100% - 370px)", marginLeft: "360px", marginTop: "16px", border: "1px #999 solid", borderRadius: "10px", backgroundColor: "#fff", height: "calc(100vh - 180px)", overflowY: "scroll"}}>
+            <div style={{width: "calc(100% - 370px)", marginLeft: "360px", marginTop: "16px", border: "1px #999 solid", borderRadius: "10px", backgroundColor: "#fff", height: "calc(100vh - 180px)", overflowY: "scroll", padding: '15px'}}>
             <div style={{ width: `${magnifiedWidth}%`, zoom: `${zoom}%`, overflow: 'auto', margin: '0 auto' }}>
                 <ParentProvider model={{}} formMode='designer'>
                     <ConfigurableFormRenderer form={form} skipFetchData={true} className={formMode === 'designer' ? styles.designerWorkArea : undefined}  >

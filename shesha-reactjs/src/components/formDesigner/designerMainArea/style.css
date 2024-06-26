@@ -3,7 +3,7 @@
     overflow-x: hidden;
     position: absolute;
     left: 70px;
-    top: 170px;
+    top: 122px;
     z-index: 3;
     background-color: white;
     border: 1px #999 solid;
@@ -34,7 +34,7 @@
     justify-content: center;
     align-items: center;
     left: 70px;
-    top: calc(100vh - 180px);
+    top: calc(100vh - 230px);
     height: 60px;
     z-index: 4;
 

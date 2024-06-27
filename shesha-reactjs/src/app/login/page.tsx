@@ -9,6 +9,7 @@ import { URL_FORGOT_PASSWORD } from '@/shesha-constants/standard-routes';
 import { useAuth } from '@/providers';
 import { ValidationErrors } from '@/components';
 import { LoginPageWrapper } from '@/app-components/pages/login/styles';
+import {ConfigurableForm} from '@/components';
 
 interface ILoginForm {
   readonly userNameOrEmailAddress: string;
@@ -72,6 +73,8 @@ const Login = () => {
           </Link>
         </div>
       </Form>
+
+      {/* <ConfigurableForm mode={"edit"} formId={{module: "TestModule", name: "test-settings"}}/> */}
     </LoginPageWrapper>
   );
 };

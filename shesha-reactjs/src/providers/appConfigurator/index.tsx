@@ -27,6 +27,7 @@ import { APP_CONTEXT_INITIAL_STATE, AppConfiguratorActionsContext, AppConfigurat
 import { ApplicationMode, ConfigurationItemsViewMode } from './models';
 import appConfiguratorReducer from './reducer';
 import { useStyles } from '@/components/appConfigurator/styles/styles';
+import { IActionExecutionContext } from '@/interfaces/configurableAction';
 
 export interface IAppConfiguratorProviderProps { }
 
@@ -202,6 +203,37 @@ const AppConfiguratorProvider: FC<PropsWithChildren<IAppConfiguratorProviderProp
     },
     actionDependencies
   );
+
+
+  const {loginUser} = useAuth();
+
+  useConfigurableAction(
+    {
+      name: 'Sign In',
+      owner: actionsOwner,
+      ownerUid: SheshaActionOwners.ConfigurationFramework,
+      hasArguments: false,
+      executer: (_, actionContext) => {
+        handleSignIn(actionContext);
+        return Promise.resolve();
+      },
+    },
+    actionDependencies
+  );
+
+  const handleSignIn = (props: IActionExecutionContext) => {
+    const data = props?.form?.data;
+    const userNameOrEmailAddress = data?.userNameOrEmailAddress;
+    const password = data?.password;
+    const imei = data?.imei;
+    const rememberMe = data?.rememberMe;
+  
+    if(userNameOrEmailAddress && password){
+      loginUser({userNameOrEmailAddress, password, imei, rememberMe })
+    }else{
+      throw "Unable to sign you in."
+    }
+  }
 
   useConfigurableAction<IHasConfigurableItemId>(
     {

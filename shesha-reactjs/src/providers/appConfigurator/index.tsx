@@ -207,6 +207,20 @@ const AppConfiguratorProvider: FC<PropsWithChildren<IAppConfiguratorProviderProp
 
   const {loginUser} = useAuth();
 
+  const handleSignIn = (props: IActionExecutionContext) => {
+    const data = props?.form?.data;
+    const userNameOrEmailAddress = data?.userNameOrEmailAddress;
+    const password = data?.password;
+    const imei = data?.imei;
+    const rememberMe = data?.rememberMe;
+  
+    if(userNameOrEmailAddress && password){
+      loginUser({userNameOrEmailAddress, password, imei, rememberMe });
+    }else{
+      throw "Unable to sign you in.";
+    }
+  };
+
   useConfigurableAction(
     {
       name: 'Sign In',
@@ -220,20 +234,6 @@ const AppConfiguratorProvider: FC<PropsWithChildren<IAppConfiguratorProviderProp
     },
     actionDependencies
   );
-
-  const handleSignIn = (props: IActionExecutionContext) => {
-    const data = props?.form?.data;
-    const userNameOrEmailAddress = data?.userNameOrEmailAddress;
-    const password = data?.password;
-    const imei = data?.imei;
-    const rememberMe = data?.rememberMe;
-  
-    if(userNameOrEmailAddress && password){
-      loginUser({userNameOrEmailAddress, password, imei, rememberMe })
-    }else{
-      throw "Unable to sign you in."
-    }
-  }
 
   useConfigurableAction<IHasConfigurableItemId>(
     {

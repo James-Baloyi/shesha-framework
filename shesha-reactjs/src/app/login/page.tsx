@@ -32,10 +32,10 @@ const Login = () => {
 
   return (
     <LoginPageWrapper
-      className="login-page"
-      heading="Welcome!"
-      hint="Please enter your personal details in order to access your profile."
-    >
+    className="login-page"
+    heading="Welcome!"
+    hint="Please enter your personal details in order to access your profile."
+  >
       <Form form={form} onFinish={handleLogin}>
         <ValidationErrors error={errorInfo} />
 
@@ -74,8 +74,8 @@ const Login = () => {
         </div>
       </Form>
 
-      {/* <ConfigurableForm mode={"edit"} formId={{module: "TestModule", name: "test-settings"}}/> */}
-    </LoginPageWrapper>
+      {/* <ConfigurableForm mode={"edit"} formId={{module: "Shesha", name: "loginTest"}}/> */}
+        </LoginPageWrapper>
   );
 };
 

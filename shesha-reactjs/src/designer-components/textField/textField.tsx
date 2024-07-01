@@ -18,9 +18,10 @@ import { migrateVisibility } from '@/designer-components/_common-migrations/migr
 import ReadOnlyDisplayFormItem from '@/components/readOnlyDisplayFormItem/index';
 import { getFormApi } from '@/providers/form/formApi';
 import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
-
+import * as Icons from '@ant-design/icons';
+ 
 const settingsForm = settingsFormJson as FormMarkup;
-
+ 
 const renderInput = (type: TextType) => {
   switch (type) {
     case 'password':
@@ -29,7 +30,7 @@ const renderInput = (type: TextType) => {
       return Input;
   }
 };
-
+ 
 const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps> = {
   type: 'textField',
   isInput: true,
@@ -48,14 +49,16 @@ const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps> = {
     const { data: formData } = useFormData();
     const { globalState, setState: setGlobalState } = useGlobalState();
     const { backendUrl } = useSheshaApplication();
-
+ 
     const InputComponentType = renderInput(model.textType);
-
+ 
+    const prefixAndSuffix = (value) => Icons[value] ? React.createElement(Icons[value]) : value;
+ 
     const inputProps: InputProps = {
       className: 'sha-input',
       placeholder: model.placeholder,
-      prefix: model.prefix,
-      suffix: model.suffix,
+      prefix: prefixAndSuffix(model.prefix),
+      suffix: prefixAndSuffix(model.suffix),
       variant: model.hideBorder ? 'borderless' : undefined,
       maxLength: model.validate?.maxLength,
       size: model.size,
@@ -63,7 +66,7 @@ const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps> = {
       readOnly: model.readOnly,
       style: getStyle(model?.style, formData),
     };
-
+ 
     const eventProps = {
       model,
       form: getFormApi(form),
@@ -74,7 +77,7 @@ const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps> = {
       moment,
       setGlobalState,
     };
-
+ 
     return (
       <ConfigurableFormItem
         model={model}
@@ -84,10 +87,10 @@ const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps> = {
         }
       >
         {(value, onChange) => {
-          const customEvent =  customEventHandler(eventProps);
+          const customEvent = customEventHandler(eventProps);
           const onChangeInternal = (...args: any[]) => {
             customEvent.onChange(args[0]);
-            if (typeof onChange === 'function') 
+            if (typeof onChange === 'function')
               onChange(...args);
           };
           return inputProps.readOnly
@@ -108,7 +111,7 @@ const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps> = {
     .add<ITextFieldComponentProps>(1, (prev) => migratePropertyName(migrateCustomFunctions(prev)))
     .add<ITextFieldComponentProps>(2, (prev) => migrateVisibility(prev))
     .add<ITextFieldComponentProps>(3, (prev) => migrateReadOnly(prev))
-    .add<ITextFieldComponentProps>(4, (prev) => ({...migrateFormApi.eventsAndProperties(prev)}))
+    .add<ITextFieldComponentProps>(4, (prev) => ({ ...migrateFormApi.eventsAndProperties(prev) }))
   ,
   linkToModelMetadata: (model, metadata): ITextFieldComponentProps => {
     return {
@@ -117,5 +120,6 @@ const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps> = {
     };
   },
 };
-
+ 
 export default TextFieldComponent;
+ 

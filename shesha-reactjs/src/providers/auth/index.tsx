@@ -202,7 +202,7 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
               const parsedUrl = new URL(window.location.href);
               const searchParams = new URLSearchParams(parsedUrl.search);
               const returnUrl = searchParams.get('returnUrl');
-              redirect(returnUrl)
+              returnUrl && redirect(returnUrl)
             }
           }
         } else {

@@ -31,12 +31,8 @@ const Login = () => {
   };
 
   return (
-    <LoginPageWrapper
-    className="login-page"
-    heading="Welcome!"
-    hint="Please enter your personal details in order to access your profile."
-  >
-      <Form form={form} onFinish={handleLogin}>
+    <LoginPageWrapper>
+      {/* <Form form={form} onFinish={handleLogin}>
         <ValidationErrors error={errorInfo} />
 
         <FormItem name="userNameOrEmailAddress" help="This field is required" rules={[{ required: true }]}>
@@ -72,9 +68,9 @@ const Login = () => {
             Forgot password
           </Link>
         </div>
-      </Form>
+      </Form> */}
 
-      {/* <ConfigurableForm mode={"edit"} formId={{module: "Shesha", name: "loginTest"}}/> */}
+      <ConfigurableForm mode={"edit"} formId={{module: "TestModule", name: "test-si"}}/>
         </LoginPageWrapper>
   );
 };

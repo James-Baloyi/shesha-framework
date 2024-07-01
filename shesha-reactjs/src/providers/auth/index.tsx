@@ -196,8 +196,13 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
 
               const redirects: string[] = [returnUrl, response.result?.user?.homeUrl, homePageUrl, DEFAULT_HOME_PAGE];
               const redirectUrl = redirects.find((r) => Boolean(r?.trim())); // skip all null/undefined and empty strings
-
               redirect(redirectUrl);
+            } else {
+              //router.query['returnUrl']?.toString() returns undefined when loginUser is executed as an action due to the login being configurable
+              const parsedUrl = new URL(window.location.href);
+              const searchParams = new URLSearchParams(parsedUrl.search);
+              const returnUrl = searchParams.get('returnUrl');
+              redirect(returnUrl)
             }
           }
         } else {

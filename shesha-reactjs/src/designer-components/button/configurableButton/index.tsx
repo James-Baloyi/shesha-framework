@@ -6,10 +6,8 @@ import { IButtonItem } from '@/providers/buttonGroupConfigurator/models';
 import { CSSProperties } from 'react';
 import { useConfigurableActionDispatcher } from '@/providers/configurableActionsDispatcher';
 import { useAvailableConstantsData } from '@/providers/form/utils';
-import { isNavigationActionConfiguration, useFormData, useShaRouting, useAuth } from '@/index';
+import { isNavigationActionConfiguration, useShaRouting, useAuth } from '@/index';
 import { useAsyncMemo } from '@/hooks/useAsyncMemo';
-import { handleSignIn } from '../utils/utils';
-
 export interface IConfigurableButtonProps extends Omit<IButtonItem, 'style' | 'itemSubType'> {
   style?: CSSProperties;
   form: FormInstance<any>;
@@ -25,17 +23,11 @@ export const ConfigurableButton: FC<IConfigurableButtonProps> = props => {
 
   const [loading, setLoading] = useState(false);
   const [isModal, setModal] = useState(false);
-  const {loginUser} = useAuth();
-  const {data} = useFormData();
 
 
 
   const onButtonClick = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault();
-
-    if(actionConfiguration.actionName.toLowerCase() === "sign in"){
-      handleSignIn(data, loginUser);
-    }else{
 
     try {
       if (actionConfiguration) {
@@ -54,7 +46,6 @@ export const ConfigurableButton: FC<IConfigurableButtonProps> = props => {
     } catch (error) {
       setLoading(false);
       console.error('Validation failed:', error);
-    }
   }
   };
 

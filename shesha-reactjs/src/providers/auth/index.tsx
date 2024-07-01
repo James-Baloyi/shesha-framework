@@ -173,6 +173,7 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
   };
 
   const fetchUserInfo = (headers: IHttpHeaders) => {
+  
     if (state.isFetchingUserInfo || Boolean(state.loginInfo)) return;
 
     if (Boolean(state.loginInfo)) return;
@@ -191,7 +192,6 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
             // if we are on the login page - redirect to the returnUrl or home page
             if (isSameUrls(router.path, unauthorizedRedirectUrl)) {
               const returnUrl = router.query['returnUrl']?.toString();
-
               cacheHomeUrl(response.result?.user?.homeUrl || homePageUrl);
 
               const redirects: string[] = [returnUrl, response.result?.user?.homeUrl, homePageUrl, DEFAULT_HOME_PAGE];

@@ -140,7 +140,7 @@ const ConfigurableActionDispatcherProvider: FC<PropsWithChildren<IConfigurableAc
             };
           })
           .catch(async (error) => {
-            console.error(`Failed to execute action '${actionOwner}:${actionName}', error:`, error);
+            console.error(`Failed tfo execute action '${actionOwner}:${actionName}', error:`, error);
             if (handleFail) {
               if (onFail) {
                 const onFailContext = { ...argumentsEvaluationContext, actionError: error };

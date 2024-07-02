@@ -17,7 +17,7 @@ import { migrateCustomFunctions, migratePropertyName, migrateReadOnly } from '@/
 import { migrateVisibility } from '@/designer-components/_common-migrations/migrateVisibility';
 import ReadOnlyDisplayFormItem from '@/components/readOnlyDisplayFormItem/index';
 import { getFormApi } from '@/providers/form/formApi';
-import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
+import { migrateFormApi } from '../_common-migrations/migrateFormApi1'
 
 const settingsForm = settingsFormJson as FormMarkup;
 

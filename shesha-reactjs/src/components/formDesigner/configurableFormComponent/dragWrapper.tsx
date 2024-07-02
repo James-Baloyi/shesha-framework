@@ -142,6 +142,9 @@ export const DragWrapper: FC<PropsWithChildren<IDragWrapperProps>> = (props) => 
 
   const menu = (
     <Menu>
+      <Menu.Item>
+      ✨ Configure with AI
+      </Menu.Item>
       <Menu.Item key="duplicate" onClick={onDuplicateClick} icon={<CopyOutlined />}>
         Duplicate
       </Menu.Item>

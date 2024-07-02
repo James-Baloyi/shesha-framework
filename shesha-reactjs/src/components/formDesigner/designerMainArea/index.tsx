@@ -24,7 +24,7 @@ export const DesignerMainArea: FC<IDesignerMainAreaProps> = () => {
     const { width, zoom } = useCanvasConfig();
     const { styles } = useStyles();
     const { formProps } = useFormPersister();
-    const fullName = formProps ? getFormFullName(formProps.module, formProps.name) : null;
+    const fullName = formProps ? getFormFullName(formProps?.module, formProps?.name) : null;
     const title = formProps?.label ? `${formProps.label}` : fullName;
     const { switchConfigurationItemMode } = useAppConfigurator();
 

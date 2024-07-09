@@ -44,6 +44,7 @@ export interface ILoginForm {
    */
   imei?: string | null;
   rememberMe?: boolean;
+  errorHandler?: (error?: Error) => void;
 }
 
 export interface IAuthStateContext

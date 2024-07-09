@@ -250,7 +250,6 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
   useEffect(() => {
     const httpHeaders = getCleanedInitHeaders(getHttpHeaders());
     const currentUrl = router.fullPath;
-    console.log("LOG::",httpHeaders, currentUrl, unauthorizedRedirectUrl)
 
     if (!httpHeaders) {
       if (currentUrl !== unauthorizedRedirectUrl) {
@@ -267,6 +266,7 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
 
   //#region  Login
   const { mutate: loginUserHttp } = useMutate<AuthenticateModel, AuthenticateResultModelAjaxResponse>();
+  
 
   const loginUser = (loginFormData: ILoginForm) => {
     dispatch((dispatchThunk, getState) => {
@@ -298,6 +298,7 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
         .then(loginSuccessHandler)
         .catch((err) => {
           dispatchThunk(loginUserErrorAction(err?.data));
+          loginFormData?.errorHandler(new Error(err))
         });
     });
   };

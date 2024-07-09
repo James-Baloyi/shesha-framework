@@ -193,16 +193,13 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
             if (isSameUrls(router.path, unauthorizedRedirectUrl)) {
               const returnUrl = router.query['returnUrl']?.toString();
               cacheHomeUrl(response.result?.user?.homeUrl || homePageUrl);
-
               const redirects: string[] = [returnUrl, response.result?.user?.homeUrl, homePageUrl, DEFAULT_HOME_PAGE];
               const redirectUrl = redirects.find((r) => Boolean(r?.trim())); // skip all null/undefined and empty strings
               redirect(redirectUrl);
-            } else {
-              //router.query['returnUrl']?.toString() returns undefined when loginUser is executed as an action due to the login being configurable
-              const parsedUrl = new URL(window.location.href);
-              const searchParams = new URLSearchParams(parsedUrl.search);
-              const returnUrl = searchParams.get('returnUrl');
-              returnUrl && redirect(returnUrl)
+            }else{
+              //when logging in from the Sign In action, the router thinks it's at the page before /login, in this case the redirectUrl
+              //that's why isSameUrls is falsey and router.fullPath returns the returnUrl
+              redirect(router.fullPath?.toString());
             }
           }
         } else {
@@ -252,8 +249,8 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
 
   useEffect(() => {
     const httpHeaders = getCleanedInitHeaders(getHttpHeaders());
-
     const currentUrl = router.fullPath;
+    console.log("LOG::",httpHeaders, currentUrl, unauthorizedRedirectUrl)
 
     if (!httpHeaders) {
       if (currentUrl !== unauthorizedRedirectUrl) {
@@ -265,6 +262,7 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
         fetchUserInfo(httpHeaders);
       }
     }
+    
   }, []);
 
   //#region  Login

@@ -213,6 +213,9 @@ const AppConfiguratorProvider: FC<PropsWithChildren<IAppConfiguratorProviderProp
       ownerUid: SheshaActionOwners.ConfigurationFramework,
       hasArguments: false,
       executer: (_, actionContext) => {
+          //the user defined failed case works well.
+          //however, when we're displaying the form at /dynamic/.../... the user defined success handler
+          //at the form configuration is not called
         return asyncLoginUser(actionContext?.form?.data)
       },
     },

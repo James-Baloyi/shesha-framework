@@ -27,7 +27,6 @@ import { APP_CONTEXT_INITIAL_STATE, AppConfiguratorActionsContext, AppConfigurat
 import { ApplicationMode, ConfigurationItemsViewMode } from './models';
 import appConfiguratorReducer from './reducer';
 import { useStyles } from '@/components/appConfigurator/styles/styles';
-import { IActionExecutionContext } from '@/interfaces/configurableAction';
 
 export interface IAppConfiguratorProviderProps { }
 
@@ -205,23 +204,7 @@ const AppConfiguratorProvider: FC<PropsWithChildren<IAppConfiguratorProviderProp
   );
 
 
-  const { loginUser } = useAuth();
-  type SignInCallback = (error?: Error) => void;
-
-  const handleSignIn = (props: IActionExecutionContext, callback?: SignInCallback) => {
-    const data = props?.form?.data;
-    const userNameOrEmailAddress = data?.userNameOrEmailAddress;
-    const password = data?.password;
-    const imei = data?.imei;
-    const rememberMe = data?.rememberMe;
-    const errorHandler = (err: Error) => callback(new Error(err.message))
-
-    if (userNameOrEmailAddress && password) {
-      loginUser({ userNameOrEmailAddress, password, imei, rememberMe, errorHandler});
-    } else {
-      callback(new Error("Sign in failed because username or password were not provided"))
-    }
-  };
+  const { asyncLoginUser } = useAuth();
 
   useConfigurableAction(
     {
@@ -230,15 +213,7 @@ const AppConfiguratorProvider: FC<PropsWithChildren<IAppConfiguratorProviderProp
       ownerUid: SheshaActionOwners.ConfigurationFramework,
       hasArguments: false,
       executer: (_, actionContext) => {
-        return new Promise((resolve, reject) => {
-          handleSignIn(actionContext, (err) => {
-            if (err) {
-              reject(err)
-            } else {
-              resolve(true)
-            }
-          });
-        });
+        return asyncLoginUser(actionContext?.form?.data)
       },
     },
     actionDependencies

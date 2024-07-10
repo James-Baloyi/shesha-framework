@@ -197,8 +197,6 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
               const redirectUrl = redirects.find((r) => Boolean(r?.trim())); // skip all null/undefined and empty strings
               redirect(redirectUrl);
             }else{
-              //when logging in from the Sign In action, the router thinks it's at the page before /login, in this case the redirectUrl
-              //that's why isSameUrls is falsey and router.fullPath returns the returnUrl
               redirect(router.fullPath?.toString());
             }
           }
@@ -267,39 +265,56 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
   //#region  Login
   const { mutate: loginUserHttp } = useMutate<AuthenticateModel, AuthenticateResultModelAjaxResponse>();
   
+  const loginSuccessHandler = (dispatchThunk, getState) => (data: AuthenticateResultModelAjaxResponse) => {
+    dispatchThunk(loginUserSuccessAction());
+    if (data) {
+      const token = data.success && data.result ? (data.result as IAccessToken) : null;
+      if (token && token.accessToken) {
+        // save token to the localStorage
+        saveUserTokenToStorage(token, tokenName);
+
+        // save token to the state
+        dispatchThunk(setAccessTokenAction(token.accessToken));
+
+        // get updated state and notify subscribers
+        const newState = getState();
+        fireHttpHeadersChanged(newState);
+
+        // get new headers and fetch the user info
+        const headers = getHttpHeadersFromState(newState);
+      
+        fetchUserInfo(headers);
+      
+      } else dispatchThunk(loginUserErrorAction(data?.error as IErrorInfo));
+    }
+  };
+
 
   const loginUser = (loginFormData: ILoginForm) => {
     dispatch((dispatchThunk, getState) => {
       dispatchThunk(loginUserAction()); // We just want to let the user know we're logging in
-
-      const loginSuccessHandler = (data: AuthenticateResultModelAjaxResponse) => {
-        dispatchThunk(loginUserSuccessAction());
-        if (data) {
-          const token = data.success && data.result ? (data.result as IAccessToken) : null;
-          if (token && token.accessToken) {
-            // save token to the localStorage
-            saveUserTokenToStorage(token, tokenName);
-
-            // save token to the state
-            dispatchThunk(setAccessTokenAction(token.accessToken));
-
-            // get updated state and notify subscribers
-            const newState = getState();
-            fireHttpHeadersChanged(newState);
-
-            // get new headers and fetch the user info
-            const headers = getHttpHeadersFromState(newState);
-            fetchUserInfo(headers);
-          } else dispatchThunk(loginUserErrorAction(data?.error as IErrorInfo));
-        }
-      };
-
       loginUserHttp(loginEndpoint, loginFormData)
-        .then(loginSuccessHandler)
+        .then(loginSuccessHandler(dispatchThunk, getState))
         .catch((err) => {
           dispatchThunk(loginUserErrorAction(err?.data));
-          loginFormData?.errorHandler(new Error(err))
+          throw err
         });
+    });
+  };
+
+  const asyncLoginUser = (loginFormData: ILoginForm): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      dispatch(async (dispatchThunk, getState) => {
+        try {
+          dispatchThunk(loginUserAction());
+          const response = await loginUserHttp(loginEndpoint, loginFormData);
+          loginSuccessHandler(dispatchThunk, getState)(response);
+          resolve(true);
+        } catch (err) {
+          dispatchThunk(loginUserErrorAction(err?.data));
+          reject(err);
+        }
+      });
     });
   };
   //#endregion
@@ -387,6 +402,7 @@ const AuthProvider: FC<PropsWithChildren<IAuthProviderProps>> = ({
           verifyOtpSuccess,
           resetPasswordSuccess,
           fireHttpHeadersChanged,
+          asyncLoginUser
           /* NEW_ACTION_GOES_HERE */
         }}
       >

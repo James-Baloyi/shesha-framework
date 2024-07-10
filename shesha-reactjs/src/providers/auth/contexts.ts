@@ -44,7 +44,6 @@ export interface ILoginForm {
    */
   imei?: string | null;
   rememberMe?: boolean;
-  errorHandler?: (error?: Error) => void;
 }
 
 export interface IAuthStateContext
@@ -76,6 +75,7 @@ export interface IAuthStateContext
 export interface IAuthActionsContext
   extends IFlagsSetters<IFlagProgressFlags, IFlagSucceededFlags, IFlagErrorFlags, IFlagActionedFlags> {
   loginUser?: (loginFormData: ILoginForm) => void;
+  asyncLoginUser?: (loginFormData: ILoginForm) => Promise<boolean>
 
   logoutUser?: () => Promise<unknown>;
 

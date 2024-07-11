@@ -6,16 +6,16 @@ import { IButtonItem } from '@/providers/buttonGroupConfigurator/models';
 import { CSSProperties } from 'react';
 import { useConfigurableActionDispatcher } from '@/providers/configurableActionsDispatcher';
 import { useAvailableConstantsData } from '@/providers/form/utils';
-import { isNavigationActionConfiguration, useShaRouting, useAuth } from '@/index';
+import { isNavigationActionConfiguration, useShaRouting } from '@/index';
 import { useAsyncMemo } from '@/hooks/useAsyncMemo';
 export interface IConfigurableButtonProps extends Omit<IButtonItem, 'style' | 'itemSubType'> {
   style?: CSSProperties;
-  form: FormInstance<any>;
-  role: string;
+  form?: FormInstance<any>;
+  role?: string;
 }
 
 export const ConfigurableButton: FC<IConfigurableButtonProps> = props => {
-  const { actionConfiguration, role, form } = props;
+  const { actionConfiguration } = props;
   const evaluationContext = useAvailableConstantsData();
   const { getUrlFromNavigationRequest } = useShaRouting();
   const { executeAction, useActionDynamicContext, prepareArguments } = useConfigurableActionDispatcher();

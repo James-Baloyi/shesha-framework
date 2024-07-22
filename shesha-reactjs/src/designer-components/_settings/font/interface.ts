@@ -1,11 +1,11 @@
 import { IConfigurableFormComponent } from "@/providers";
-import { Color } from "antd/es/color-picker";
 
 export interface IFontControlValues {
-    fontSize: number;
-    fontWeight: number;
-    fontColor: Color;
-    fontAlignment: string;
+    fontSize?: number;
+    fontWeight?: number;
+    fontColor?: string;
+    fontAlignment?: string;
+    textDecoration?: string;
 }
 
 export interface IFontSizeControlProps extends IConfigurableFormComponent{

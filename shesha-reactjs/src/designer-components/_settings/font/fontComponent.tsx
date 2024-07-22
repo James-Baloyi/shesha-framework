@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { InputNumber, Select, Slider, Form } from 'antd';
-import { ColorPicker } from 'antd';
-import { Color } from 'antd/es/color-picker';
+import { InputNumber, Select, Slider, Form, ColorPicker } from 'antd';
 
 const { Option } = Select;
 
 interface IFontControlValues {
     fontSize: number;
     fontWeight: number;
-    fontColor: Color;
+    textDecoration: string;
     fontAlignment: string;
+    fontColor: string;
 }
 
 interface IFontSizeControlProps {
@@ -17,12 +16,12 @@ interface IFontSizeControlProps {
     value?: IFontControlValues
 }
 
-
-const FontComponent: React.FC<IFontSizeControlProps> = ({ onChange, value = { fontSize: 12, fontWeight: 700, fontColor: "#ff00ff", fontAlignment: "left" } }) => {
-    const [fontSize, setFontSize] = useState<number>(value.fontSize);
-    const [fontWeight, setFontWeight] = useState<number>(value.fontWeight);
-    const [fontColor, setFontColor] = useState<Color>();
-    const [fontAlignment, setFontAlignment] = useState<string>(value.fontAlignment);
+const FontComponent: React.FC<IFontSizeControlProps> = ({ onChange, value }) => {
+    const [fontSize, setFontSize] = useState<number>(value?.fontSize);
+    const [fontWeight, setFontWeight] = useState<number>(value?.fontWeight);
+    const [textDecoration, settextDecoration] = useState<string>(value?.textDecoration);
+    const [fontAlignment, setFontAlignment] = useState<string>(value?.fontAlignment);
+    const [fontColor, setFontColor] = useState<string>(value?.fontColor);
 
     const handleFontSizeChange = (value: number) => {
         setFontSize(value);
@@ -34,35 +33,48 @@ const FontComponent: React.FC<IFontSizeControlProps> = ({ onChange, value = { fo
         triggerChange({ fontWeight: value });
     };
 
-    const updateFontColor = (value: Color) => {
-        setFontColor(value);
-        triggerChange({ fontColor: value });
-    }
+    const handleTextDecorationChange = (value: string) => {
+        settextDecoration(value);
+        triggerChange({ textDecoration: value });
+    };
 
     const handleFontAlignmentChange = (value: string) => {
         setFontAlignment(value);
         triggerChange({ fontAlignment: value });
     };
 
+    const handleFontColorChange = (value: string) => {
+        setFontColor(value);
+        triggerChange({fontColor: value});
+    }
+
     const triggerChange = (changedValues: Partial<IFontControlValues>) => {
-        console.log(changedValues)
         const newValues = {
             fontSize,
             fontWeight,
-            fontColor,
+            textDecoration,
             fontAlignment,
+            fontColor,
             ...changedValues,
         };
         onChange(newValues);
     };
 
     return (
-        <Form layout="horizontal">
-            <Form.Item label="Font Size">
-                <InputNumber min={8} max={72} value={fontSize} onChange={handleFontSizeChange} />
+        <Form>
+            <Form.Item
+                label="Font Size"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+            >
+                <InputNumber value={fontSize} defaultValue={14} onChange={handleFontSizeChange} />
             </Form.Item>
 
-            <Form.Item label="Font Weight">
+            <Form.Item
+                label="Font Weight"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+            >
                 <Slider
                     min={100}
                     max={900}
@@ -72,21 +84,41 @@ const FontComponent: React.FC<IFontSizeControlProps> = ({ onChange, value = { fo
                 />
             </Form.Item>
 
-            <Form.Item label="Font Color">
-                <ColorPicker
-                    allowClear
-                    value={'#000000'}
-                    onChange={(color) => updateFontColor(color)}
-                />
+            <Form.Item
+                label="Text Decoration"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+            >
+                <Select value={textDecoration} onChange={handleTextDecorationChange}>
+                    <Option value="italic">Italic</Option>
+                    <Option value="underline">Underline</Option>
+                    <Option value="bold">Bold</Option>
+                    <Option value="none">None</Option>
+                </Select>
             </Form.Item>
 
-            <Form.Item label="Font Alignment">
+            <Form.Item
+                label="Font Alignment"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+            >
                 <Select value={fontAlignment} onChange={handleFontAlignmentChange}>
-                    <Option value="left">Left</Option>
+                    <Option value="start">Left</Option>
                     <Option value="center">Center</Option>
-                    <Option value="right">Right</Option>
-                    <Option value="justify">Justify</Option>
+                    <Option value="end">Right</Option>
                 </Select>
+            </Form.Item>
+
+            <Form.Item
+                label="Font Color"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+            >
+                <ColorPicker
+                    allowClear
+                    value={value?.fontColor || '#000000'}
+                    onChange={(color)=>handleFontColorChange(color.toHexString())}
+                />
             </Form.Item>
         </Form>
     );

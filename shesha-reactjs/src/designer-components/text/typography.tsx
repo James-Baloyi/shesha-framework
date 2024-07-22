@@ -8,6 +8,7 @@ import {
   getContent,
 } from './utils';
 import { isMoment } from 'moment';
+import { convertToCSSProperties } from '../_settings/font/utils';
 
 const TypographyComponent: FC<ITextTypographyProps> = ({
   contentDisplay,
@@ -16,10 +17,16 @@ const TypographyComponent: FC<ITextTypographyProps> = ({
   numberFormat,
   value,
   style,
+  fontControl,
   ...model
 }) => {
+  
+  console.log('fontControl::',fontControl)
+
   const { formMode } = useForm();
   const { data: formData } = useFormData();
+
+  
 
   const val = typeof value === 'string'
     ? value 
@@ -35,9 +42,10 @@ const TypographyComponent: FC<ITextTypographyProps> = ({
   }
 
   const computedStyle = getStyle(style, formData) ?? {};
+  const fontControlCSS = convertToCSSProperties(fontControl);
 
   return (
-    <GenericText style={{...computedStyle, display: 'grid', placeItems: model?.textAlign}} {...model}>
+    <GenericText style={{...computedStyle, ...fontControlCSS, display: 'grid', placeItems: fontControl?.fontAlignment}} {...model}>
       {content}
     </GenericText>
   );

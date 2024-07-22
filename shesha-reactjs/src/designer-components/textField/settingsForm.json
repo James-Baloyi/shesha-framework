@@ -45,14 +45,25 @@
             "label": "Type",
             "values": [
               {
-                "label": "text",
+                "label": "Text",
                 "value": "text",
                 "id": "4f11403c-95fd-4e49-bb60-cb8c25f0f3c3"
               },
               {
-                "label": "password",
+                "label": "Password",
                 "value": "password",
                 "id": "8f85c476-e632-4fa7-89ad-2be6cfb7f1f1"
+              }
+              ,
+              {
+                "label": "Number",
+                "value": "number",
+                "id": "8f85c476-e632-4fa7-89ad-2be6cfb7eeaz"
+              },
+              {
+                "label": "Email",
+                "value": "email",
+                "id": "8f85c476-e632-4fa7-482a-2be6cfb7mnas"
               }
             ],
             "dataSourceType": "values",
@@ -599,6 +610,46 @@
             "version": 5,
             "referenceListId": null,
             "valueFormat": "listItem"
+          },
+          {
+            "id": "f8c0e0d-f3f6-425f-ovo0-e69f6a4139bd",
+            "propertyName": "fontControl",
+            "type": "fontControl",
+            "label": "Font Control",
+            "parentId": "RvNp_osTwoxjfKmj1mO9p",
+            "validate": {},
+            "settingsValidationErrors": [],
+            "jsSetting": true
+          },
+          {
+            "id": "f49xe0d-xyy1-32aa-ovo0-e69f6a41eaxm",
+            "propertyName": "border",
+            "type": "border",
+            "label": "Border",
+            "parentId": "RvNp_osTwoxjfKmj1mO9p",
+            "validate": {},
+            "settingsValidationErrors": [],
+            "jsSetting": true
+          },
+          {
+            "id": "f49xe0d-xyy1-32aa-ovo0-e69f6a41eebd",
+            "propertyName": "background",
+            "type": "background",
+            "label": "Background",
+            "parentId": "RvNp_osTwoxjfKmj1mO9p",
+            "validate": {},
+            "settingsValidationErrors": [],
+            "jsSetting": true
+          },
+          {
+            "id": "f49xe0d-xyy1-90ss-391a-e69f6aaj3719",
+            "propertyName": "size",
+            "type": "size",
+            "label": "Size",
+            "parentId": "RvNp_osTwoxjfKmj1mO9p",
+            "validate": {},
+            "settingsValidationErrors": [],
+            "jsSetting": true
           }
         ]
       },
@@ -658,3 +709,4 @@
     }
   }
 }
+

@@ -2,7 +2,7 @@ import { CodeOutlined } from '@ant-design/icons';
 import { Input, message } from 'antd';
 import { InputProps } from 'antd/lib/input';
 import moment from 'moment';
-import React from 'react';
+import React, { useMemo } from 'react';
 import ConfigurableFormItem from '@/components/formDesigner/components/formItem';
 import { customEventHandler } from '@/components/formDesigner/components/utils';
 import { IToolboxComponent } from '@/interfaces';
@@ -19,6 +19,9 @@ import ReadOnlyDisplayFormItem from '@/components/readOnlyDisplayFormItem/index'
 import { getFormApi } from '@/providers/form/formApi';
 import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
 import { IconType, ShaIcon } from '@/components';
+import { convertToCSSProperties } from '../_settings/font/utils';
+import { getBorderStyle } from '../_settings/border/utils';
+import { getBackgroundStyle } from '../_settings/background/utils';
 
 const settingsForm = settingsFormJson as FormMarkup;
 
@@ -51,6 +54,9 @@ const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps> = {
     const { backendUrl } = useSheshaApplication();
 
     const InputComponentType = renderInput(model.textType);
+    const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl])
+    const borderStyles = useMemo(() => getBorderStyle(model?.border), [model?.border, formData]);
+    const backgroundStyles = useMemo(() => getBackgroundStyle(model?.background), [model?.background, formData]);
 
     const inputProps: InputProps = {
       className: 'sha-input',
@@ -62,7 +68,7 @@ const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps> = {
       size: model.size,
       disabled: model.readOnly,
       readOnly: model.readOnly,
-      style: getStyle(model?.style, formData),
+      style: {...getStyle(model?.style, formData), ...fontStyles, ...borderStyles, ...backgroundStyles},
     };
 
     const eventProps = {

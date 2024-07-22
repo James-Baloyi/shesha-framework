@@ -411,6 +411,15 @@ export const settingsFormMarkup = new DesignerToolbarSettings()
           propertyName: 'underline',
           parentId: '4pnl54bf6-f76d-4139-a850-c99bf06c8b69',
           label: 'Underline?',
+        })
+        .addFontControl({
+          id: 'f8c0e0d-f3f6-425f-ovo0-e69f6a4139bd',
+          propertyName: 'fontControl',
+          label: 'Font Control',
+          parentId: 'pnl64664-cbc9-e30i-babc-6fbea44cd0ca',
+          validate: {},
+          settingsValidationErrors: [],
+          jsSetting: true,
         }).toJson()
       ]
     }

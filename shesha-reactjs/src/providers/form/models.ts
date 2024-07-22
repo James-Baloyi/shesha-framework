@@ -6,6 +6,7 @@ import { DesignerToolbarSettings, IAsyncValidationError } from '@/interfaces';
 import { IKeyValue } from '@/interfaces/keyValue';
 import { IHasVersion } from '@/utils/fluentMigrator/migrator';
 import { nanoid } from '@/utils/uuid';
+import { IFontControlValues } from '@/designer-components/_settings/font/interface';
 
 export const ROOT_COMPONENT_KEY: string = 'root'; // root key of the flat components structure
 export const TOOLBOX_COMPONENT_DROPPABLE_KEY: string = 'toolboxComponent';
@@ -164,7 +165,7 @@ export interface IConfigurableFormComponent
 
   
   /** Control size */
-  fontControl?: string;
+  fontControl?: IFontControlValues;
 
   /** Default value of the field */
   defaultValue?: any;

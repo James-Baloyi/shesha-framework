@@ -319,6 +319,15 @@ export const getSettings = (data: any) =>
               settingsValidationErrors: [],
               jsSetting: true,
             })
+            .addFontControl({
+              id: 'f8c0e0d-f3f6-425f-ovo0-e69f6a4139bd',
+              propertyName: 'fontControl',
+              label: 'Font Control',
+              parentId: 'pnl64664-cbc9-e30i-babc-6fbea44cd0ca',
+              validate: {},
+              settingsValidationErrors: [],
+              jsSetting: true,
+            })
             .toJson(),
         ],
       },

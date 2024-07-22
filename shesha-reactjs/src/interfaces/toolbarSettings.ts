@@ -31,6 +31,7 @@ import { IPermissionAutocompleteComponentProps } from '@/designer-components/per
 import { IBackgroundProps } from '@/designer-components/_settings/background/interfaces';
 import { IBorderProps } from '@/designer-components/_settings/border/interfaces';
 import { ISizeComponentProps } from '@/designer-components/_settings/size/interfaces';
+import { IFontSizeControlProps } from '@/designer-components/_settings/font/interface';
 
 interface ToolbarSettingsProp extends Omit<IConfigurableFormComponent, 'hidden' | 'type'> {
   hidden?: boolean | IPropertySetting;
@@ -99,6 +100,7 @@ type StyleBoxType = ToolbarSettingsProp & Omit<IStyleBoxComponentProps, 'hidden'
 type SizeType = ToolbarSettingsProp & Omit<ISizeComponentProps, 'hidden' | 'type'>;
 type BorderType = ToolbarSettingsProp & Omit<IBorderProps, 'hidden' | 'type'>;
 type BackgroundType = ToolbarSettingsProp & Omit<IBackgroundProps, 'hidden' | 'type'>;
+type FontType = ToolbarSettingsProp & Omit<IFontSizeControlProps, 'hidden' | 'type'>;
 
 export class DesignerToolbarSettings<T> {
   protected readonly form: IConfigurableFormComponent[];
@@ -121,6 +123,10 @@ export class DesignerToolbarSettings<T> {
 
   public addBackground(props: BackgroundType | ((data: T) => BackgroundType)) {
     return this.addProperty(props, 'background');
+  }
+
+  public addFontControl(props: FontType | ((data: T) => FontType)) {
+    return this.addProperty(props, 'fontControl')
   }
 
   public addBorder(props: BorderType | ((data: T) => BorderType)) {

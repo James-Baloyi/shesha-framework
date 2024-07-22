@@ -162,6 +162,10 @@ export interface IConfigurableFormComponent
   /** @deprecated Use disabled in js mode instead */
   customEnabled?: string;
 
+  
+  /** Control size */
+  fontControl?: string;
+
   /** Default value of the field */
   defaultValue?: any;
 

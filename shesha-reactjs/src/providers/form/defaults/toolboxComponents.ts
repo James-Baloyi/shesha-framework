@@ -101,6 +101,7 @@ import { HEADER_CONFIGURATION, HEADER_PUB_PORTAL_CONFIGURATION } from '@/compone
 import AdvancedFilterButton from '@/designer-components/dataTable/advancedFilterButton/advancedFilterButtonComponent';
 import { getToolboxComponentsVisibility } from '@/utils';
 import Background from '@/designer-components/backgroundConfigurator';
+import FontConfigurator from '@/designer-components/fontConfigurator';
 
 export const getToolboxComponents = (
   devMode: boolean,
@@ -242,6 +243,7 @@ export const getToolboxComponents = (
         PermissionTagGroup,
         QueryBuilderComponent,
         ScheduledJobExecutionLog,
+        FontConfigurator
       ],
     },
     {

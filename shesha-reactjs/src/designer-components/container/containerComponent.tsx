@@ -1,5 +1,5 @@
 import { GroupOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ICommonContainerProps, IContainerComponentProps, IToolboxComponent } from '@/interfaces';
 import { getStyle, getLayoutStyle, validateConfigurableComponentSettings, evaluateValue } from '@/providers/form/utils';
 import { getSettings } from './settingsForm';
@@ -11,6 +11,8 @@ import ParentProvider from '@/providers/parentProvider/index';
 import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
 import ConditionalWrap from '@/components/conditionalWrapper';
 import { isValidGuid } from '@/components/formDesigner/components/utils';
+import { getSizeStyle } from '../_settings/size/utils';
+import { getBorderStyle } from '../_settings/border/utils';
 
 const ContainerComponent: IToolboxComponent<IContainerComponentProps> = {
   type: 'container',
@@ -25,7 +27,11 @@ const ContainerComponent: IToolboxComponent<IContainerComponentProps> = {
 
     if (model.dataSource === 'storedFileId' && model.storedFileId && !isValidGuid(model.storedFileId)) {
       return <ValidationErrors error="The provided StoredFileId is invalid" />;
+      
     }
+
+    const sizeStyles = useMemo(() => getSizeStyle(model?.dimensions), [model.dimensions]);
+    const borderStyles = useMemo(() => getBorderStyle(model?.border), [model.border, formData]);
 
     if (model.hidden) return null;
 
@@ -94,6 +100,8 @@ const ContainerComponent: IToolboxComponent<IContainerComponentProps> = {
             style={{
               ...getStyle(model?.style, formData),
               ...backgroundStyles,
+              ...borderStyles,
+              ...sizeStyles
             }}
             dynamicComponents={model?.isDynamic ? model?.components : []}
           />

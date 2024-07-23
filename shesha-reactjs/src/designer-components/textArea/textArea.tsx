@@ -4,7 +4,7 @@ import { FontColorsOutlined } from '@ant-design/icons';
 import { Input, message } from 'antd';
 import { TextAreaProps } from 'antd/lib/input';
 import settingsFormJson from './settingsForm.json';
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useMemo } from 'react';
 import { evaluateString, getStyle, validateConfigurableComponentSettings } from '@/providers/form/utils';
 import { useForm, useFormData, useGlobalState, useSheshaApplication } from '@/providers';
 import { DataTypes, StringFormats } from '@/interfaces/dataTypes';
@@ -18,6 +18,9 @@ import { migratePropertyName, migrateCustomFunctions, migrateReadOnly } from '@/
 import { migrateVisibility } from '@/designer-components/_common-migrations/migrateVisibility';
 import { getFormApi } from '@/providers/form/formApi';
 import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
+import { convertToCSSProperties } from '../_settings/font/utils';
+import { getBorderStyle } from '../_settings/border/utils';
+import { getBackgroundStyle } from '../_settings/background/utils';
 
 const settingsForm = settingsFormJson as FormMarkup;
 
@@ -49,6 +52,9 @@ const TextAreaComponent: IToolboxComponent<ITextAreaComponentProps> = {
     const { backendUrl } = useSheshaApplication();
 
     const getTextAreaStyle = (style: CSSProperties = {}) => ({ ...style, marginBottom: model?.showCount ? '16px' : 0 });
+    const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl]);
+    const borderStyles = useMemo(() => getBorderStyle(model?.border), [model?.border, formData]);
+    const backgroundStyles = useMemo(() => getBackgroundStyle(model?.background), [model?.background, formData]);
 
     const textAreaProps: TextAreaProps = {
       className: 'sha-text-area',
@@ -59,7 +65,7 @@ const TextAreaComponent: IToolboxComponent<ITextAreaComponentProps> = {
       allowClear: model.allowClear,
       variant: model.hideBorder ? 'borderless' : undefined,
       size: model?.size,
-      style: getTextAreaStyle(getStyle(model?.style, formData)),
+      style: {...getTextAreaStyle(getStyle(model?.style, formData)), ...fontStyles, ...borderStyles, ...backgroundStyles},
     };
 
     const eventProps = {

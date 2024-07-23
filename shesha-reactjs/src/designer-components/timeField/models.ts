@@ -1,4 +1,7 @@
 import { IConfigurableFormComponent } from '@/providers/form/models';
+import { IFontControlValues } from '../_settings/font/interface';
+import { IBorderValue } from '../_settings/border/interfaces';
+import { IBackgroundValue } from '../_settings/background/interfaces';
 
 export type TimePickerChangeEvent = (value: number | null, timeString: string) => void;
 export type RangePickerChangeEvent = (values: number[] | null, timeString: [string, string]) => void;
@@ -23,4 +26,7 @@ export interface ITimePickerProps extends IConfigurableFormComponent {
     use12Hours?: boolean;
     hideBorder?: boolean;
     onChange?: TimePickerChangeEvent | RangePickerChangeEvent;
+    fontControl?: IFontControlValues;
+    border?: IBorderValue;
+    background?: IBackgroundValue;
   }

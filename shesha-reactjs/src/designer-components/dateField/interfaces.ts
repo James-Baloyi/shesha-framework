@@ -1,4 +1,7 @@
 import { IConfigurableFormComponent } from '@/providers/form/models';
+import { IFontControlValues } from '../_settings/font/interface';
+import { IBorderValue } from '../_settings/border/interfaces';
+import { IBackgroundValue } from '../_settings/background/interfaces';
 
 export type RangeType = 'start' | 'end';
 
@@ -32,4 +35,7 @@ export interface IDateFieldProps extends IConfigurableFormComponent {
   disabledDateMode?: 'none' | 'functionTemplate' | 'customFunction';
   disabledDateTemplate?: string;
   disabledDateFunc?: string;
+  fontControl?: IFontControlValues;
+  border?: IBorderValue;
+  background?: IBackgroundValue;
 }

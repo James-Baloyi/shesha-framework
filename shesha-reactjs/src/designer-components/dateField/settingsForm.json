@@ -344,9 +344,41 @@
             "version": 5,
             "referenceListId": null,
             "valueFormat": "listItem"
+          },
+          {
+            "id": "f8c0e0d-f3f6-425f-ovo0-e69f6a4139bd",
+            "propertyName": "fontControl",
+            "type": "fontControl",
+            "label": "Font Control",
+            "parentId": "RvNp_osTwoxjfKmj1mO9p",
+            "validate": {},
+            "settingsValidationErrors": [],
+            "jsSetting": true
+          },
+          {
+            "id": "f49xe0d-xyy1-32aa-ovo0-e69f6a41eaxm",
+            "propertyName": "border",
+            "type": "border",
+            "label": "Border",
+            "parentId": "RvNp_osTwoxjfKmj1mO9p",
+            "validate": {},
+            "settingsValidationErrors": [],
+            "jsSetting": true
+          },
+          {
+            "id": "f49xe0d-xyy1-32aa-ovo0-e69f6a41eebd",
+            "propertyName": "background",
+            "type": "background",
+            "label": "Background",
+            "parentId": "RvNp_osTwoxjfKmj1mO9p",
+            "validate": {},
+            "settingsValidationErrors": [],
+            "jsSetting": true
           }
         ]
       },
+
+      
       "collapsible": "header",
       "ghost": true,
       "hideWhenEmpty": true,

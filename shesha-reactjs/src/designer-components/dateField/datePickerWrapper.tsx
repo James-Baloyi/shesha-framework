@@ -13,6 +13,9 @@ import {
     getFormat,
 } from './utils';
 import { asPropertiesArray } from '@/interfaces/metadata';
+import { convertToCSSProperties } from '../_settings/font/utils';
+import { getBorderStyle } from '../_settings/border/utils';
+import { getBackgroundStyle } from '../_settings/background/utils';
 
 const MIDNIGHT_MOMENT = moment('00:00:00', 'HH:mm:ss');
 
@@ -41,13 +44,21 @@ export const DatePickerWrapper: FC<IDateFieldProps> = (props) => {
         style,
         defaultToMidnight,
         resolveToUTC,
+        fontControl,
+        border,
+        background,
         ...rest
     } = props;
+
 
     const dateFormat = props?.dateFormat || getDataProperty(properties, name) || DATE_TIME_FORMATS.date;
     const timeFormat = props?.timeFormat || DATE_TIME_FORMATS.time;
 
     const { formData } = useForm();
+
+    const fontStyles = useMemo(() => convertToCSSProperties(fontControl), [fontControl])
+    const borderStyles = useMemo(() => getBorderStyle(border), [border, formData]);
+    const backgroundStyles = useMemo(() => getBackgroundStyle(background), [background, formData]);
 
     const pickerFormat = getFormat(props, properties);
 
@@ -87,7 +98,7 @@ export const DatePickerWrapper: FC<IDateFieldProps> = (props) => {
         (onChange as RangePickerChangeEvent)(dates, formatString);
     };
 
-    const evaluatedStyle = { width: '100%', ...getStyle(style, formData, globalState) };
+    const evaluatedStyle = { width: '100%', ...getStyle(style, formData, globalState), ...fontStyles, ...borderStyles, ...backgroundStyles };
 
     const momentValue = useMemo(() => getMoment(value, pickerFormat), [value, pickerFormat]);
     const rangeMomentValue = useMemo(() => getRangeMoment(value, pickerFormat), [value, pickerFormat]);

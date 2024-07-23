@@ -126,7 +126,7 @@ export class DesignerToolbarSettings<T> {
   }
 
   public addFontControl(props: FontType | ((data: T) => FontType)) {
-    return this.addProperty(props, 'fontControl')
+    return this.addProperty(props, 'fontControl');
   }
 
   public addBorder(props: BorderType | ((data: T) => BorderType)) {

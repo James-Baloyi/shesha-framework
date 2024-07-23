@@ -1,4 +1,5 @@
 import { Empty, Select, Spin } from 'antd';
+import { ConfigProvider } from 'antd/lib';
 import { ValidationErrors } from '@/components';
 import { useReferenceList } from '@/providers/referenceListDispatcher';
 import React, { useMemo } from 'react';
@@ -39,6 +40,8 @@ export const GenericRefListDropDown = <TValue,>(props: IGenericRefListDropDownPr
 
     return !filtered;
   };
+
+  console.log("STYLE::",style)
 
   const wrapValue = (localValue: TValue | TValue[], allOptions: ISelectOption<TValue>[]): CustomLabeledValue<TValue> | CustomLabeledValue<TValue>[] => {
     if (localValue === undefined) return undefined;
@@ -103,8 +106,19 @@ export const GenericRefListDropDown = <TValue,>(props: IGenericRefListDropDownPr
     );
   }
 
+
+
   return (
-    <Select<CustomLabeledValue<TValue> | CustomLabeledValue<TValue>[]>
+    <ConfigProvider
+    theme={{
+      components: {
+        Select: {
+             
+        },
+      },
+    }}
+  >
+    <Select
       className="sha-dropdown"
       showSearch
       labelInValue={true}
@@ -143,6 +157,7 @@ export const GenericRefListDropDown = <TValue,>(props: IGenericRefListDropDownPr
         </Select.Option>
       ))}
     </Select>
+    </ConfigProvider>
   );
 };
 

@@ -1,7 +1,7 @@
 import { FileSearchOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 import moment from 'moment';
-import React, { Key } from 'react';
+import React, { Key, useMemo } from 'react';
 import { Autocomplete, IAutocompleteProps, ISelectOption } from '@/components/autocomplete';
 import ConfigurableFormItem from '@/components/formDesigner/components/formItem';
 import { customDropDownEventHandler } from '@/components/formDesigner/components/utils';
@@ -27,6 +27,9 @@ import { isEntityReferencePropertyMetadata } from '@/interfaces/metadata';
 import { migrateVisibility } from '@/designer-components/_common-migrations/migrateVisibility';
 import { getFormApi } from '@/providers/form/formApi';
 import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
+import { convertToCSSProperties } from '../_settings/font/utils';
+import { getBorderStyle } from '../_settings/border/utils';
+import { getBackgroundStyle } from '../_settings/background/utils';
 
 interface IQueryParams {
   // tslint:disable-next-line:typedef-whitespace
@@ -55,6 +58,10 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
     );
 
     const dataSourceUrl = model.dataSourceUrl ? replaceTags(model.dataSourceUrl, { data: data }) : model.dataSourceUrl;
+
+    const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl])
+    const borderStyles = useMemo(() => getBorderStyle(model?.border), [model?.border, data]);
+    const backgroundStyles = useMemo(() => getBackgroundStyle(model?.background), [model?.background, data]);
 
     const evaluatedFilters = useAsyncMemo(async () => {
       if (!filter) return '';
@@ -188,7 +195,7 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
       quickviewGetEntityUrl: model.quickviewGetEntityUrl,
       quickviewWidth: model.quickviewWidth,
       subscribedEventNames: model.subscribedEventNames,
-      style: getStyle(model.style, data),
+      style: {...getStyle(model.style, data), ...fontStyles, ...borderStyles, ...backgroundStyles, ...{overflow: "hidden"}},
       size: model.size,
       allowFreeText: model.allowFreeText,
     };

@@ -640,16 +640,6 @@
             "validate": {},
             "settingsValidationErrors": [],
             "jsSetting": true
-          },
-          {
-            "id": "f49xe0d-xyy1-90ss-391a-e69f6aaj3719",
-            "propertyName": "size",
-            "type": "size",
-            "label": "Size",
-            "parentId": "RvNp_osTwoxjfKmj1mO9p",
-            "validate": {},
-            "settingsValidationErrors": [],
-            "jsSetting": true
           }
         ]
       },

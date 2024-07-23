@@ -1,6 +1,6 @@
 import ConfigurableFormItem from '@/components/formDesigner/components/formItem';
 import moment from 'moment';
-import React from 'react';
+import React, { useMemo } from 'react';
 import settingsFormJson from './settingsForm.json';
 import { axiosHttp } from '@/utils/fetchers';
 import { customDropDownEventHandler } from '@/components/formDesigner/components/utils';
@@ -23,6 +23,9 @@ import {
 import { Dropdown } from '@/components/dropdown/dropdown';
 import { getFormApi } from '@/providers/form/formApi';
 import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
+import { convertToCSSProperties } from '../_settings/font/utils';
+import { getBorderStyle } from '../_settings/border/utils';
+import { getBackgroundStyle } from '../_settings/background/utils';
 
 const settingsForm = settingsFormJson as FormMarkup;
 
@@ -39,6 +42,13 @@ const DropdownComponent: IToolboxComponent<IDropdownComponentProps> = {
     const { globalState, setState: setGlobalState } = useGlobalState();
     const { backendUrl } = useSheshaApplication();
     const { data: formData } = useFormData();
+
+    
+    const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl])
+    const borderStyles = useMemo(() => getBorderStyle(model?.border), [model?.border, formData]);
+    const backgroundStyles = useMemo(() => getBackgroundStyle(model?.background), [model?.background, formData]);
+
+
     const eventProps = {
       model,
       form: getFormApi(form),
@@ -50,7 +60,7 @@ const DropdownComponent: IToolboxComponent<IDropdownComponentProps> = {
       setGlobalState,
     };
 
-    const localStyle = getStyle(model.style, formData);
+    const localStyle = {...getStyle(model.style, formData), ...fontStyles, ...borderStyles, ...backgroundStyles};
 
     const initialValue = model?.defaultValue ? { initialValue: model.defaultValue } : {};
 

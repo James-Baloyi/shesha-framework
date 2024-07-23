@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { TimeRangePicker, TimePicker } from '@/components/antd';
 import moment, { Moment, isMoment } from 'moment';
 import ReadOnlyDisplayFormItem from '@/components/readOnlyDisplayFormItem';
@@ -8,6 +8,9 @@ import { getNumericValue } from '@/utils/string';
 import { TimeSteps } from '@/components/antd/timepicker';
 import { useStyles } from './styles/styles';
 import { ITimePickerProps, RangePickerChangeEvent, TimePickerChangeEvent } from './models';
+import { convertToCSSProperties } from '../_settings/font/utils';
+import { getBorderStyle } from '../_settings/border/utils';
+import { getBackgroundStyle } from '../_settings/background/utils';
 
 type RangeValue = [moment.Moment, moment.Moment];
 
@@ -53,11 +56,17 @@ export const TimePickerWrapper: FC<ITimePickerProps> = ({
   secondStep,
   disabled,
   hideBorder,
+  fontControl,
+  border,
+  background,
   ...rest
 }) => {
   const { data: formData } = useFormData();
   const { styles } = useStyles();
 
+  const fontStyles = useMemo(() => convertToCSSProperties(fontControl), [fontControl])
+  const borderStyles = useMemo(() => getBorderStyle(border), [border, formData]);
+  const backgroundStyles = useMemo(() => getBackgroundStyle(background), [background, formData]);
   const evaluatedValue = getMoment(value, format);
 
   const hourStepLocal = getNumericValue(hourStep);
@@ -103,9 +112,8 @@ export const TimePickerWrapper: FC<ITimePickerProps> = ({
         format={format}
         value={getRangePickerValues(value || defaultValue) as RangeValue}
         {...steps}
-        style={getStyle(style, formData)}
+        style={{...getStyle(style, formData), ...fontStyles, ...borderStyles, ...backgroundStyles}}
         className={styles.shaTimepicker}
-        
         {...rest}
         placeholder={[placeholder, placeholder]}
      
@@ -120,7 +128,7 @@ export const TimePickerWrapper: FC<ITimePickerProps> = ({
       format={format}
       value={evaluatedValue|| (defaultValue && moment(defaultValue))}
       {...steps}
-      style={getStyle(style, formData)}
+      style={{...getStyle(style, formData), ...fontStyles, ...borderStyles, ...backgroundStyles, ...{height: "auto", width: "auto", fontSize: fontStyles?.fontSize}}}
       className={styles.shaTimepicker}
       placeholder={placeholder}
       {...rest}

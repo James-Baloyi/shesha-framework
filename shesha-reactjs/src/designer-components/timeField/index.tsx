@@ -35,7 +35,7 @@ export const TimeFieldComponent: IToolboxComponent<ITimePickerProps> = {
     const { data: formData } = useFormData();
     const { globalState, setState: setGlobalState } = useGlobalState();
     const { backendUrl } = useSheshaApplication();
-    
+
     const eventProps = {
       model,
       form: getFormApi(form),
@@ -49,14 +49,16 @@ export const TimeFieldComponent: IToolboxComponent<ITimePickerProps> = {
 
     return (
       <ConfigurableFormItem model={model}>
-        {(value, onChange) =>  {
+        {(value, onChange) => {
           const customEvent = customTimeEventHandler(eventProps);
           const onChangeInternal = (...args: any[]) => {
             customEvent.onChange(args[0], args[1]);
-            if (typeof onChange === 'function') 
+            if (typeof onChange === 'function')
               onChange(...args);
           };
-          return <TimePickerWrapper {...model} {...customEvent} value={value} onChange={onChangeInternal} />;
+          return (
+            <TimePickerWrapper {...model} {...customEvent} value={value} onChange={onChangeInternal} />
+          );
         }}
       </ConfigurableFormItem>
     );
@@ -74,7 +76,7 @@ export const TimeFieldComponent: IToolboxComponent<ITimePickerProps> = {
     .add<ITimePickerProps>(0, (prev) => migratePropertyName(migrateCustomFunctions(prev)))
     .add<ITimePickerProps>(1, (prev) => migrateVisibility(prev))
     .add<ITimePickerProps>(2, (prev) => migrateReadOnly(prev))
-    .add<ITimePickerProps>(3, (prev) => ({...migrateFormApi.eventsAndProperties(prev)}))
+    .add<ITimePickerProps>(3, (prev) => ({ ...migrateFormApi.eventsAndProperties(prev) }))
   ,
   linkToModelMetadata: (model, metadata): ITimePickerProps => {
 

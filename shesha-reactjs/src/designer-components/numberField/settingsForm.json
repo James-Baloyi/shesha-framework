@@ -420,6 +420,7 @@
                 "label": "Font Control",
                 "parentId": "RvNp_osTwoxjfKmj1mO9p",
                 "validate": {},
+                "fields": ["fontSize"],
                 "settingsValidationErrors": [],
                 "jsSetting": true
               },

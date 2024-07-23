@@ -3,8 +3,8 @@ import { FormMarkup, IConfigurableFormComponent } from '@/providers/form/models'
 import { FileImageOutlined } from '@ant-design/icons';
 import ConfigurableFormItem from '@/components/formDesigner/components/formItem';
 import settingsFormJson from './settingsForm.json';
-import { evaluateValue, getStyle, validateConfigurableComponentSettings } from '@/providers/form/utils';
-import React from 'react';
+import { evaluateValue, getStyle, pickStyleFromModel, validateConfigurableComponentSettings } from '@/providers/form/utils';
+import React, { useMemo } from 'react';
 import {
   migrateCustomFunctions,
   migratePropertyName,
@@ -16,10 +16,16 @@ import { ValidationErrors } from '@/components';
 import { ImageField, ImageSourceType } from './image';
 import ConditionalWrap from '@/components/conditionalWrapper';
 import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
+import { convertToCSSProperties } from '../_settings/font/utils';
+import { getBorderStyle } from '../_settings/border/utils';
+import { getBackgroundStyle } from '../_settings/background/utils';
+import { IFontControlValues } from '../_settings/font/interface';
+import { IBorderValue } from '../_settings/border/interfaces';
+import { IBackgroundValue } from '../_settings/background/interfaces';
+import { ISizeValue } from '../_settings/size/sizeComponent';
+import { getSizeStyle } from '../_settings/size/utils';
 
 export interface IImageProps extends IConfigurableFormComponent, IFormItem {
-  height?: number | string;
-  width?: number | string;
   url?: string;
   storedFileId?: string;
   base64?: string;
@@ -29,6 +35,14 @@ export interface IImageProps extends IConfigurableFormComponent, IFormItem {
   fileCategory?: string;
   allowPreview?: boolean;
   allowedFileTypes?: string[];
+  border?: IBorderValue;
+  dimensions?: ISizeValue;
+  objectFit?: 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
+  objectPosition?: string;
+  stylingBox?: string;
+  alt?: string;
+  opacity?: string;
+  filter?: string;
 }
 
 const settingsForm = settingsFormJson as FormMarkup;
@@ -46,6 +60,11 @@ const ImageComponent: IToolboxComponent<IImageProps> = {
     const { backendUrl } = useSheshaApplication();
     const ownerId = evaluateValue(model.ownerId, { data, globalState });
 
+    const borderStyles = useMemo(() => getBorderStyle(model?.border), [model?.border, data]);
+    const sizeStyles = useMemo(() => getSizeStyle(model?.dimensions), [model.dimensions]);
+    const stylingBoxJSON = JSON.parse(model?.stylingBox || '{}');
+
+    const imageStyles = {...getStyle(model?.style, data), ...borderStyles, ...sizeStyles, ...{objectFit: model?.objectFit, objectPosition: model?.objectPosition, opacity: model?.opacity, filter: model?.filter}, ...pickStyleFromModel(stylingBoxJSON),}
 
     if (model.dataSource === 'storedFileId' && model.storedFileId && !isValidGuid(model.storedFileId)) {
       return <ValidationErrors error="The provided StoredFileId is inValid" />;
@@ -87,14 +106,15 @@ const ImageComponent: IToolboxComponent<IImageProps> = {
             >
             <ImageField
               allowedFileTypes={model?.allowedFileTypes}
-              height={model.height}
-              width={model.width}
               imageSource={model.dataSource}
-              styles={getStyle(model?.style, data)}
+              styles={imageStyles}
+              width={sizeStyles.width}
+              height={sizeStyles.height}
               value={val}
               readOnly={model?.readOnly}
               onChange={onChange}
               allowPreview={model?.allowPreview}
+              alt={model?.alt}
             />
             </ConditionalWrap>
           );

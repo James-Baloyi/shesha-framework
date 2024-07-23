@@ -18,10 +18,12 @@ export interface IImageFieldProps {
 
   allowPreview?: boolean;
   allowedFileTypes?: string[];
+
+  alt?: string;
 }
 
 export const ImageField: FC<IImageFieldProps> = (props) => {
-  const { height, width, imageSource, value, allowPreview = false, styles, onChange } = props;
+  const { height, width, imageSource, value, allowPreview = false, styles, onChange, alt } = props;
 
   const readOnly = props?.readOnly || props.imageSource === 'url';
 
@@ -93,7 +95,7 @@ export const ImageField: FC<IImageFieldProps> = (props) => {
       {content &&
         <Image
           src={content}
-          alt="image"
+          alt={alt}
           width={Number(width) ? `${width}px` : width}
           height={Number(height) ? `${height}px` : height}
           preview={allowPreview}

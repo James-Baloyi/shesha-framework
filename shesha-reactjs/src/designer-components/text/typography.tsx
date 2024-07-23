@@ -21,12 +21,9 @@ const TypographyComponent: FC<ITextTypographyProps> = ({
   ...model
 }) => {
   
-  console.log('fontControl::',fontControl)
 
   const { formMode } = useForm();
   const { data: formData } = useFormData();
-
-  
 
   const val = typeof value === 'string'
     ? value 

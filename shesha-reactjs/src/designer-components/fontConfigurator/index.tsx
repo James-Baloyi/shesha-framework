@@ -19,7 +19,7 @@ const FontConfigurator: IToolboxComponent<IFontSizeControlProps> = {
 
         return (
             <ConfigurableFormItem model={model}>
-                {(value, onChange) => <FontComponent value={value} onChange={onChange} />}
+                {(value, onChange) => <FontComponent fields={model?.fields} value={value} onChange={onChange} />}
             </ConfigurableFormItem>
         );
     },
@@ -28,7 +28,8 @@ const FontConfigurator: IToolboxComponent<IFontSizeControlProps> = {
             ...model,
             label: 'Font Control',
         };
-    }
+    },
+
 };
 
 export default FontConfigurator;

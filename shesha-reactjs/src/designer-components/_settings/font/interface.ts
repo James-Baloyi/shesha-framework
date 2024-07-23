@@ -10,5 +10,6 @@ export interface IFontControlValues {
 
 export interface IFontSizeControlProps extends IConfigurableFormComponent{
     onChange?: (values: IFontControlValues) => void;
-    value?: IFontControlValues
+    value?: IFontControlValues;
+    fields?: string[];
 }

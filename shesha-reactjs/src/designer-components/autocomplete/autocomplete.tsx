@@ -59,7 +59,7 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
 
     const dataSourceUrl = model.dataSourceUrl ? replaceTags(model.dataSourceUrl, { data: data }) : model.dataSourceUrl;
 
-    const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl])
+    const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl]);
     const borderStyles = useMemo(() => getBorderStyle(model?.border), [model?.border, data]);
     const backgroundStyles = useMemo(() => getBackgroundStyle(model?.background), [model?.background, data]);
 

@@ -16,12 +16,8 @@ import { ValidationErrors } from '@/components';
 import { ImageField, ImageSourceType } from './image';
 import ConditionalWrap from '@/components/conditionalWrapper';
 import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
-import { convertToCSSProperties } from '../_settings/font/utils';
 import { getBorderStyle } from '../_settings/border/utils';
-import { getBackgroundStyle } from '../_settings/background/utils';
-import { IFontControlValues } from '../_settings/font/interface';
 import { IBorderValue } from '../_settings/border/interfaces';
-import { IBackgroundValue } from '../_settings/background/interfaces';
 import { ISizeValue } from '../_settings/size/sizeComponent';
 import { getSizeStyle } from '../_settings/size/utils';
 
@@ -64,7 +60,7 @@ const ImageComponent: IToolboxComponent<IImageProps> = {
     const sizeStyles = useMemo(() => getSizeStyle(model?.dimensions), [model.dimensions]);
     const stylingBoxJSON = JSON.parse(model?.stylingBox || '{}');
 
-    const imageStyles = {...getStyle(model?.style, data), ...borderStyles, ...sizeStyles, ...{objectFit: model?.objectFit, objectPosition: model?.objectPosition, opacity: model?.opacity, filter: model?.filter}, ...pickStyleFromModel(stylingBoxJSON),}
+    const imageStyles = {...getStyle(model?.style, data), ...borderStyles, ...sizeStyles, ...{objectFit: model?.objectFit, objectPosition: model?.objectPosition, opacity: model?.opacity, filter: model?.filter}, ...pickStyleFromModel(stylingBoxJSON),};
 
     if (model.dataSource === 'storedFileId' && model.storedFileId && !isValidGuid(model.storedFileId)) {
       return <ValidationErrors error="The provided StoredFileId is inValid" />;

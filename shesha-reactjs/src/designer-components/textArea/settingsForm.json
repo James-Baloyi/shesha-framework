@@ -570,6 +570,7 @@
             "type": "fontControl",
             "label": "Font Control",
             "parentId": "RvNp_osTwoxjfKmj1mO9p",
+            "fields": ["fontSize", "fontWeight", "textDecoration", "fontAlignment", "fontColor"],
             "validate": {},
             "settingsValidationErrors": [],
             "jsSetting": true

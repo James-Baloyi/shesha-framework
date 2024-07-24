@@ -77,6 +77,7 @@ export const ImageField: FC<IImageFieldProps> = (props) => {
     accept: props.allowedFileTypes?.join(','),
     showUploadList: false,
     beforeUpload: async (file) => {
+      console.log("PRE UPLOAD FILE",file);
       if (imageSource === 'base64') {
         if (onChange)
           onChange(await toBase64(file));

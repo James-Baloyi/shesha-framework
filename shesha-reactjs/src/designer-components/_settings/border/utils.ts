@@ -29,4 +29,4 @@ export const getBorderStyle = (input: IBorderValue): React.CSSProperties => {
     }
 
     return style;
-}
+};

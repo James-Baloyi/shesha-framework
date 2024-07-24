@@ -56,7 +56,7 @@ export const DatePickerWrapper: FC<IDateFieldProps> = (props) => {
 
     const { formData } = useForm();
 
-    const fontStyles = useMemo(() => convertToCSSProperties(fontControl), [fontControl])
+    const fontStyles = useMemo(() => convertToCSSProperties(fontControl), [fontControl]);
     const borderStyles = useMemo(() => getBorderStyle(border), [border, formData]);
     const backgroundStyles = useMemo(() => getBackgroundStyle(background), [background, formData]);
 

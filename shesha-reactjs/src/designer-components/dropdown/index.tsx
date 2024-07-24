@@ -44,7 +44,7 @@ const DropdownComponent: IToolboxComponent<IDropdownComponentProps> = {
     const { data: formData } = useFormData();
 
     
-    const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl])
+    const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl]);
     const borderStyles = useMemo(() => getBorderStyle(model?.border), [model?.border, formData]);
     const backgroundStyles = useMemo(() => getBackgroundStyle(model?.background), [model?.background, formData]);
 

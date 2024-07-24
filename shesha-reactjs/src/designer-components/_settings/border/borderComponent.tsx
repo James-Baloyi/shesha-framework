@@ -1,5 +1,5 @@
 import { Col, Input, InputNumber, Radio, RadioChangeEvent, Row, Select, Slider } from 'antd';
-import React, { FC, useState } from 'react'
+import React, { FC, useState } from 'react';
 import { useStyles } from './styles';
 import { BorderBottomOutlined, BorderLeftOutlined, BorderOutlined, BorderRightOutlined, BorderTopOutlined, DashOutlined, ExpandOutlined, MinusOutlined, RadiusBottomleftOutlined, RadiusBottomrightOutlined, RadiusUpleftOutlined, RadiusUprightOutlined, SmallDashOutlined } from '@ant-design/icons';
 import { ColorPicker } from '@/components';
@@ -161,7 +161,7 @@ const BorderComponent: FC<IBorderProps> = ({ onChange, value = {
                 {renderRadioGroup(styleOptions, localValue.border[borderType]?.style || 'solid', (e) => updateBorder(borderType, { ...localValue.border[borderType], style: e.target.value }))}
             </Col>
         </Row>
-    )
+    );
 };
 
 export default BorderComponent;

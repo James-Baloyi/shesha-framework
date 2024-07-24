@@ -41,7 +41,7 @@ export const GenericRefListDropDown = <TValue,>(props: IGenericRefListDropDownPr
     return !filtered;
   };
 
-  console.log("STYLE::",style)
+  console.log("STYLE::",style);
 
   const wrapValue = (localValue: TValue | TValue[], allOptions: ISelectOption<TValue>[]): CustomLabeledValue<TValue> | CustomLabeledValue<TValue>[] => {
     if (localValue === undefined) return undefined;

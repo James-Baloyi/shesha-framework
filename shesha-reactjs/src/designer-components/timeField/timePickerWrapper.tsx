@@ -64,7 +64,7 @@ export const TimePickerWrapper: FC<ITimePickerProps> = ({
   const { data: formData } = useFormData();
   const { styles } = useStyles();
 
-  const fontStyles = useMemo(() => convertToCSSProperties(fontControl), [fontControl])
+  const fontStyles = useMemo(() => convertToCSSProperties(fontControl), [fontControl]);
   const borderStyles = useMemo(() => getBorderStyle(border), [border, formData]);
   const backgroundStyles = useMemo(() => getBackgroundStyle(background), [background, formData]);
   const evaluatedValue = getMoment(value, format);

@@ -22,4 +22,4 @@ export const getBackgroundStyle = (input?: IBackgroundValue): React.CSSPropertie
     }
 
     return { ...style, backgroundSize, backgroundRepeat };
-}
+};

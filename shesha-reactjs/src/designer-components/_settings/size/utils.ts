@@ -21,4 +21,4 @@ export const getSizeStyle = (input?: ISizeValue): React.CSSProperties => {
     }
 
     return style;
-}
+};

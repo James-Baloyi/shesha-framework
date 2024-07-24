@@ -34,7 +34,7 @@ const NumberFieldControl: FC<IProps> = ({ disabled, model, onChange, value }) =>
     setGlobalState,
   };
 
-  const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl])
+  const fontStyles = useMemo(() => convertToCSSProperties(model?.fontControl), [model?.fontControl]);
   const borderStyles = useMemo(() => getBorderStyle(model?.border), [model?.border, form.formData]);
   const backgroundStyles = useMemo(() => getBackgroundStyle(model?.background), [model?.background, form.formData]);
 

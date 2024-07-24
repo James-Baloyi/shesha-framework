@@ -4,7 +4,7 @@ import { useStyles } from './styles';
 import { BgColorsOutlined, BoldOutlined, FormatPainterOutlined, LinkOutlined, UploadOutlined } from '@ant-design/icons';
 import { ColorPicker, FileUpload } from '@/components';
 import { StoredFileProvider, useForm, useSheshaApplication } from '@/index';
-import { nanoid } from 'nanoid';
+import { nanoid } from '@/utils/uuid';
 import TextArea from 'antd/es/input/TextArea';
 
 interface IBackgroundValue {
@@ -15,7 +15,7 @@ interface IBackgroundValue {
     url?: string;
     fileId?: string;
     base64?: string;
-    gradient?: { direction: string, colors: string[] };
+    gradient?: { direction: string; colors: string[] };
 }
 
 interface IBackgroundProps {
@@ -100,7 +100,7 @@ const BackgroundConfigurator: FC<IBackgroundProps> = ({ onChange, value = { type
                 </Col>
             </Row>
         );
-    }
+    };
     const renderBackgroundInput = () => {
         switch (localValue.type) {
             case 'gradient':

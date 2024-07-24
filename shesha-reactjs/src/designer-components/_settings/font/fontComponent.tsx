@@ -24,6 +24,20 @@ const FontComponent: React.FC<IFontSizeControlProps> = ({ fields, onChange, valu
     const [fontAlignment, setFontAlignment] = useState<string>(value?.fontAlignment || 'start');
     const [fontColor, setFontColor] = useState<string>(value?.fontColor || '#000000');
 
+    const triggerChange = (changedValues: Partial<IFontControlValues>) => {
+        const newValues = {
+            fontSize,
+            fontWeight,
+            textDecoration,
+            fontAlignment,
+            fontColor,
+            ...changedValues,
+        };
+        if (onChange) {
+            onChange(newValues);
+        }
+    };
+
     const handleFieldChange = (field: keyof IFontControlValues, val: any) => {
         switch (field) {
             case 'fontSize':
@@ -43,20 +57,6 @@ const FontComponent: React.FC<IFontSizeControlProps> = ({ fields, onChange, valu
                 break;
         }
         triggerChange({ [field]: val });
-    };
-
-    const triggerChange = (changedValues: Partial<IFontControlValues>) => {
-        const newValues = {
-            fontSize,
-            fontWeight,
-            textDecoration,
-            fontAlignment,
-            fontColor,
-            ...changedValues,
-        };
-        if (onChange) {
-            onChange(newValues);
-        }
     };
 
     return (

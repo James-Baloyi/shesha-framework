@@ -23,8 +23,9 @@ import { getValueByPropertyName, removeUndefinedProps } from '@/utils/object';
 import { toSizeCssProp } from '@/utils/form';
 import { FilterSelectedFunc, KayValueFunc, OutcomeValueFunc } from '@/components/autocomplete/models';
 import { Autocomplete } from '@/components/autocomplete';
+import { getSettings } from './settingsForm';
 
-const settingsForm = settingsFormJson as FormMarkup;
+//const settingsForm = settingsFormJson as FormMarkup;
 
 const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
   type: 'autocomplete',
@@ -115,8 +116,8 @@ const AutocompleteComponent: IToolboxComponent<IAutocompleteComponentProps> = {
     );
   }
   ,
-  settingsFormMarkup: settingsForm,
-  validateSettings: (model) => validateConfigurableComponentSettings(settingsForm, model),
+  settingsFormMarkup: (data) => getSettings(data),
+  validateSettings: (model) => validateConfigurableComponentSettings(getSettings, model),
   migrator: (m) => m
     .add<IAutocompleteComponentProps>(0, (prev) => ({
       ...prev,

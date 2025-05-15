@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   IApplicationContext,
   IConfigurableFormComponent,
@@ -172,22 +172,22 @@ export function useActualContextExecutionExecutor<T = any>(executor: (context: a
   return actualDataRef.current;
 };
 
-export const useFormComponentStyles = <TModel,>(
-  model: TModel & IStyleType & Omit<IConfigurableFormComponent, 'id' | 'type'>
+export const useFormComponentStyles = <TModel>(
+  models: (TModel & IStyleType & Omit<IConfigurableFormComponent, 'id' | 'type'>) | (TModel & IStyleType & Omit<IConfigurableFormComponent, 'id' | 'type'>)[]
 ): IFormComponentStyles => {
   const app = useSheshaApplication();
+  
+
+  const model = Array.isArray(models) ? models[0] : models;
+  
   const jsStyle = useActualContextExecution(model.style, null, {}); // use default style if empty or error
-
   const { dimensions, border, font, shadow, background, stylingBox, overflow, hideScrollBar } = model;
-
   const [backgroundStyles, setBackgroundStyles] = useState(
     background?.storedFile?.id && background?.type === 'storedFile'
       ? {}
       : getBackgroundStyle(background, jsStyle)
   );
-
   const styligBox = JSON.parse(stylingBox || '{}');
-
   const dimensionsStyles = useMemo(() => getDimensionsStyle(dimensions, styligBox), [dimensions, stylingBox]);
   const borderStyles = useMemo(() => getBorderStyle(border, jsStyle), [border, jsStyle]);
   const fontStyles = useMemo(() => getFontStyle(font), [font]);
@@ -195,6 +195,17 @@ export const useFormComponentStyles = <TModel,>(
   const stylingBoxAsCSS = useMemo(() => pickStyleFromModel(styligBox), [stylingBox]);
   const overflowStyles = useMemo(() => getOverflowStyle(overflow, hideScrollBar), [overflow, hideScrollBar]);
 
+  const allTheStyles = useMemo(() => {
+    const returnObj = {...getDimensionsStyle(dimensionsStyles, styligBox),
+    ...getBorderStyle(border, jsStyle),
+    ...getFontStyle(font),
+    ...getShadowStyle(shadow),
+    ...getOverflowStyle(overflow, hideScrollBar),
+    ...pickStyleFromModel(styligBox)
+    }
+    return returnObj;
+  }, [model])
+  
   useDeepCompareEffect(() => {
     if (background?.storedFile?.id && background?.type === 'storedFile') {
       fetch(`${app.backendUrl}/api/StoredFile/Download?id=${background?.storedFile?.id}`,
@@ -211,21 +222,15 @@ export const useFormComponentStyles = <TModel,>(
       setBackgroundStyles(getBackgroundStyle(background, jsStyle));
     }
   }, [background, jsStyle, app.backendUrl, app.httpHeaders]);
-
+  
   const appearanceStyle = useMemo(() => removeUndefinedProps(
     {
-      ...stylingBoxAsCSS,
-      ...dimensionsStyles,
-      ...borderStyles,
-      ...fontStyles,
-      ...backgroundStyles,
-      ...shadowStyles,
-      ...overflowStyles,
+      ...allTheStyles,
       fontWeight: fontStyles.fontWeight || 400,
     }), [stylingBoxAsCSS, dimensionsStyles, borderStyles, fontStyles, backgroundStyles, shadowStyles, overflowStyles]);
-
+  
   const fullStyle = useDeepCompareMemo(() => ({ ...appearanceStyle, ...jsStyle }), [appearanceStyle, jsStyle]);
-
+  
   const allStyles: IFormComponentStyles = useMemo(() => ({
     stylingBoxAsCSS,
     dimensionsStyles,
@@ -238,6 +243,73 @@ export const useFormComponentStyles = <TModel,>(
     appearanceStyle,
     fullStyle
   }), [stylingBoxAsCSS, dimensionsStyles, borderStyles, fontStyles, backgroundStyles, shadowStyles, overflowStyles, jsStyle, appearanceStyle, fullStyle]);
-
+  
+  useEffect(() => {
+    if (Array.isArray(models) && models.length > 1) {
+      models.slice(1).forEach((additionalModel) => {
+        if (!additionalModel) return;
+        
+        const additionalJsStyle = useActualContextExecution(additionalModel.style, null, {});
+        const { 
+          dimensions: addDimensions, 
+          border: addBorder, 
+          font: addFont, 
+          shadow: addShadow, 
+          background: addBackground, 
+          stylingBox: addStylingBox, 
+          overflow: addOverflow, 
+          hideScrollBar: addHideScrollBar 
+        } = additionalModel;
+        
+        const addStyligBox = JSON.parse(addStylingBox || '{}');
+        const addDimensionsStyles = getDimensionsStyle(addDimensions, addStyligBox);
+        const addBorderStyles = getBorderStyle(addBorder, additionalJsStyle);
+        const addFontStyles = getFontStyle(addFont);
+        const addShadowStyles = getShadowStyle(addShadow);
+        const addStylingBoxAsCSS = pickStyleFromModel(addStyligBox);
+        const addOverflowStyles = getOverflowStyle(addOverflow, addHideScrollBar);
+        
+        let addBackgroundStyles = getBackgroundStyle(addBackground, additionalJsStyle);
+        if (addBackground?.storedFile?.id && addBackground?.type === 'storedFile') {
+          fetch(`${app.backendUrl}/api/StoredFile/Download?id=${addBackground?.storedFile?.id}`,
+            { headers: { ...app.httpHeaders, "Content-Type": "application/octet-stream" } })
+            .then((response) => response.blob())
+            .then((blob) => {
+              const url = URL.createObjectURL(blob);
+              addBackgroundStyles = getBackgroundStyle(addBackground, additionalJsStyle, url);
+              
+              completeAndAssignStyles();
+            });
+        } else {
+          completeAndAssignStyles();
+        }
+        
+        function completeAndAssignStyles() {
+          const addAppearanceStyle = removeUndefinedProps({
+            ...allTheStyles,
+            fontWeight: addFontStyles.fontWeight || 400,
+          });
+          
+          const addFullStyle = { ...addAppearanceStyle, ...additionalJsStyle };
+          
+          const additionalStyles = {
+            stylingBoxAsCSS: addStylingBoxAsCSS,
+            dimensionsStyles: addDimensionsStyles,
+            borderStyles: addBorderStyles,
+            fontStyles: addFontStyles,
+            backgroundStyles: addBackgroundStyles,
+            shadowStyles: addShadowStyles,
+            overflowStyles: addOverflowStyles,
+            jsStyle: additionalJsStyle,
+            appearanceStyle: addAppearanceStyle,
+            fullStyle: addFullStyle
+          };
+          
+          (additionalModel).allStyles = additionalStyles;
+        }
+      });
+    }
+  }, [models, app.backendUrl, app.httpHeaders]);
+  
   return allStyles;
 };

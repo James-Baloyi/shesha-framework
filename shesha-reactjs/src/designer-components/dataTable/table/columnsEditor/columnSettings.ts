@@ -310,6 +310,7 @@ export const getColumnSettings = (data?: any) => ({
                                     "type": "switch",
                                     "propertyName": "isVisible",
                                     "label": "Hide",
+                                    "defaultChecked": false,
                                     "labelAlign": "right",
                                     "jsSetting": true,
                                 }

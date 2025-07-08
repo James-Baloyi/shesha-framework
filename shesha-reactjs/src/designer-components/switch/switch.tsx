@@ -27,6 +27,8 @@ const SwitchComponent: IToolboxComponent<ISwitchComponentProps, ISwitchComponent
   canBeJsSetting: true,
   calculateModel: (model, allData) => ({ eventHandlers: getAllEventHandlers(model, allData) }),
   Factory: ({ model, calculatedModel }) => {
+    console.log("SWITCH",model);
+
     return (
       <ConfigurableFormItem model={model} valuePropName="checked">
         {(value, onChange) => {

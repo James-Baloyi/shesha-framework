@@ -132,6 +132,7 @@ export const ReadOnlyDisplayFormItem: FC<IReadOnlyDisplayFormItemProps> = (props
         return <Checkbox checked={checked} defaultChecked={defaultChecked} disabled />;
       }
       case 'switch': {
+        console.log("IS SWITCH DEFAULT CHECKED??",defaultChecked, checked)
         return <Switch checked={checked} defaultChecked={defaultChecked ?? false} disabled />;
       }
 

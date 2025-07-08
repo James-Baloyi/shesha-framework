@@ -131,8 +131,10 @@ export const InputComponent: FC<Omit<ISettingsInputProps, 'hidden'>> = (props) =
             </Radio.Group>;
         case 'switch':
             /*Handle cases where defaultValue is used in place of defaultChecked*/
+                    console.log("IS SWITCH DEFAULT CHECKED??",defaultChecked, defaultValue, value)
+
             return <Switch disabled={readOnly} size='small'
-                defaultChecked={defaultChecked} onChange={onChange} defaultValue={defaultValue} value={value} />;
+                defaultChecked={false} onChange={onChange} defaultValue={false} value={false} />;
         case 'numberField':
             return <InputNumber
                 placeholder={placeholder}

@@ -35,6 +35,7 @@ export const RowCell: FC<IRowCellProps> = ({ cell, preContent, row, rowIndex, ce
   const { key, style, ...restProps } = cell.getCellProps(cellProps);
   const cellRef = useRef(null);
   const cellParentRef = useRef(null);
+  const allowedPopOverComponents = ['[default]', 'navigation', 'modal'];
 
   let cellStyle: React.CSSProperties = useActualContextExecutionExecutor(
     (context) => {
@@ -55,12 +56,17 @@ export const RowCell: FC<IRowCellProps> = ({ cell, preContent, row, rowIndex, ce
     cellStyle = { ...cellStyle, background: anchoredCellStyle?.backgroundColor };
   }
 
-  const checkOverflow = useCallback(() => {
+  const checkOverflow = () => {
+    console.log("CELL DOT COLUMN::",cell.column);
+    if((cell.column as any)?.displayComponent?.type?.settings?.entityReferenceType === 'Quickview'){
+      return false;
+    }
+
     if (cellRef.current) {
       return  (typeof cell.value === 'string' || typeof cell.value === 'object') && cellRef.current.scrollWidth > cellRef.current.clientWidth;
     }
     return false;
-  }, []);
+  };
 
   return (
     <div
@@ -77,7 +83,13 @@ export const RowCell: FC<IRowCellProps> = ({ cell, preContent, row, rowIndex, ce
       {
           <div
             ref={cellRef}
-            className={showExpandedView && (cell.column as unknown as { columnType: string }).columnType === 'data' && (typeof cell.value === 'string' || typeof cell.value === 'object')  ? styles.shaCellParent :  styles.shaCellParentFW}
+            className={
+              showExpandedView &&
+              (cell.column as any)?.displayComponent?.type === '[default]' &&
+              (typeof cell.value === 'string')
+                ? styles.shaCellParent
+                : styles.shaCellParentFW
+            }
             onMouseOver={() => {
               void (showExpandedView ? getCellRef(cellRef, checkOverflow()) : getCellRef(null, null));
             }}

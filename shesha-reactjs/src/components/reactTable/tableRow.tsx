@@ -67,7 +67,7 @@ export const TableRow: FC<ISortableRowProps> = (props) => {
     inlineEditorComponents,
     inlineDisplayComponents,
     onMouseOver,
-    showExpandedView,
+    showExpandedView
   } = props;
 
   const { styles } = useStyles();

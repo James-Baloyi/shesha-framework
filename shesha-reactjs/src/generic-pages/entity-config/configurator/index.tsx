@@ -134,7 +134,7 @@ export const EntityConfiguratorPage: PageWithLayout<IEntityConfiguratorPageProps
       disabled: entityConfigId === null || !allowDelete,
       onClick: () => {
         modal.confirm({
-          content: 'Are you sure want to delete?',
+          content: 'are you sure you want to delete?',
           onOk: () => {
             if (configuratorRef.current) {
               setLoadingState({ loading: true, loadingText: 'Saving...' });

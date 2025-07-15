@@ -200,7 +200,7 @@ export const ColumnsList: FC<IProps> = ({ value, onChange, readOnly }) => {
         dataIndex: 'operations',
         render: (_, record) =>
           columns.length >= 1 ? (
-            <Popconfirm title="Are you sure want to delete this column?" onConfirm={() => handleDeleteTab(record.id)}>
+            <Popconfirm title="are you sure you want to delete this column?" onConfirm={() => handleDeleteTab(record.id)}>
               <a>Delete</a>
             </Popconfirm>
           ) : null,

@@ -97,7 +97,6 @@ export const RowCell: FC<IRowCellProps> = ({ cell, preContent, row, rowIndex, ce
             {cell.render('Cell')}
           </div>
       }
-
     </div>
   );
 };

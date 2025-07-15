@@ -100,7 +100,7 @@ export const CrudActionButtons = () => {
       },
       {
         title: 'Delete',
-        confirmationText: 'Are you sure want to delete this item?',
+        confirmationText: 'are you sure you want to delete this item?',
         executer: onDeleteClick,
         icon: <DeleteOutlined />,
         isVisible: allowDelete && (mode === 'read' || (mode === 'update' && !allowChangeMode)),

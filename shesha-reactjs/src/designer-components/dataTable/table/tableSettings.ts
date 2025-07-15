@@ -345,18 +345,6 @@ export const getSettings = (data: ITableComponentProps) => {
                                         }
                                     ]
                                 })
-
-                                .addSettingsInput({
-                                    id: nanoid(),
-                                    propertyName: 'onRowSave',
-                                    label: 'On Row Save',
-                                    inputType: 'codeEditor',
-                                    parentId: crudTabId,
-                                    tooltip: 'Custom business logic to be executed on saving of new/updated row (e.g. custom validation / calculations). This handler should return an object or a Promise<object>.',
-                                    hidden: { _code: 'return getSettingValue(data?.canAddInline) === "no" && getSettingValue(data?.canEditInline) === "no";', _mode: 'code', _value: false } as any,
-                                    description: 'Allows custom business logic to be executed on saving of new/updated row (e.g. custom validation / calculations).',
-                                    exposedVariables: ROW_SAVE_EXPOSED_VARIABLES,
-                                })
                                 .addSettingsInput({
                                     id: nanoid(),
                                     propertyName: 'canDeleteInline',
@@ -412,9 +400,16 @@ export const getSettings = (data: ITableComponentProps) => {
                         id: eventsTabId,
                         components: [
                             ...new DesignerToolbarSettings()
+
                                 .addConfigurableActionConfigurator({
                                     id: nanoid(),
-                                    propertyName: "dblClickActionConfiguration",
+                                    propertyName: "onRowSave",
+                                    parentId: 'root',
+                                    label: "On Row Save",
+                                })
+                                .addConfigurableActionConfigurator({
+                                    id: nanoid(),
+                                    propertyName: "onRowSave",
                                     parentId: 'root',
                                     label: "On Double-Click",
                                 })
@@ -481,21 +476,21 @@ export const getSettings = (data: ITableComponentProps) => {
                                                 {
                                                     id: nanoid(),
                                                     propertyName: 'tableStyle',
-                                                    label: 'Table Style',
+                                                    label: 'Table Style Style',
                                                     type: 'codeEditor',
                                                     parentId: layoutTabId,
                                                     description: 'The style that will be applied to the table',
                                                     exposedVariables: [],
                                                 },
-                                                {
-                                                    id: nanoid(),
-                                                    propertyName: 'containerStyle',
-                                                    label: 'Table Container style',
-                                                    type: 'codeEditor',
-                                                    parentId: layoutTabId,
-                                                    description: 'The style that will be applied to the table container/wrapper',
-                                                    exposedVariables: [],
-                                                }
+                                                // {
+                                                //     id: nanoid(),
+                                                //     propertyName: 'containerStyle',
+                                                //     label: 'Table Container style',
+                                                //     type: 'codeEditor',
+                                                //     parentId: layoutTabId,
+                                                //     description: 'The style that will be applied to the table container/wrapper',
+                                                //     exposedVariables: [],
+                                                // }
                                             ]
                                         })
                                         .toJson()

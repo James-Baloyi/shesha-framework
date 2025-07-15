@@ -307,11 +307,11 @@ export const getColumnSettings = (data?: any) => ({
                                 },
                                 {
                                     "id": "isVisible1",
-                                    "type": "switch",
+                                    "type": "settingsInput",
+                                    "inputType": "switch",
                                     "propertyName": "isVisible",
-                                    "label": "Hide",
+                                    "label": "Visible",
                                     "labelAlign": "right",
-                                    "jsSetting": true,
                                 }
                             ]
                         },

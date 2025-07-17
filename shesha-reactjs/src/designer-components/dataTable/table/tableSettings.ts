@@ -404,14 +404,16 @@ export const getSettings = (data: ITableComponentProps) => {
                                 .addConfigurableActionConfigurator({
                                     id: nanoid(),
                                     propertyName: "onRowSave",
-                                    parentId: 'root',
+                                    description: 'Custom business logic to be executed when saving a new/updated row.',
                                     label: "On Row Save",
+                                    hideLabel: true,
                                 })
                                 .addConfigurableActionConfigurator({
                                     id: nanoid(),
-                                    propertyName: "onRowSave",
-                                    parentId: 'root',
+                                    propertyName: "onDoubleClick",
+                                    description: 'Custom business logic to be executed when double-clicking on a row.',
                                     label: "On Double-Click",
+                                    hideLabel: true,
                                 })
                                 .addConfigurableActionConfigurator({
                                     id: nanoid(),

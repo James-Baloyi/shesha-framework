@@ -361,12 +361,12 @@ export const DataTable: FC<Partial<IIndexTableProps>> = ({
   // http, moment
   const performOnRowSave = useMemo<OnSaveHandler>(() => {
     if (!onRowSave) return (data) => Promise.resolve(data);
-
     const executer = new Function('data, form, globalState, http, moment, application', onRowSave);
     return (data, formApi, globalState) => {
       const preparedData = executer(data, formApi, globalState, httpClient, moment, appContextData);
       return Promise.resolve(preparedData);
     };
+    console.log(onRowSave);
   }, [onRowSave, httpClient]);
 
   const { executeAction } = useConfigurableActionDispatcher();

@@ -359,6 +359,8 @@ export const DataTable: FC<Partial<IIndexTableProps>> = ({
     sortMode === 'standard' ? userSorting?.map<SortingRule<string>>((c) => ({ id: c.id, desc: c.desc })) : undefined;
 
   // http, moment
+  const { executeAction } = useConfigurableActionDispatcher();
+
   const performOnRowSave = useMemo<OnSaveHandler>(() => {
     if (!onRowSave) return (data) => Promise.resolve(data);
     const executer = new Function('data, form, globalState, http, moment, application', onRowSave);
@@ -366,10 +368,8 @@ export const DataTable: FC<Partial<IIndexTableProps>> = ({
       const preparedData = executer(data, formApi, globalState, httpClient, moment, appContextData);
       return Promise.resolve(preparedData);
     };
-    console.log(onRowSave);
   }, [onRowSave, httpClient]);
 
-  const { executeAction } = useConfigurableActionDispatcher();
   const performOnRowSaveSuccess = useMemo<OnSaveSuccessHandler>(() => {
     if (!onRowSaveSuccess)
       return () => {

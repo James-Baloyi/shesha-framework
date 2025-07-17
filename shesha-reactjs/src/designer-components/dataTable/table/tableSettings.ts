@@ -433,7 +433,6 @@ export const getSettings = (data: ITableComponentProps) => {
                         ]
                     },
                     {
-
                         key: 'appearance',
                         title: 'Appearance',
                         id: layoutTabId,

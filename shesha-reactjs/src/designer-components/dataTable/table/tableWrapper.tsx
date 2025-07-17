@@ -87,7 +87,6 @@ export const TableWrapper: FC<ITableComponentProps> = (props) => {
         else setIsInProgressFlag({ isFiltering: false, isSelectingColumns: false });
     };
 
-
     return (
         <SidebarContainer
             rightSidebarProps={{

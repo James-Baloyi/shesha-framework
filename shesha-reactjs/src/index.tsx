@@ -8,6 +8,8 @@ export * from './interfaces';
 export * from './providers';
 export * from './shesha-constants';
 export * from './utils';
+export * from  './hooks/formComponentHooks';
+export * from './designer-components/_settings/utils/index';
 export { type GetProps, type MutateProps, get, mutate } from './utils/fetchers';
 export * from './utils/publicUtils';
 export * from './components/mainLayout/constant';

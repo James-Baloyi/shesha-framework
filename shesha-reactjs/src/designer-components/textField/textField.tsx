@@ -64,6 +64,8 @@ const TextFieldComponent: IToolboxComponent<ITextFieldComponentProps, ITextField
       minLength: model.validate?.minLength,
     };
 
+
+    console.log("MODEL", model);
     return (
       <ConfigurableFormItem model={model} >
         {(value, onChange) => {

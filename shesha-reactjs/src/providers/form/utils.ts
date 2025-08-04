@@ -1889,3 +1889,4 @@ export const convertFormMarkupToFlatStructure = (markup: FormRawMarkup, formSett
 
   return newFlatComponents;
 };
+

@@ -1,6 +1,8 @@
 import { buttonTypes } from '@/designer-components/button/util';
 import { DesignerToolbarSettings } from '@/interfaces/toolbarSettings';
 import { FormLayout } from 'antd/lib/form/Form';
+import React from 'react';
+import BasicComponent from './reactComp';
 
 export const getGroupSettings = () => {
 
@@ -23,9 +25,10 @@ export const getGroupSettings = () => {
                             .addSettingsInput({
                                 id: 'f061d971-8b38-4b82-b192-563259afc159',
                                 parentId: 's4gmBg31azZC0UjZjpfTm',
-                                inputType: 'textField',
+                                inputType: 'customButton' as any,
                                 propertyName: 'name',
                                 label: 'Group Name',
+                                readOnly: false,
                                 jsSetting: false,
                                 validate: {
                                     required: true

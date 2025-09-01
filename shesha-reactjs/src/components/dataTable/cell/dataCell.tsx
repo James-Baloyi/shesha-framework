@@ -9,7 +9,7 @@ import TimeCell from './default/timeCell';
 import { CustomErrorBoundary } from '@/components';
 import { DEFAULT_FORM_SETTINGS, FormItemProvider, IConfigurableFormComponent, useForm } from '@/providers';
 import { upgradeComponent } from '@/providers/form/utils';
-import { getInjectables } from './utils';
+import { getInjectables, removeFontColorFromInputStyles } from './utils';
 import { IColumnEditorProps, standardCellComponentTypes } from '@/providers/datatableColumnsConfigurator/models';
 import { IComponentWrapperProps, IConfigurableCellProps, IDataCellProps } from './interfaces';
 import { ITableDataColumn } from '@/providers/dataTable/interfaces';
@@ -17,6 +17,7 @@ import { MultivalueReferenceListCell } from './default/multivalueReferenceListCe
 import { ReferenceListCell } from './default/referenceListCell';
 import { useCrud } from '@/providers/crudContext';
 import { useActualContextData, useDeepCompareMemo } from '@/hooks';
+import { useFormComponentStyles } from '@/hooks/formComponentHooks';
 import { useFormDesignerComponents } from '@/providers/form/hooks';
 import { updateModelExcludeFiltered } from '@/components/formComponentSelector/adapters';
 import { getEditorAdapter } from '@/components/formComponentSelector';
@@ -110,6 +111,18 @@ const ComponentWrapper: FC<IComponentWrapperProps> = (props) => {
     return editorModel;
   }, [actualModel, columnConfig, propertyMeta, injectables]);
 
+  const originalStyles = useFormComponentStyles(componentModel);
+  const modifiedStyles = useMemo(() => ({
+    ...originalStyles,
+    fontStyles: removeFontColorFromInputStyles(originalStyles.fontStyles),
+    fullStyle: removeFontColorFromInputStyles(originalStyles.fullStyle),
+  }), [originalStyles]);
+
+  const finalComponentModel = useMemo(() => ({
+    ...componentModel,
+    allStyles: modifiedStyles,
+  }), [componentModel, modifiedStyles]);
+
   const componentRef = useRef();
 
   if (!component) {
@@ -121,7 +134,7 @@ const ComponentWrapper: FC<IComponentWrapperProps> = (props) => {
       {/* set namePrefix = '' to reset subForm prefix */}
       <FormItemProvider namePrefix=''> 
         <div className={cx(styles.shaDataCell, styles.shaSpanCenterVertically)}>
-          <FormComponentMemo componentModel={componentModel} componentRef={componentRef} />
+          <FormComponentMemo componentModel={finalComponentModel} componentRef={componentRef} />
         </div>
       </FormItemProvider>
     </CustomErrorBoundary>

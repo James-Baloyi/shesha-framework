@@ -1,3 +1,6 @@
+//utils in cell folder
+
+import React from "react";
 import { IComponentMetadata } from "@/index";
 import { IComponentWrapperProps } from "./interfaces";
 import { YesNoInheritJs } from "../interfaces";
@@ -57,4 +60,16 @@ export const getInjectables = ({ defaultRow, defaultValue }: IComponentWrapperPr
 
 export const asNumber = (value: any): number => {
   return typeof value === 'number' ? value : null;
+};
+
+/**
+ * Removes font-color from input component styles to allow table-level font color to be inherited
+ * @param styles - CSS styles object that may contain color properties
+ * @returns CSS styles object with color properties removed
+ */
+export const removeFontColorFromInputStyles = (styles?: React.CSSProperties): React.CSSProperties => {
+  if (!styles) return {};
+  
+  const { color, ...stylesWithoutColor } = styles;
+  return stylesWithoutColor;
 };

@@ -21,6 +21,7 @@ import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
 import { getValueByPropertyName } from '@/utils/object';
 import { getSettings } from './settingsForm';
 import { defaultStyles } from './utils';
+import { hasNumber } from '@/utils/style';
 
 export interface IEntityPickerComponentProps extends IConfigurableFormComponent, IStyleType {
   placeholder?: string;
@@ -106,6 +107,15 @@ const EntityPickerComponent: IToolboxComponent<IEntityPickerComponentProps> = {
       ...model.allStyles.fontStyles,
       ...model.allStyles.dimensionsStyles,
     } : model.allStyles.fullStyle;
+    
+
+      const height = model.allStyles.fullStyle.height;
+        let calculatedHeight = '';
+    
+      if(hasNumber(height)){
+          calculatedHeight = `calc(${height} + 2px)`
+      }
+    
 
     return (
       <ConfigurableFormItem model={model} initialValue={model.defaultValue}>
@@ -122,7 +132,7 @@ const EntityPickerComponent: IToolboxComponent<IEntityPickerComponentProps> = {
               incomeValueFunc={incomeValueFunc}
               outcomeValueFunc={outcomeValueFunc}
               placeholder={model.placeholder}
-              style={{ ...finalStyle }}
+              style={{ ...finalStyle, height: calculatedHeight }}
               formId={model.id}
               readOnly={model.readOnly}
               displayEntityKey={displayEntityKey}

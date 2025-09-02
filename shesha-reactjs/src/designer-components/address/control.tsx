@@ -7,6 +7,7 @@ import { useGet } from '@/hooks';
 import { IOpenCageResponse } from '@/components/googlePlacesAutocomplete/models';
 import { customAddressEventHandler } from '@/components/formDesigner/components/utils';
 import { IStyleType, useAvailableConstantsData } from '@/index';
+import { hasNumber } from '@/utils/style';
 
 interface IAutoCompletePlacesFieldProps extends IAddressCompomentProps {
   value?: any;
@@ -51,6 +52,13 @@ const AutoCompletePlacesControl: FC<IAutoCompletePlacesFieldProps> = (model) => 
   const disableGoogleEvent = (value: string) =>
     (value?.length || 0) < parseInt((minCharactersSearch as string) || '0', 10) - 1;
 
+  const height = model.allStyles.fullStyle.height;
+    let calculatedHeight = '';
+
+  if(hasNumber(height)){
+      calculatedHeight = `calc(${height} + 2px)`
+  }
+
   return (
     <Fragment>
       <ValidationErrors error={error} />
@@ -64,7 +72,7 @@ const AutoCompletePlacesControl: FC<IAutoCompletePlacesFieldProps> = (model) => 
         disabled={readOnly}
         disableGoogleEvent={disableGoogleEvent}
         searchOptions={getSearchOptions(model)}
-        style={model.allStyles.fullStyle}
+        style={{...model.allStyles.fullStyle, height: calculatedHeight}}
         font={model.font}
         {...customAddressEventHandler(model, allData, onChange, onSelect, onFocusCustom)}
       />

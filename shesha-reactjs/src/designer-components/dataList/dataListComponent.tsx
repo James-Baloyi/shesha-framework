@@ -92,7 +92,7 @@ const DataListComponent: IToolboxComponent<IDataListComponentProps> = {
     } 
   };
 }),
-settingsFormMarkup: (data) => getSettings(data),
+settingsFormMarkup: getSettings,
 };
 
 export default DataListComponent;

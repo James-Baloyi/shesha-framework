@@ -861,6 +861,20 @@ export const getSettings = (data: any) => {
                               }
                             ]
                           })
+                          .addSettingsInputRow({
+                            id: nanoid(),
+                            parentId: containerStylePnlId,
+                            inputs: [
+                              {
+                                id: nanoid(),
+                                propertyName: 'showBorder',
+                                label: 'Show Border',
+                                type: 'switch',
+                                description: 'Display borders around list items.',
+                                jsSetting: true,
+                              }
+                            ]
+                          })
                           .addCollapsiblePanel({
                             id: nanoid(),
                             propertyName: 'containerDimensionsPanel',

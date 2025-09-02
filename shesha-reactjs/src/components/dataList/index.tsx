@@ -434,9 +434,13 @@ export const DataList: FC<Partial<IDataListProps>> = ({
     const itemStyles: CSSProperties = {
       ...(stylesAsCSS || {}),
       ...(orientation === 'horizontal' && { flexShrink: 0 }),
-      ...(orientation === 'wrap' && showBorder && {
-        border: '1px solid #d3d3d3',
-        borderRadius: '8px',
+      ...(showBorder && {
+        border: stylesAsCSS?.border || (orientation === 'wrap' ? '1px solid #d3d3d3' : '1px solid #d3d3d3'),
+        borderRadius: stylesAsCSS?.borderRadius || (orientation === 'wrap' ? '8px' : '4px'),
+      }),
+      ...(!showBorder && {
+        border: 'none',
+        borderRadius: '0',
       }),
       ...(orientation !== 'wrap'  &&  {
         marginTop: gap !== undefined ? (typeof gap === 'number' ? `${gap}px` : gap) : '0px',
@@ -471,7 +475,7 @@ export const DataList: FC<Partial<IDataListProps>> = ({
             {rows.current?.length > index ? rows.current[index] : null}
           </div>
         </ConditionalWrap>
-        {(orientation !== "wrap" && (!isLastItem) && !hasBorder() && gap === undefined && (
+        {(orientation !== "wrap" && (!isLastItem) && !hasBorder() && !showBorder && gap === undefined && (
           <Divider
             style={{ margin: '10px', width: itemStyles.width }}
             className={classNames(styles.shaDatalistComponentDivider, { selected })}

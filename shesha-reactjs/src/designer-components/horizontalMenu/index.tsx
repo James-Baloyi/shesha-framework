@@ -156,27 +156,6 @@ export const MenuListComponent: IToolboxComponent<IMenuListProps> = {
       </ConfigurableComponentRenderer>
     );
   },
-  initModel: (model) => ({
-    ...model,
-    fontSize: "14",
-    gap: "12",
-    overflow: "dropdown",
-    dimensions: {
-      width: "500px",
-      ...model.dimensions,
-    },
-    width: "500px",
-    font: {
-      size: 14,
-      type: 'Arial',
-      weight: 'normal',
-      color: '#000',
-      align: 'left',
-      ...model.font,
-    },
-    menuItemColor: "#000",
-    hoverItemColor: "#000",
-  }),
   settingsFormMarkup: (data) => getSettings(data),
   validateSettings: (model) => validateConfigurableComponentSettings(getSettings(model), model),
     migrator: (m) => m

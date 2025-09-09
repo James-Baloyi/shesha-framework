@@ -8,6 +8,7 @@ import {
   IConfigurableFormComponent,
   ISidebarMenuItem,
   IToolboxComponent,
+  migratePrevStyles,
   useFormData,
   useMainMenu,
   validateConfigurableComponentSettings,
@@ -18,10 +19,11 @@ import { ItemType } from "antd/es/menu/interface";
 import React from "react";
 import Editor from "./modal";
 import { getSettings } from "./settings";
+import { defaultStyles } from "./utils";
 
 interface IMenuListProps extends IConfigurableFormComponent, ILayoutColor {
   items?: ItemType[];
-  overflow: "dropdown" | "menu" | "scroll";
+  overflow?: "dropdown" | "menu" | "scroll";
   fontSize?: string;
   gap?: string;
   height?: string;
@@ -66,20 +68,20 @@ export const MenuListComponent: IToolboxComponent<IMenuListProps> = {
 
     const context: IConfigurableComponentContext<ISideBarMenuProps> = {
       settings: loadedMenu,
-      load: () => {/**/},
+      load: () => {/**/ },
       save: (settings: ISideBarMenuProps) =>
         saveMainMenu({ ...loadedMenu, ...settings }).then(() => {
           changeMainMenu({ ...loadedMenu, ...settings });
         }),
-    setIsInProgressFlag: () => {/**/},
-    setSucceededFlag: () => {/**/},
-    setFailedFlag: () => {/**/},
-    setActionedFlag: () => {/**/},
-    resetIsInProgressFlag: () => {/**/},
-    resetSucceededFlag: () => {/**/},
-    resetFailedFlag: () => {/**/},
-    resetActionedFlag: () => {/**/},
-    resetAllFlag: () => {/**/},
+      setIsInProgressFlag: () => {/**/ },
+      setSucceededFlag: () => {/**/ },
+      setFailedFlag: () => {/**/ },
+      setActionedFlag: () => {/**/ },
+      resetIsInProgressFlag: () => {/**/ },
+      resetSucceededFlag: () => {/**/ },
+      resetFailedFlag: () => {/**/ },
+      resetActionedFlag: () => {/**/ },
+      resetAllFlag: () => {/**/ },
     };
 
     const fontSize = model?.font?.size || model?.fontSize || "14";
@@ -158,7 +160,6 @@ export const MenuListComponent: IToolboxComponent<IMenuListProps> = {
     ...model,
     fontSize: "14",
     gap: "12",
-    height: "6",
     overflow: "dropdown",
     dimensions: {
       width: "500px",
@@ -178,6 +179,8 @@ export const MenuListComponent: IToolboxComponent<IMenuListProps> = {
   }),
   settingsFormMarkup: (data) => getSettings(data),
   validateSettings: (model) => validateConfigurableComponentSettings(getSettings(model), model),
+    migrator: (m) => m
+      .add<IMenuListProps>(0, (prev) => ({ ...migratePrevStyles(prev, defaultStyles()) })),
 };
 
 export default MenuListComponent;

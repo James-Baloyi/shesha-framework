@@ -518,7 +518,6 @@ export const getSettings = (data: any) => {
                       content: {
                         id: nanoid(),
                         components: [...new DesignerToolbarSettings()
-                          // Menu-specific style properties
                           .addSettingsInput({
                             id: nanoid(),
                             inputType: 'codeEditor',
@@ -547,7 +546,6 @@ export const getSettings = (data: any) => {
                             label: 'Style On Sub Menu',
                             description: 'Style applied to submenu items',
                           })
-                          // Menu color properties
                           .addColorPicker({
                             id: nanoid(),
                             propertyName: 'selectedItemColor',

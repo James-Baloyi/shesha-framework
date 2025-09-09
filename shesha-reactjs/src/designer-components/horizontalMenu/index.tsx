@@ -13,7 +13,10 @@ import {
   useMainMenu,
   validateConfigurableComponentSettings,
 } from '@/index';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
+import { IBackgroundValue } from '../_settings/utils/background/interfaces';
+import { getBackgroundStyle, getBackgroundImageUrl } from '../_settings/utils/background/utils';
+import { useSheshaApplication } from '@/providers';
 import { IConfigurableComponentContext } from '@/providers/configurableComponent/contexts';
 import { ItemType } from "antd/es/menu/interface";
 import React from "react";
@@ -46,10 +49,7 @@ interface IMenuListProps extends IConfigurableFormComponent, ILayoutColor {
     color?: string;
     align?: string;
   };
-  background?: {
-    type?: string;
-    color?: string;
-  };
+  background?: IBackgroundValue;
 }
 
 interface ISideBarMenuProps {
@@ -65,6 +65,19 @@ export const MenuListComponent: IToolboxComponent<IMenuListProps> = {
   Factory: ({ model }) => {
     const { data } = useFormData();
     const { loadedMenu, changeMainMenu, saveMainMenu } = useMainMenu();
+    const { backendUrl, httpHeaders } = useSheshaApplication();
+    const [backgroundImageUrl, setBackgroundImageUrl] = useState<string>('');
+
+    // Handle stored file background images
+    useEffect(() => {
+      if (model.background?.type === 'storedFile' && model.background?.storedFile?.id) {
+        getBackgroundImageUrl(model.background, backendUrl, httpHeaders)
+          .then(url => setBackgroundImageUrl(url))
+          .catch(() => setBackgroundImageUrl(''));
+      } else {
+        setBackgroundImageUrl('');
+      }
+    }, [model.background, backendUrl, httpHeaders]);
 
     const context: IConfigurableComponentContext<ISideBarMenuProps> = {
       settings: loadedMenu,
@@ -90,22 +103,37 @@ export const MenuListComponent: IToolboxComponent<IMenuListProps> = {
     const width = model?.dimensions?.width || model?.width || "500px";
 
     const colors: ILayoutColor = {
-      ...filterObjFromKeys(model, [
-        "selectedItemColor",
-        "selectedItemBackground",
-        "itemColor",
-        "itemBackground",
-        "hoverItemColor",
-        "hoverItemBackground",
-      ]),
-      itemBackground: model.background?.color || model.itemBackground,
-      itemColor: model.font?.color || model.itemColor,
+      selectedItemColor: model.selectedItemColor,
+      selectedItemBackground: model.selectedItemBackground,
+      itemColor: model.itemColor,
+      itemBackground: model.itemBackground,
+      hoverItemColor: model.hoverItemColor,
+      hoverItemBackground: model.hoverItemBackground,
+      ...(model.itemColor ? {} : { itemColor: model.font?.color }),
+      ...(model.itemBackground ? {} : { itemBackground: model.background?.color }),
     };
+
+    const wrapperBackgroundStyles = useMemo(() => {
+      const backgroundStyles = model.background 
+        ? getBackgroundStyle(model.background, {}, backgroundImageUrl) 
+        : {};
+      
+      return {
+        ...model.allStyles?.backgroundStyles,
+        ...backgroundStyles,
+      };
+    }, [model.allStyles?.backgroundStyles, model.background, backgroundImageUrl]);
 
     const finalStyle = useMemo(() => {
       return {
         ...model.allStyles?.fullStyle,
         ...(model.style ? getStyle(model.style, data) : {}),
+        background: undefined,
+        backgroundColor: undefined,
+        backgroundImage: undefined,
+        backgroundSize: undefined,
+        backgroundPosition: undefined,
+        backgroundRepeat: undefined,
       };
     }, [model.allStyles, model.style, data]);
 
@@ -129,7 +157,10 @@ export const MenuListComponent: IToolboxComponent<IMenuListProps> = {
       >
         {(componentState, BlockOverlay) => {
           return (
-            <div className={`sidebar ${componentState.wrapperClassName}`}>
+            <div 
+              className={`sidebar ${componentState.wrapperClassName}`}
+              style={wrapperBackgroundStyles as React.CSSProperties}
+            >
               <BlockOverlay>
                 <EditOutlined className="sha-configurable-sidemenu-button-wrapper" />
               </BlockOverlay>

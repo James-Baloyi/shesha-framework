@@ -66,20 +66,20 @@ export const MenuListComponent: IToolboxComponent<IMenuListProps> = {
 
     const context: IConfigurableComponentContext<ISideBarMenuProps> = {
       settings: loadedMenu,
-      load: () => {},
+      load: () => {/**/},
       save: (settings: ISideBarMenuProps) =>
         saveMainMenu({ ...loadedMenu, ...settings }).then(() => {
           changeMainMenu({ ...loadedMenu, ...settings });
         }),
-      setIsInProgressFlag: () => {},
-      setSucceededFlag: () => {},
-      setFailedFlag: () => {},
-      setActionedFlag: () => {},
-      resetIsInProgressFlag: () => {},
-      resetSucceededFlag: () => {},
-      resetFailedFlag: () => {},
-      resetActionedFlag: () => {},
-      resetAllFlag: () => {},
+    setIsInProgressFlag: () => {/**/},
+    setSucceededFlag: () => {/**/},
+    setFailedFlag: () => {/**/},
+    setActionedFlag: () => {/**/},
+    resetIsInProgressFlag: () => {/**/},
+    resetSucceededFlag: () => {/**/},
+    resetFailedFlag: () => {/**/},
+    resetActionedFlag: () => {/**/},
+    resetAllFlag: () => {/**/},
     };
 
     const fontSize = model?.font?.size || model?.fontSize || "14";

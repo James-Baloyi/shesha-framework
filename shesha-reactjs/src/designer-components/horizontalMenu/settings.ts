@@ -1,9 +1,9 @@
 import { DesignerToolbarSettings } from "@/index";
-import { nanoid } from "nanoid";
 import { FormLayout } from 'antd/lib/form/Form';
 import { fontTypes, fontWeightsOptions, textAlignOptions } from '../_settings/utils/font/utils';
 import { getBorderInputs, getCornerInputs } from '../_settings/utils/border/utils';
 import { backgroundTypeOptions, positionOptions, repeatOptions, sizeOptions } from '../_settings/utils/background/utils';
+import { nanoid } from "@/utils/uuid";
 
 export const getSettings = (data: any) => {
   const searchableTabsId = nanoid();

@@ -17,7 +17,6 @@ export const useHorizontalMenuDropdownStyles = ({
   styleOnSubMenu
 }: UseHorizontalMenuDropdownStylesProps) => {
   useLayoutEffect(() => {
-    if (!menuId || !colors) return;
 
     const styleId = `horizontal-menu-dropdown-styles-${menuId}`;
     
@@ -29,7 +28,6 @@ export const useHorizontalMenuDropdownStyles = ({
     const style = document.createElement('style');
     style.id = styleId;
     style.textContent = `
-      /* Dropdown styles for horizontalMenu-${menuId} */
       .horizontal-menu-${menuId}-dropdown .ant-menu {
         background: ${colors.itemBackground || 'transparent'} !important;
         border: none !important;

@@ -383,7 +383,7 @@ export const DataTable: FC<Partial<IIndexTableProps>> = ({
   }, [dblClickHandler, handleRowDoubleClick]);
 
   useEffect(() => {
-    if (handleSelectionChange && selectedIds?.length !== previousIds?.length) {
+    if (handleSelectionChange && JSON.stringify(selectedIds) !== JSON.stringify(previousIds)) {
       handleSelectionChange(selectedIds);
     }
   }, [selectedIds, handleSelectionChange, previousIds]);

@@ -14,8 +14,6 @@ export interface IReadOnlyModeSelectorProps {
 const EditModeSelector: FC<IReadOnlyModeSelectorProps> = (props) => {
   const { value, defaultValue, onChange, size, readOnly } = props;
 
-  const finalValue = (value !== undefined && value !== 'inherited') ? value : (defaultValue !== undefined ? defaultValue : value);
-
   const getEditModeValue = (val: boolean | EditMode | undefined): EditMode => {
     if (val === false) {
       return 'readOnly';
@@ -26,12 +24,11 @@ const EditModeSelector: FC<IReadOnlyModeSelectorProps> = (props) => {
     return val;
   };
 
-  const editModeValue = getEditModeValue(finalValue);
-
   return (
     <Radio.Group
       buttonStyle='solid'
-      value={editModeValue}
+      value={getEditModeValue(value)}
+      defaultValue={getEditModeValue(defaultValue)}
       onChange={(e) => onChange?.(e.target.value)}
       size={size}
       disabled={readOnly}

@@ -94,6 +94,7 @@ export const getSettings = (data: any) => {
                       labelAlign: 'right',
                       jsSetting: true,
                       defaultValue: 'editable',
+                      value: 'editable'
                     },
                   ],
                 })

@@ -14,7 +14,7 @@ export interface IReadOnlyModeSelectorProps {
 const EditModeSelector: FC<IReadOnlyModeSelectorProps> = (props) => {
   const { value, defaultValue, onChange, size, readOnly } = props;
 
-  const finalValue = defaultValue !== undefined ? defaultValue : value;
+  const finalValue = (value !== undefined && value !== 'inherited') ? value : (defaultValue !== undefined ? defaultValue : value);
 
   const getEditModeValue = (val: boolean | EditMode | undefined): EditMode => {
     if (val === false) {

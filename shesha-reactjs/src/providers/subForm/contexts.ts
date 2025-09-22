@@ -34,6 +34,7 @@ export interface ISubFormStateContext extends IPersistedFormPayload, IFlatCompon
     getForm?: boolean;
     postData?: boolean;
     putData?: boolean;
+    variableResolution?: boolean;
   };
   value?: any;
   context?: string;

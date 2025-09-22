@@ -98,7 +98,7 @@ export interface IShaFormInstance<Values = any> {
     setFormMode: (formMode: FormMode) => void;
     setFormData: (payload: ISetFormDataPayload) => void;
     setParentFormValues: (values: any) => void;
-    setValidationErrors: (payload: IFormValidationErrors) => void;
+    setValidationErrors?: (payload: IFormValidationErrors) => void;
 
     onFinish?: (values: Values) => void;
 

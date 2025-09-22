@@ -4,6 +4,7 @@ import React, {
   PropsWithChildren,
   useContext,
   useEffect,
+  useMemo,
   useReducer,
   useRef,
   useState
@@ -46,7 +47,7 @@ import { IFormApi } from '../form/formApi';
 import { IDelayedUpdateGroup } from '../delayedUpdateProvider/models';
 import { ISetFormDataPayload } from '../form/contexts';
 import { deepMergeValues } from '@/utils/object';
-import { useActualContextExecution } from '@/hooks/useActualContextExecution';
+import { useActualContextExecution, useActualContextExecutionWithStatus } from '@/hooks/useActualContextExecution';
 
 interface IFormLoadingState {
   isLoading: boolean;
@@ -89,10 +90,24 @@ const SubFormProvider: FC<PropsWithChildren<ISubFormProviderProps>> = (props) =>
   
   const { backendUrl, httpHeaders } = useSheshaApplication();
 
-  const actualQueryParams = useActualContextExecution(props.queryParams);
-  const actualGetUrl = useActualContextExecution(props.getUrl);
+  const queryParamsResult = useActualContextExecutionWithStatus(props.queryParams);
+  const getUrlResult = useActualContextExecutionWithStatus(props.getUrl);
   const actualPostUrl = useActualContextExecution(props.postUrl);
   const actualPutUrl = useActualContextExecution(props.putUrl);
+
+  const actualQueryParams = queryParamsResult.value;
+  const actualGetUrl = getUrlResult.value;
+
+  const areVariablesResolving = useMemo(() => {
+    if (dataSource !== 'api') return false;
+
+    const criticalVariables = [
+      queryParams ? queryParamsResult : null,
+      props.getUrl ? getUrlResult : null,
+    ].filter(Boolean);
+
+    return criticalVariables.some(variable => variable.isResolving || variable.hasError);
+  }, [queryParamsResult, getUrlResult, queryParams, props.getUrl, dataSource]);
 
   const onChangeInternal = (newValue: any) => {
     if (onChange) 
@@ -226,6 +241,10 @@ const SubFormProvider: FC<PropsWithChildren<ISubFormProviderProps>> = (props) =>
       return;
     }
 
+    if (areVariablesResolving) {
+      return;
+    }
+
     // Skip loadng if entity with this Id is already fetched
     if (!forceFetchData && finalQueryParams?.id === state.fetchedEntityId) {
       return;
@@ -289,7 +308,7 @@ const SubFormProvider: FC<PropsWithChildren<ISubFormProviderProps>> = (props) =>
   // fetch data on first rendering and on change of some properties
   useDeepCompareEffect(() => {
     if (dataSource === 'api') fetchData();
-  }, [dataSource, finalQueryParams]); // TODO: memoize final getUrl and add as a dependency
+  }, [dataSource, finalQueryParams, areVariablesResolving]); // TODO: memoize final getUrl and add as a dependency
 
   const postData = useDebouncedCallback(() => {
     if (!actualPostUrl) {
@@ -508,6 +527,7 @@ const SubFormProvider: FC<PropsWithChildren<ISubFormProviderProps>> = (props) =>
           getForm: formLoadingState.isLoading,
           postData: isPosting,
           putData: isUpdating,
+          variableResolution: areVariablesResolving,
         },
         components: state?.components,
         formSettings: {

@@ -252,7 +252,7 @@ export interface IConfigurableFormComponent
   subscribedEventNames?: string[];
 
   /** Default style CSS applied as expression */
-  style?: string;
+  style?: string | CSSProperties;
 
   /** Default css style applied as string */
   stylingBox?: string;

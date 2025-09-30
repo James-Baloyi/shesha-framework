@@ -32,7 +32,7 @@ const DataListComponent: IToolboxComponent<IDataListComponentProps> = {
       : <NotConfiguredWarning />;
   },
   migrator: (m) => m
-    .add<IDataListComponentProps>(0, (prev) => ({ ...prev, formSelectionMode: 'name', selectionMode: 'none', items: [] }))
+    .add<IDataListComponentProps>(0, (prev: IDataListComponentProps) => ({ ...prev, formSelectionMode: 'name', selectionMode: 'none', items: [] }))
     .add<IDataListComponentProps>(1, (prev) => ({ ...prev, orientation: 'vertical', listItemWidth: 1 }))
     .add<IDataListComponentProps>(2, (prev) => migratePropertyName(migrateCustomFunctions(prev)))
     .add<IDataListComponentProps>(3, (prev) => migrateVisibility(prev))
@@ -49,14 +49,14 @@ const DataListComponent: IToolboxComponent<IDataListComponentProps> = {
 
       };
     })
-    .add<IDataListComponentProps>(6, (prev) => ({ ...prev, dblClickActionConfiguration: migrateNavigateAction(prev.dblClickActionConfiguration) }))
-    .add<IDataListComponentProps>(7, (prev: IDataListComponentProps) => ({
+    .add<IDataListComponentProps>(6, (prev: any) => ({ ...prev, dblClickActionConfiguration: migrateNavigateAction(prev.dblClickActionConfiguration) }))
+    .add<IDataListComponentProps>(7, (prev: any) => ({
       ...migrateFormApi.properties(prev),
       onNewListItemInitialize: migrateFormApi.full(prev.onNewListItemInitialize),
       onListItemSave: migrateFormApi.full(prev.onListItemSave),
     }))
-    .add<IDataListComponentProps>(8, (prev) => ({ ...migratePrevStyles(prev, defaultStyles()) }))
-    .add<IDataListComponentProps>(9, (prev) => {
+    .add<IDataListComponentProps>(8, (prev: any) => ({ ...migratePrevStyles(prev, defaultStyles()) }))
+    .add<IDataListComponentProps>(9, (prev: any) => {
       return {
         ...prev,
         desktop: { ...prev.desktop,
@@ -69,13 +69,17 @@ const DataListComponent: IToolboxComponent<IDataListComponentProps> = {
             height: prev.cardHeight,
           } },
       };
-    }).add<IDataListComponentProps>(10, (prev) => {
+    }).add<IDataListComponentProps>(10, (prev: any) => {
       const cardSpacing = prev.cardSpacing || '0px';
       const parsedGap = parseInt(cardSpacing.replace('px', ''), 10);
       const gap = isNaN(parsedGap) ? 0 : parsedGap;
 
+      // Convert style from string to CSSProperties if needed
+      const style = typeof prev.style === 'string' ? undefined : prev.style;
+
       return {
         ...prev,
+        style,
         orientation: prev.orientation,
         desktop: {
           ...prev.desktop,
@@ -90,7 +94,7 @@ const DataListComponent: IToolboxComponent<IDataListComponentProps> = {
             maxHeight: 'auto',
           },
         },
-      };
+      } as IDataListComponentProps;
     }),
   settingsFormMarkup: (data) => getSettings(data),
 };

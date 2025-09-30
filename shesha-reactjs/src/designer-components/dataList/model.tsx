@@ -1,9 +1,11 @@
+import { CSSProperties } from 'react';
 import { IDataListBaseProps, InlineEditMode } from "@/components/dataList/models";
 import { IConfigurableActionConfiguration } from "@/interfaces/configurableAction";
 import { IConfigurableFormComponent, YesNoInherit } from "@/interfaces";
 import { DataTableFullInstance } from "@/providers/dataTable/contexts";
 
-export interface IDataListComponentProps extends IDataListBaseProps, IDataListInlineEditableProps, IConfigurableFormComponent {
+export interface IDataListComponentProps extends IDataListBaseProps, IDataListInlineEditableProps, Omit<IConfigurableFormComponent, 'style'> {
+  style?: CSSProperties;
 }
 
 export interface IDataListWithDataSourceProps extends IDataListComponentProps {

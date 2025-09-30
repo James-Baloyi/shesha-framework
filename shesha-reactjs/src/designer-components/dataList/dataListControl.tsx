@@ -250,7 +250,7 @@ const DataListControl: FC<IDataListWithDataSourceProps> = (props) => {
       <DataList
         {...props}
         onRowDeleteSuccessAction={props.onRowDeleteSuccessAction}
-        style={allStyles.fullStyle as string}
+        style={allStyles.fullStyle}
         createFormId={props.createFormId ?? props.formId}
         createFormType={props.createFormType ?? props.formType}
         canAddInline={canAction(canAddInline)}

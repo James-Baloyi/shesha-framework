@@ -1,4 +1,4 @@
-import { MutableRefObject } from 'react';
+import { CSSProperties, MutableRefObject } from 'react';
 import { FormIdentifier, IStyleType } from '@/interfaces';
 import { IConfigurableActionConfiguration } from '@/interfaces/configurableAction';
 import { IPropertyMetadata } from '@/interfaces/metadata';
@@ -38,7 +38,7 @@ export interface IDataListProps extends IDataListBaseProps, IDataListActions {
   noDataIcon?: string;
 }
 
-export interface IDataListBaseProps extends IStyleType {
+export interface IDataListBaseProps extends Omit<IStyleType, 'style'> {
   id: string;
 
   dataSource?: string;
@@ -81,6 +81,8 @@ export interface IDataListBaseProps extends IStyleType {
   noDataIcon?: string;
 
   onNewListItemInitialize?: string;
+
+  style?: CSSProperties;
 }
 
 interface IDataListActions {

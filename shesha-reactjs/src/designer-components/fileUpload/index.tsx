@@ -7,7 +7,7 @@ import { IStyleType, StoredFileProvider, useFormData, useGlobalState, useSheshaA
 import { useForm } from '@/providers/form';
 import { IConfigurableFormComponent } from '@/providers/form/models';
 import {
-  evaluateValue,
+  evaluateValueAsString,
   validateConfigurableComponentSettings,
 } from '@/providers/form/utils';
 import {
@@ -47,7 +47,7 @@ const FileUploadComponent: IToolboxComponent<IFileUploadProps> = {
   Factory: ({ model }) => {
     const { backendUrl } = useSheshaApplication();
 
-    const finalStyle = !model.enableStyleOnReadonly && model.readOnly ? {
+    const finalStyle = (!model.enableStyleOnReadonly && model.readOnly) || model.listType === 'text' ? {
       ...model.allStyles.fontStyles,
       ...model.allStyles.dimensionsStyles,
     } : model.allStyles.fullStyle;
@@ -56,7 +56,7 @@ const FileUploadComponent: IToolboxComponent<IFileUploadProps> = {
     const { formSettings, formMode } = useForm();
     const { data } = useFormData();
     const { globalState } = useGlobalState();
-    const ownerId = evaluateValue(model.ownerId, { data, globalState });
+    const ownerId = evaluateValueAsString(model.ownerId, { data, globalState });
 
     const enabled = !model.readOnly;
 

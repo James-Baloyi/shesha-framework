@@ -91,11 +91,11 @@ export const FileUpload: FC<IFileUploadProps> = ({
     }
   }, [fileInfo]);
 
-  const onCustomRequest = ({ file }: RcCustomRequestOptions) => {
+  const onCustomRequest = ({ file }: RcCustomRequestOptions): void => {
     uploadFile({ file: file as File }, callback);
   };
 
-  const onReplaceClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const onReplaceClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
     e.preventDefault();
     e.stopPropagation();
     if (!isDragger) {
@@ -109,7 +109,7 @@ export const FileUpload: FC<IFileUploadProps> = ({
     }
   };
 
-  const showDeleteConfirmation = () => {
+  const showDeleteConfirmation = (): void => {
     modal.confirm({
       title: 'Delete Attachment',
       content: 'Are you sure you want to delete this attachment?',
@@ -118,16 +118,16 @@ export const FileUpload: FC<IFileUploadProps> = ({
       okType: 'danger',
       onOk: () => {
         deleteFile();
-      }
+      },
     });
   };
 
-  const onDeleteClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const onDeleteClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
     e.preventDefault();
     showDeleteConfirmation();
   };
 
-  const onPreview = () => {
+  const onPreview = (): void => {
     if (fileInfo) {
       if (!url) {
         message.error('Preview URL not available');
@@ -138,7 +138,7 @@ export const FileUpload: FC<IFileUploadProps> = ({
     }
   };
 
-  const fileControls = (color: string) => (
+  const fileControls = (color: string): JSX.Element => (
     <Space>
       <a style={{ color: color }}>
         <FileVersionsPopup fileId={fileInfo?.id} />
@@ -171,7 +171,7 @@ export const FileUpload: FC<IFileUploadProps> = ({
     </Space>
   );
 
-  const iconRender = (fileInfo) => {
+  const iconRender = (fileInfo): JSX.Element => {
     const { type, name } = fileInfo;
     if (isImageType(type)) {
       if (listType === 'thumbnail' && !isDragger) {
@@ -181,7 +181,7 @@ export const FileUpload: FC<IFileUploadProps> = ({
     return getFileIcon(type);
   };
 
-  const styledfileControls = () =>
+  const styledfileControls = (): JSX.Element =>
     fileInfo && (
       <div className={styles.styledFileControls}>
         {iconRender(fileInfo)}
@@ -191,14 +191,14 @@ export const FileUpload: FC<IFileUploadProps> = ({
       </div>
     );
 
-  const renderFileItem = (file: any) => {
+  const renderFileItem = (file: any): JSX.Element => {
     const showThumbnailControls = !isUploading && listType === 'thumbnail';
     const showTextControls = listType === 'text';
 
     return (
       <div>
         {showThumbnailControls && styledfileControls()}
-        <span title={file.name}>
+        <a title={file.name}>
           <Space>
             <div className="thumbnail-item-name">
               {(listType === 'text' || !hideFileName) && (
@@ -214,7 +214,7 @@ export const FileUpload: FC<IFileUploadProps> = ({
               {showTextControls && fileControls(theme.application.primaryColor)}
             </div>
           </Space>
-        </span>
+        </a>
       </div>
     );
   };
@@ -240,17 +240,19 @@ export const FileUpload: FC<IFileUploadProps> = ({
   const showUploadButton = allowUpload && !isUploading;
 
   const uploadButton = (
-    allowUpload && <Button
-      icon={!fileInfo ? <UploadOutlined /> : <PictureOutlined />}
-      type="link"
-      disabled={!showUploadButton}
-      style={{width: '100%', height: '100%'}}
-    >
-      {listType === 'text' ? `(press to upload)` : null}
-    </Button>
+    allowUpload && (
+      <Button
+        icon={!fileInfo ? <UploadOutlined /> : <PictureOutlined />}
+        type="link"
+        disabled={!showUploadButton}
+        style={{ width: '100%', height: '100%' }}
+      >
+        {listType === 'text' ? `(press to upload)` : null}
+      </Button>
+    )
   );
 
-  const renderStub = () => {
+  const renderStub = (): JSX.Element => {
     if (isDragger) {
       return (
         <Dragger disabled>
@@ -273,7 +275,7 @@ export const FileUpload: FC<IFileUploadProps> = ({
     );
   };
 
-  const renderUploader = () => {
+  const renderUploader = (): JSX.Element => {
     const antListType = listType === 'thumbnail' ? 'picture-card' : 'text';
 
     if (isDragger && allowUpload) {
@@ -287,9 +289,11 @@ export const FileUpload: FC<IFileUploadProps> = ({
 
     return (
       <div>
-        {!isUploading && <Upload {...fileProps} listType={antListType}>
-          {!fileInfo && uploadButton}
-        </Upload>}
+        {!isUploading && (
+          <Upload {...fileProps} listType={antListType}>
+            {!fileInfo && uploadButton}
+          </Upload>
+        )}
       </div>
     );
   };
@@ -305,12 +309,10 @@ export const FileUpload: FC<IFileUploadProps> = ({
             onVisibleChange: (visible) => setPreviewOpen(visible),
             toolbarRender: (original) => (
               <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                {
-                  <DownloadOutlined
-                    className={styles.antPreviewDownloadIcon}
-                    onClick={() => downloadFile({ fileId: previewImage?.uid, fileName: previewImage?.name })}
-                  />
-                }
+                <DownloadOutlined
+                  className={styles.antPreviewDownloadIcon}
+                  onClick={() => downloadFile({ fileId: previewImage?.uid, fileName: previewImage?.name })}
+                />
                 {original}
               </div>
             ),

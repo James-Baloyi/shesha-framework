@@ -1,5 +1,4 @@
 ﻿using Abp.Dependency;
-using Abp.Domain.Repositories;
 using Abp.Events.Bus.Entities;
 using Abp.Events.Bus.Handlers;
 using Abp.Extensions;
@@ -88,9 +87,18 @@ namespace Shesha.DynamicEntities
                     continue;
                 }
 
-                var propertyType = await GetDtoPropertyTypeAsync(property, context);
-                if (propertyType != null)
-                    properties.Add(property.Name, propertyType);
+
+                try
+                {
+                    var propertyType = await GetDtoPropertyTypeAsync(property, context);
+                    if (propertyType != null)
+                        properties.Add(property.Name, propertyType);
+                }
+                catch (NotSupportedException ex) 
+                {
+                    Logger.Warn($"Type '{type.FullName}': failed to add property `{property.Name}` of type `{property.DataType}`", ex);
+                    continue;
+                }                
             }
 
             // internal fields
@@ -427,7 +435,7 @@ namespace Shesha.DynamicEntities
             if (eventData.Entity == null)
                 return;
 
-            var entityConfig = eventData.Entity.EntityConfigRevision.EntityConfig;
+            var entityConfig = eventData.Entity.EntityConfig;
             if (entityConfig != null)
             {
                 // TODO: V1 review take versions into account

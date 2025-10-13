@@ -1,9 +1,9 @@
-import { DesignerToolbarSettings } from '@/interfaces';
+import { DesignerToolbarSettings, FormRawMarkup } from '@/interfaces';
 import { nanoid } from '@/utils/uuid';
 import { backgroundTypeOptions, positionOptions, repeatOptions, sizeOptions } from '../_settings/utils/background/utils';
 import { getBorderInputs, getCornerInputs } from '../_settings/utils/border/utils';
 import { fontWeightsOptions, fontTypes } from '../_settings/utils/font/utils';
-export const getItemSettings = () => {
+export const getItemSettings = (): FormRawMarkup => {
   // Generate unique IDs for major components
   const searchableTabsId = nanoid();
   const commonTabId = nanoid();
@@ -60,9 +60,9 @@ export const getItemSettings = () => {
                   propertyName: 'title',
                   label: 'Title',
                   labelAlign: 'right',
-                  jsSetting: true
-                }
-              ]
+                  jsSetting: true,
+                },
+              ],
             })
             .addSettingsInputRow({
               id: nanoid(),
@@ -83,8 +83,8 @@ export const getItemSettings = () => {
                   label: 'Description',
                   labelAlign: 'right',
                   jsSetting: true,
-                }
-              ]
+                },
+              ],
             })
             .addSettingsInputRow({
               id: nanoid(),
@@ -113,7 +113,7 @@ export const getItemSettings = () => {
                   ],
                   validate: { required: true },
                 },
-              ]
+              ],
             })
             .addSettingsInputRow({
               id: nanoid(),
@@ -139,7 +139,7 @@ export const getItemSettings = () => {
                   defaultValue: false,
                   validate: {},
                   jsSetting: true,
-                }]
+                }],
             })
             .addSettingsInput({
               inputType: 'switch',
@@ -184,7 +184,7 @@ export const getItemSettings = () => {
                         description: 'Write the code that returns whether this button is enabled',
                         labelAlign: 'right',
                         parentId: nextButtonContentId,
-                      }]
+                      }],
                   })
                   .addSettingsInputRow({
                     id: nanoid(),
@@ -212,10 +212,10 @@ export const getItemSettings = () => {
                         validate: {},
                         jsSetting: false,
                         settingsValidationErrors: [],
-                      }]
+                      }],
                   })
-                  .toJson()]
-              }
+                  .toJson()],
+              },
             })
             .addCollapsiblePanel({
               id: nanoid(),
@@ -283,11 +283,11 @@ export const getItemSettings = () => {
                         hideLabel: true,
                         jsSetting: false,
                         customVisibility: '',
-                      }
-                    ]
+                      },
+                    ],
                   })
-                  .toJson()]
-              }
+                  .toJson()],
+              },
             })
             .addCollapsiblePanel({
               id: nanoid(),
@@ -355,11 +355,11 @@ export const getItemSettings = () => {
                         hideLabel: true,
                         jsSetting: false,
                         customVisibility: '',
-                      }
-                    ]
+                      },
+                    ],
                   })
-                  .toJson()]
-              }
+                  .toJson()],
+              },
             })
             .addCollapsiblePanel({
               id: nanoid(),
@@ -392,8 +392,8 @@ export const getItemSettings = () => {
                         description: 'Write the code that returns whether this button is enabled',
                         labelAlign: 'right',
                         parentId: cancelButtonContentId,
-                      }
-                    ]
+                      },
+                    ],
                   })
                   .addSettingsInputRow({
                     id: nanoid(),
@@ -417,11 +417,11 @@ export const getItemSettings = () => {
                         hideLabel: true,
                         jsSetting: false,
                         customVisibility: '',
-                      }
-                    ]
+                      },
+                    ],
                   })
-                  .toJson()]
-              }
+                  .toJson()],
+              },
             })
             .addCollapsiblePanel({
               id: nanoid(),
@@ -442,8 +442,8 @@ export const getItemSettings = () => {
                     hidden: false,
                     parentId: beforeRenderContentId,
                   })
-                  .toJson()]
-              }
+                  .toJson()],
+              },
             })
             .addCollapsiblePanel({
               id: nanoid(),
@@ -482,14 +482,14 @@ export const getItemSettings = () => {
                         description:
                           'Enter custom enabled code.  You must return true to enable the component. ' +
                           'The global variable data is provided, and allows you to access the data of any form component, by using its API key.',
-                      }
-                    ]
+                      },
+                    ],
                   })
-                  .toJson()]
-              }
+                  .toJson()],
+              },
             })
-            .toJson()
-          ]
+            .toJson(),
+          ],
         },
         {
           key: '2',
@@ -549,12 +549,12 @@ export const getItemSettings = () => {
                           label: 'Color',
                           propertyName: 'font.color',
                           hideLabel: true,
-                        }
+                        },
                       ],
                     })
-                    .toJson()
-                  ]
-                }
+                    .toJson(),
+                  ],
+                },
               })
               .addCollapsiblePanel({
                 id: nanoid(),
@@ -571,16 +571,16 @@ export const getItemSettings = () => {
                     .addContainer({
                       id: nanoid(),
                       parentId: borderStylePnlId,
-                      components: getBorderInputs("", false) as any
+                      components: getBorderInputs("", false) as any,
                     })
                     .addContainer({
                       id: nanoid(),
                       parentId: borderStylePnlId,
-                      components: getCornerInputs("", false) as any
+                      components: getCornerInputs("", false) as any,
                     })
-                    .toJson()
-                  ]
-                }
+                    .toJson(),
+                  ],
+                },
               })
               .addCollapsiblePanel({
                 id: nanoid(),
@@ -628,7 +628,7 @@ export const getItemSettings = () => {
                           propertyName: "background.gradient.colors",
                           label: "Colors",
                           jsSetting: false,
-                        }
+                        },
                         ],
                         hidden: { _code: 'return  getSettingValue(data?.background?.type) !== "gradient";', _mode: 'code', _value: false } as any,
                         hideLabel: true,
@@ -667,9 +667,9 @@ export const getItemSettings = () => {
                             id: nanoid(),
                             jsSetting: false,
                             propertyName: "background.storedFile.id",
-                            label: "File ID"
-                          }
-                        ]
+                            label: "File ID",
+                          },
+                        ],
                       })
                       .addSettingsInputRow({
                         id: nanoid(),
@@ -697,7 +697,7 @@ export const getItemSettings = () => {
                             propertyName: "background.position",
                             dropdownOptions: positionOptions,
                           },
-                        ]
+                        ],
                       })
                       .addSettingsInputRow({
                         id: nanoid(),
@@ -713,9 +713,9 @@ export const getItemSettings = () => {
                         }],
                         hidden: { _code: 'return  getSettingValue(data?.background?.type) === "color";', _mode: 'code', _value: false } as any,
                       })
-                      .toJson()
+                      .toJson(),
                   ],
-                }
+                },
               })
               .addCollapsiblePanel({
                 id: nanoid(),
@@ -787,9 +787,9 @@ export const getItemSettings = () => {
                         },
                       ],
                     })
-                    .toJson()
-                  ]
-                }
+                    .toJson(),
+                  ],
+                },
               })
               .addCollapsiblePanel({
                 id: nanoid(),
@@ -807,9 +807,9 @@ export const getItemSettings = () => {
                       hideLabel: true,
                       propertyName: 'stylingBox',
                     })
-                    .toJson()
-                  ]
-                }
+                    .toJson(),
+                  ],
+                },
               })
               .addCollapsiblePanel({
                 id: 'customStyleCollapsiblePanel',
@@ -840,14 +840,14 @@ export const getItemSettings = () => {
                           hideLabel: false,
                           label: 'Style',
                           description: 'A script that returns the style of the element as an object. This should conform to CSSProperties',
-                        }
-                      ]
+                        },
+                      ],
                     })
-                    .toJson()
-                  ]
-                }
+                    .toJson(),
+                  ],
+                },
               })
-              .toJson()]
+              .toJson()],
         },
         {
           key: '3',
@@ -861,11 +861,11 @@ export const getItemSettings = () => {
               parentId: securityTabId,
               inputType: 'permissions',
               tooltip: 'Enter a list of permissions that should be associated with this component',
-              jsSetting: true
+              jsSetting: true,
             })
-            .toJson()
-          ]
-        }
-      ]
+            .toJson(),
+          ],
+        },
+      ],
     }).toJson();
 };

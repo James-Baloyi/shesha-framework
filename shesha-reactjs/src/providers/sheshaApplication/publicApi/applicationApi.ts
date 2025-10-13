@@ -1,12 +1,13 @@
 import { CurrentUserApi, IInternalCurrentUserApi } from './currentUser/api';
-import { ISettingsApi, SettingsApi } from './settings/api';
+import { SettingsApi } from './settings/api';
 import { HttpClientApi } from '@/publicJsApis/httpClient';
-import { EntitiesApi, IEntitiesApi } from './entities/api';
+import { EntitiesApi } from './entities/api';
 import { UtilsApi, IUtilsApi } from './utils/api';
 import { FormsApi, IFormsApi } from './forms/api';
 import { ICacheProvider, IEntityMetadataFetcher } from '@/providers/metadataDispatcher/entities/models';
 import { NavigatorApi, INavigatorApi } from './navigator/api';
 import { ShaRouting } from '@/providers/shaRouting/contexts';
+import { IMetadataDispatcher } from '@/providers/metadataDispatcher/contexts';
 
 export interface IApplicationPlugin {
   name: string;
@@ -15,8 +16,8 @@ export interface IApplicationPlugin {
 
 export interface IApplicationApi {
   user: IInternalCurrentUserApi;
-  settings: ISettingsApi;
-  entities: IEntitiesApi;
+  settings: SettingsApi;
+  entities: EntitiesApi;
   navigator: INavigatorApi;
 
   addPlugin: (plugin: IApplicationPlugin) => void;
@@ -26,9 +27,9 @@ export interface IApplicationApi {
 export class ApplicationApi implements IApplicationApi {
   public user: IInternalCurrentUserApi;
 
-  public settings: ISettingsApi;
+  public settings: SettingsApi;
 
-  public entities: IEntitiesApi;
+  public entities: EntitiesApi;
 
   public utils: IUtilsApi;
 
@@ -44,7 +45,8 @@ export class ApplicationApi implements IApplicationApi {
     httpClient: HttpClientApi,
     cacheProvider: ICacheProvider,
     metadataFetcher: IEntityMetadataFetcher,
-    shaRouter: ShaRouting
+    shaRouter: ShaRouting,
+    metadataDispatcher: IMetadataDispatcher,
   ) {
     this.#plugins = new Map<string, IApplicationPlugin>();
 
@@ -52,12 +54,12 @@ export class ApplicationApi implements IApplicationApi {
     this.user = new CurrentUserApi(this.#httpClient);
     this.settings = new SettingsApi(this.#httpClient);
     this.entities = new EntitiesApi(this.#httpClient, cacheProvider, metadataFetcher);
-    this.forms = new FormsApi(this.#httpClient);
+    this.forms = new FormsApi(this.#httpClient, metadataDispatcher);
     this.utils = new UtilsApi(this.#httpClient);
     this.navigator = new NavigatorApi(shaRouter);
   }
 
-  addPlugin(plugin: IApplicationPlugin) {
+  addPlugin(plugin: IApplicationPlugin): void {
     if (this.#plugins.has(plugin.name)) throw new Error(`Plugin with name '${plugin.name}' already registered`);
     this.#plugins.set(plugin.name, plugin);
 
@@ -68,7 +70,7 @@ export class ApplicationApi implements IApplicationApi {
     });
   }
 
-  removePlugin(pluginName: string) {
+  removePlugin(pluginName: string): void {
     if (!this.#plugins.has(pluginName)) throw new Error(`Plugin with name '${pluginName}' is not registered`);
 
     this.#plugins.delete(pluginName);

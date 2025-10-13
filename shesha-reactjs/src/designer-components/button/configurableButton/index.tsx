@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { IButtonItem } from '@/providers/buttonGroupConfigurator/models';
 import { useConfigurableActionDispatcher } from '@/providers/configurableActionsDispatcher';
 import { useAvailableConstantsData } from '@/providers/form/utils';
-import { isNavigationActionConfiguration, useShaRouting, useTheme } from '@/index';
+import { DataContextTopLevels, isNavigationActionConfiguration, useShaRouting, useTheme } from '@/index';
 import { useAsyncMemo } from '@/hooks/useAsyncMemo';
 import { useStyles } from './style';
 export interface IConfigurableButtonProps extends Omit<IButtonItem, 'style' | 'itemSubType'> {
@@ -14,12 +14,12 @@ export interface IConfigurableButtonProps extends Omit<IButtonItem, 'style' | 'i
   dynamicItem?: any;
 }
 
-export const ConfigurableButton: FC<IConfigurableButtonProps> = props => {
+export const ConfigurableButton: FC<IConfigurableButtonProps> = (props) => {
   const { actionConfiguration, dynamicItem } = props;
   const { getUrlFromNavigationRequest } = useShaRouting();
   const { executeAction, useActionDynamicContext, prepareArguments } = useConfigurableActionDispatcher();
   const dynamicContext = useActionDynamicContext(actionConfiguration);
-  const evaluationContext = useAvailableConstantsData({}, { ...dynamicContext, dynamicItem });
+  const evaluationContext = useAvailableConstantsData({ topContextId: DataContextTopLevels.Full }, { ...dynamicContext, dynamicItem });
 
   const { theme } = useTheme();
   const { styles } = useStyles();
@@ -28,10 +28,10 @@ export const ConfigurableButton: FC<IConfigurableButtonProps> = props => {
 
   const { buttonLoading, buttonDisabled } = {
     buttonLoading: loading && !isModal,
-    buttonDisabled: props?.readOnly || (loading && isModal)
+    buttonDisabled: props?.readOnly || (loading && isModal),
   };
 
-  const onButtonClick = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const onButtonClick = (event: React.MouseEvent<HTMLElement, MouseEvent>): void => {
     event.preventDefault();
 
     // Prevent action if button is disabled
@@ -47,7 +47,7 @@ export const ConfigurableButton: FC<IConfigurableButtonProps> = props => {
         setLoading(true);
         executeAction({
           actionConfiguration: { ...actionConfiguration },
-          argumentsEvaluationContext: evaluationContext
+          argumentsEvaluationContext: evaluationContext,
         })
           .finally(() => {
             setLoading(false);
@@ -84,7 +84,7 @@ export const ConfigurableButton: FC<IConfigurableButtonProps> = props => {
       size={props?.size}
       style={{
         ...props?.style,
-        ...(isSameUrl && { background: theme.application.primaryColor, color: theme.text.default })
+        ...(isSameUrl && { background: theme.application.primaryColor, color: theme.text.default }),
       }}
     >
       {props.label}

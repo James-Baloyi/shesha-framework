@@ -1,5 +1,5 @@
 import { ArcElement, Chart as ChartJS, ChartOptions, Legend, RadialLinearScale, Title, Tooltip } from 'chart.js';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { PolarArea } from 'react-chartjs-2';
 import { useChartDataStateContext } from '../../../../providers/chartData';
 import { IChartData, IChartDataProps } from '../../model';
@@ -12,7 +12,7 @@ interface IPolarAreaChartProps extends IChartDataProps {
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, RadialLinearScale);
 
-const PolarAreaChart = ({ data }: IPolarAreaChartProps) => {
+const PolarAreaChart = ({ data }: IPolarAreaChartProps): ReactElement => {
   const { showTitle, legendPosition, showLegend, strokeColor, dataMode, strokeWidth, titleFont, legendFont, tickFont } = useChartDataStateContext();
 
   const chartTitle: string = useGeneratedTitle();
@@ -39,8 +39,8 @@ const PolarAreaChart = ({ data }: IPolarAreaChartProps) => {
         top: 10,
         bottom: 10,
         left: 10,
-        right: 10
-      }
+        right: 10,
+      },
     },
     transitions: {
       active: {
@@ -70,13 +70,32 @@ const PolarAreaChart = ({ data }: IPolarAreaChartProps) => {
       legend: {
         display: !!showLegend,
         position: legendPosition ?? 'top',
-        align: 'center',
+        align: (legendPosition === 'left' || legendPosition === 'right') ? 'center' : 'center',
         fullSize: false, // This ensures legend doesn't consume chart space
         labels: {
           boxWidth: 20,
           padding: 10,
           font: createFontConfig(legendFont, 12, '400'),
           color: legendFont?.color || '#000000',
+          usePointStyle: true, // Use point style for better visual consistency
+          generateLabels: function (chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => {
+                const dataset = data.datasets[0];
+                return {
+                  text: String(label), // Ensure label is a string
+                  fillStyle: dataset.backgroundColor[i] || dataset.borderColor,
+                  strokeStyle: dataset.borderColor,
+                  lineWidth: dataset.borderWidth,
+                  pointStyle: 'circle',
+                  hidden: false,
+                  index: i,
+                };
+              });
+            }
+            return [];
+          },
         },
       },
       title: {

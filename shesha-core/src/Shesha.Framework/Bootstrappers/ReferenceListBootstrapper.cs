@@ -9,7 +9,6 @@ using Shesha.Domain;
 using Shesha.Domain.Attributes;
 using Shesha.Extensions;
 using Shesha.Reflection;
-using Shesha.Services;
 using Shesha.Startup;
 using Shesha.Utilities;
 using System;
@@ -27,7 +26,6 @@ namespace Shesha.Bootstrappers
     {
         private readonly ITypeFinder _typeFinder;
         private readonly IRepository<ReferenceList, Guid> _listRepo;
-        private readonly IRepository<ReferenceListRevision, Guid> _listRevisionRepo;
         private readonly IRepository<ReferenceListItem, Guid> _listItemRepo;
         private readonly IModuleManager _moduleManager;
 
@@ -35,7 +33,6 @@ namespace Shesha.Bootstrappers
             ITypeFinder typeFinder,
             IUnitOfWorkManager unitOfWorkManager,
             IRepository<ReferenceList, Guid> listRepo,
-            IRepository<ReferenceListRevision, Guid> listRevisionRepo,
             IRepository<ReferenceListItem, Guid> listItemRepo,
             IModuleManager moduleManager,
             IApplicationStartupSession startupSession,
@@ -45,7 +42,6 @@ namespace Shesha.Bootstrappers
         {
             _typeFinder = typeFinder;
             _listRepo = listRepo;
-            _listRevisionRepo = listRevisionRepo;
             _listItemRepo = listItemRepo;
             _moduleManager = moduleManager;
         }
@@ -157,24 +153,19 @@ namespace Shesha.Bootstrappers
                 });
             }
 
-            // note: if the module on the attribute is null - use fallback to 
-            var searchByNamespaceOnly = list.Attribute.IsLegacy;
             var refListId = list.Attribute.GetReferenceListIdentifier(list.Enum);
 
-            var listModule = refListId.Module != null
-                ? await _moduleManager.GetOrCreateModuleAsync(refListId.Module)
+            var moduleName = refListId.Module != null
+                ? refListId.Module
+                : list.Enum.GetConfigurableModuleName();
+
+            var listModule = !string.IsNullOrWhiteSpace(moduleName)
+                ? await _moduleManager.GetOrCreateModuleAsync(moduleName)
                 : module;
 
-            var listInDb = searchByNamespaceOnly
-                ? await _listRepo.GetAll()
-                    .Where(l => l.Name == list.Attribute.FullName)
-                    .OrderBy(l => l.Module == null ? 0 : 1)
-                    .ThenBy(l => !l.IsDeleted ? 0 : 1)
-                    .FirstOrDefaultAsync()
-                : await _listRepo.GetAll()
-                    .Where(l => l.Name == list.Attribute.FullName &&
-                        l.Module == listModule)
-                    .OrderBy(l => !l.IsDeleted ? 0 : 1)
+            var listInDb = await _listRepo.GetAll()
+                .Where(l => l.Name == list.Attribute.FullName && l.Module == listModule)
+                .OrderBy(l => !l.IsDeleted ? 0 : 1)
                 .FirstOrDefaultAsync();
 
             if (listInDb == null)
@@ -186,17 +177,15 @@ namespace Shesha.Bootstrappers
                     Name = list.Attribute.FullName,
                 };
 
-                var revision = listInDb.EnsureLatestRevision();
-                revision.Namespace = list.Attribute.GetNamespace();
-                revision.SetHardLinkToApplication(true);
-                revision.Label = list.Enum.GetDisplayName();
-                revision.Description = list.Enum.GetDescription();
+                listInDb.Namespace = list.Attribute.GetNamespace();
+                listInDb.SetHardLinkToApplication(true);
+                listInDb.Label = list.Enum.GetDisplayName();
+                listInDb.Description = list.Enum.GetDescription();
 
                 listInDb.Suppress = false;
 
                 listInDb.Normalize();
 
-                await _listRevisionRepo.InsertAsync(revision);
                 await _listRepo.InsertAsync(listInDb);
                 //await _unitOfWorkManager.Current.SaveChangesAsync();
             }
@@ -205,19 +194,17 @@ namespace Shesha.Bootstrappers
                 LogInfo($"  list in the DB: found");
 
                 // update list if required
-                if (module != null && listInDb.Module != module || listInDb.LatestRevision == null || !listInDb.LatestRevision.HardLinkToApplication)
+                if (module != null && listInDb.Module != module || !listInDb.HardLinkToApplication)
                 {
                     listInDb.Module = listModule;
-                    var revision = listInDb.EnsureLatestRevision();
-                    revision.SetHardLinkToApplication(true);
+                    listInDb.SetHardLinkToApplication(true);
 
                     await _listRepo.UpdateAsync(listInDb);
                 }
             }
 
-            var latestRevision = listInDb.EnsureLatestRevision();
             var itemsInDb = await _listItemRepo.GetAll()
-                .Where(i => i.ReferenceListRevision == latestRevision)
+                .Where(i => i.ReferenceList == listInDb)
                 .ToListAsync();
 
             LogInfo($"  items in the DB: {itemsInDb.Count()}");
@@ -234,12 +221,12 @@ namespace Shesha.Bootstrappers
                     Item = item.Name ?? string.Empty,
                     Description = item.Description ?? string.Empty,
                     OrderIndex = item.OrderIndex,
-                    ReferenceListRevision = latestRevision,
+                    ReferenceList = listInDb,
                     Color = item.Color ?? string.Empty,
                 };
                 newItem.SetHardLinkToApplication(true);
 
-                await _listItemRepo.InsertOrUpdateAsync(newItem);
+                await _listItemRepo.InsertAsync(newItem);
             }
 
             var toInactivate = itemsInDb.Where(ldb => ldb.HardLinkToApplication && !listInCode.Any(i => i.Value == ldb.ItemValue)).ToList();
@@ -270,7 +257,7 @@ namespace Shesha.Bootstrappers
                 item.ItemInDB.Item = item.UpdatedItemInCode.Name ?? string.Empty;
                 item.ItemInDB.SetHardLinkToApplication(true);
 
-                await _listItemRepo.InsertOrUpdateAsync(item.ItemInDB);
+                await _listItemRepo.UpdateAsync(item.ItemInDB);
             }
 
             await _listRepo.InsertOrUpdateAsync(listInDb);

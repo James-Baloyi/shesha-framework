@@ -96,6 +96,7 @@ import { IToolboxComponentGroup } from '@/interfaces/formDesigner';
 import PermissionAutocompleteComponent from '@/designer-components/permissions/permissionAutocomplete';
 import EditModeToggler from '@/designer-components/editModeToggler';
 import ProfileDropdown from '@/designer-components/profileDropdown';
+import HorizontalMenu from '@/designer-components/horizontalMenu';
 import { IFormPersisterStateContext } from '@/providers/formPersisterProvider/contexts';
 import { HEADER_CONFIGURATION, HEADER_PUB_PORTAL_CONFIGURATION } from '@/components/mainLayout/constant';
 import AdvancedFilterButton from '@/designer-components/dataTable/advancedFilterButton/advancedFilterButtonComponent';
@@ -118,7 +119,7 @@ import DividerComponent from '@/designer-components/_legacyComponents/divider';
 
 export const getToolboxComponents = (
   devMode: boolean,
-  formMetadata: Pick<IFormPersisterStateContext, 'formId' | 'formProps'>
+  formMetadata: Pick<IFormPersisterStateContext, 'formId' | 'formProps'>,
 ): IToolboxComponentGroup[] => {
   return [
     {
@@ -215,6 +216,7 @@ export const getToolboxComponents = (
         Tabs,
         Wizard,
         SubForm,
+        HorizontalMenu,
       ],
     },
     {

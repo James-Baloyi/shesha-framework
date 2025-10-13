@@ -240,6 +240,7 @@ export const getItemSettings = () => {
                         parentId: backButtonContentId,
                         jsSetting: true,
                         defaultValue: true,
+                        description: 'Note: The back button is automatically hidden on the first step',
                       },
                       {
                         id: nanoid(),

@@ -25,8 +25,20 @@ export class TouchableProxy<T> implements ProxyWithRefresh<T>, IPropertyTouched 
         if (typeof propValue === 'function')
           return propValue.bind(this);
 
-        if (typeof propValue === 'object' && propValue !== null && propValue !== undefined)
+        if (typeof propValue === 'object' && propValue !== null && propValue !== undefined) {
+          const prototype = Object.getPrototypeOf(propValue);
+          if (prototype && prototype !== Object.prototype) {
+            const hasOwnMethods = Object.getOwnPropertyNames(prototype)
+              .some(prop => prop !== 'constructor' && typeof propValue[prop] === 'function');
+
+            if (hasOwnMethods) {
+              this._touchedProps.set(propName, propValue);
+              return propValue;
+            }
+          }
+
           return CreateTouchableProperty(propValue, this, propName);
+        }
 
         this._touchedProps.set(propName, propValue);
 

@@ -2,8 +2,11 @@ import React, { FC, useContext, useState } from 'react';
 import { CollapsiblePanel, ICollapsiblePanelProps } from '@/components';
 import { useSettingsForm } from './settingsForm';
 import { createNamedContext } from '@/utils/react';
+import StyleModeToggle from './styleModeToggle';
 
-type ISettingsCollapsiblePanelProps = ICollapsiblePanelProps;
+interface ISettingsCollapsiblePanelProps extends ICollapsiblePanelProps {
+  showStyleModeToggle?: boolean;
+}
 
 export interface ISettingsCollapsiblePanelActionsContext {
   registerField: (name: string) => void;
@@ -12,6 +15,7 @@ export interface ISettingsCollapsiblePanelActionsContext {
 export const SettingsCollapsiblePanelActionsContext = createNamedContext<ISettingsCollapsiblePanelActionsContext>(undefined, "SettingsCollapsiblePanelActionsContext");
 
 const SettingsCollapsiblePanel: FC<ISettingsCollapsiblePanelProps> = (props) => {
+  const { showStyleModeToggle, extra, ...restProps } = props;
   const [fields, setFields] = useState([]);
   const { propertyFilter } = useSettingsForm<any>();
 
@@ -25,10 +29,22 @@ const SettingsCollapsiblePanel: FC<ISettingsCollapsiblePanelProps> = (props) => 
   const show = !fields || fields.length === 0 || typeof propertyFilter !== 'function' ||
     Boolean(fields.find((x) => (propertyFilter(x))));
 
+  const extraContent = (
+    <>
+      <StyleModeToggle />
+    </>
+  );
+
   return (
     <SettingsCollapsiblePanelActionsContext.Provider value={settingsCollapsiblePanelActions}>
       {show
-        ? <CollapsiblePanel expandIconPosition="start" {...props} bodyStyle={{ borderRadius: '8px' }} headerStyle={{ borderRadius: '8px' }} />
+        ? <CollapsiblePanel
+            expandIconPosition="start"
+            {...restProps}
+            extra={extraContent}
+            bodyStyle={{ borderRadius: '8px' }}
+            headerStyle={{ borderRadius: '8px' }}
+          />
         : null}
     </SettingsCollapsiblePanelActionsContext.Provider>
   );

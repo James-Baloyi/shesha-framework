@@ -1,21 +1,26 @@
-import React, { PropsWithChildren, ReactElement, useContext, useState } from 'react';
+import React, { PropsWithChildren, ReactElement, useContext, useMemo, useState } from 'react';
 import { Form } from "antd";
 import { DEFAULT_FORM_LAYOUT_SETTINGS, ISettingsFormFactoryArgs } from "@/interfaces";
 import { getValuesFromSettings, updateSettingsFromValues } from './utils';
 import { createNamedContext } from '@/utils/react';
-import { IPropertyMetadata } from '@/index';
+import { DataTypes, IObjectMetadata, IPropertyMetadata } from '@/index';
 import { linkComponentToModelMetadata } from '@/providers/form/utils';
 import { ConfigurableFormActionsProvider } from '@/providers/form/actions';
 import { deepMergeValues } from '@/utils/object';
+import DataContextBinder from '@/providers/dataContextProvider/dataContextBinder';
+
+export type StyleMode = 'regular' | 'hover';
 
 interface SettingsFormState<TModel> {
   model?: TModel;
   values?: TModel;
+  styleMode?: StyleMode;
 }
 
 interface ISettingsFormActions {
   propertyFilter: (name: string) => boolean;
   onValuesChange?: (changedValues: any) => void;
+  setStyleMode?: (mode: StyleMode) => void;
 }
 
 /** initial state */
@@ -39,7 +44,18 @@ const SettingsForm = <TModel = unknown>(props: PropsWithChildren<SettingsFormPro
   } = props;
 
   const [form] = Form.useForm();
-  const [state, setState] = useState<SettingsFormState<TModel>>({ model, values: getValuesFromSettings(model) });
+  const [state, setState] = useState<SettingsFormState<TModel>>({
+    model,
+    values: getValuesFromSettings(model),
+    styleMode: 'regular'
+  });
+
+  const contextMetadata = useMemo<Promise<IObjectMetadata>>(() => Promise.resolve({
+    properties: [
+      { path: 'styleMode', dataType: DataTypes.string },
+    ],
+    dataType: DataTypes.object,
+  } as IObjectMetadata), []);
 
   if (formRef)
     formRef.current = {
@@ -66,9 +82,14 @@ const SettingsForm = <TModel = unknown>(props: PropsWithChildren<SettingsFormPro
     onSave(state.model);
   };
 
+  const setStyleMode = (mode: StyleMode): void => {
+    setState(prev => ({ ...prev, styleMode: mode }));
+  };
+
   const SettingsFormActions: ISettingsFormActions = {
     propertyFilter,
     onValuesChange: valuesChange,
+    setStyleMode,
   };
 
   const linkToModelMetadata = (metadata: IPropertyMetadata): void => {
@@ -88,22 +109,32 @@ const SettingsForm = <TModel = unknown>(props: PropsWithChildren<SettingsFormPro
   };
 
   return (
-    <ConfigurableFormActionsProvider actions={{ linkToModelMetadata }}>
-      <SettingsFormStateContext.Provider value={state}>
-        <SettingsFormActionsContext.Provider value={SettingsFormActions}>
-          <Form
-            form={form}
-            onFinish={onSaveInternal}
-            {...layoutSettings}
-            onValuesChange={settingsChange}
-            initialValues={model}
-            size="small"
-          >
-            {props.children}
-          </Form>
-        </SettingsFormActionsContext.Provider>
-      </SettingsFormStateContext.Provider>
-    </ConfigurableFormActionsProvider>
+    <DataContextBinder
+      id="settingsFormContext"
+      name="settingsFormContext"
+      description="Settings form context"
+      type="appLayer"
+      data={{ styleMode: state.styleMode }}
+      api={{ setStyleMode }}
+      metadata={contextMetadata}
+    >
+      <ConfigurableFormActionsProvider actions={{ linkToModelMetadata }}>
+        <SettingsFormStateContext.Provider value={state}>
+          <SettingsFormActionsContext.Provider value={SettingsFormActions}>
+            <Form
+              form={form}
+              onFinish={onSaveInternal}
+              {...layoutSettings}
+              onValuesChange={settingsChange}
+              initialValues={model}
+              size="small"
+            >
+              {props.children}
+            </Form>
+          </SettingsFormActionsContext.Provider>
+        </SettingsFormStateContext.Provider>
+      </ConfigurableFormActionsProvider>
+    </DataContextBinder>
   );
 };
 

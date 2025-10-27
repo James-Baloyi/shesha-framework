@@ -1,8 +1,8 @@
 import ConfigurableButton from './configurableButton';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { BorderOutlined } from '@ant-design/icons';
 import { getSettings } from './settingsForm';
-import { validateConfigurableComponentSettings } from '@/providers/form/utils';
+import { pickStyleFromModel, validateConfigurableComponentSettings } from '@/providers/form/utils';
 import { IButtonComponentProps } from './interfaces';
 import { IButtonGroupItemBaseV0, migrateV0toV1 } from './migrations/migrate-v1';
 import { IToolboxComponent } from '@/interfaces';
@@ -14,6 +14,15 @@ import { migrateVisibility } from '@/designer-components/_common-migrations/migr
 import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
 import { migratePrevStyles } from '../_common-migrations/migrateStyles';
 import { defaultStyles } from './util';
+import { getBorderStyle } from '../_settings/utils/border/utils';
+import { getFontStyle } from '../_settings/utils/font/utils';
+import { getShadowStyle } from '../_settings/utils/shadow/utils';
+import { getBackgroundStyle } from '../_settings/utils/background/utils';
+import { getDimensionsStyle } from '../_settings/utils/dimensions/utils';
+
+import { jsonSafeParse } from '@/utils/object';
+import { StyleBoxValue } from '@/providers/form/models';
+import { useCanvas } from '@/providers';
 
 export type IActionParameters = [{ key: string; value: string }];
 
@@ -24,24 +33,97 @@ const ButtonComponent: IToolboxComponent<IButtonComponentProps> = {
   icon: <BorderOutlined />,
   Factory: ({ model, form }) => {
     const { style, ...restProps } = model;
+    const { designerWidth, designerDevice } = useCanvas();
 
-    const finalStyle = {
-      ...model.allStyles.dimensionsStyles,
-      ...(['primary', 'default'].includes(model.buttonType) && !model.readOnly && model.allStyles.borderStyles),
-      ...model.allStyles.fontStyles,
-      ...(['dashed', 'default'].includes(model.buttonType) && !model.readOnly && model.allStyles.backgroundStyles),
-      ...(['primary', 'default'].includes(model.buttonType) && model.allStyles.shadowStyles),
-      ...model.allStyles.stylingBoxAsCSS,
-      ...model.allStyles.jsStyle,
-      justifyContent: model.font?.align,
-    };
+    // Get the current device context (desktop, mobile, or tablet)
+    const currentDevice = designerDevice || 'desktop';
+    const deviceModel = model[currentDevice] || {};
+
+    // Compute regular styles from device.styles or fallback to allStyles
+    const regularStyles = useMemo(() => {
+      const stylesProp = deviceModel.styles;
+
+      if (!stylesProp) {
+        // Fallback to allStyles if no device.styles exists
+        return {
+          ...model.allStyles.dimensionsStyles,
+          ...(['primary', 'default'].includes(model.buttonType) && !model.readOnly && model.allStyles.borderStyles),
+          ...model.allStyles.fontStyles,
+          ...(['dashed', 'default'].includes(model.buttonType) && !model.readOnly && model.allStyles.backgroundStyles),
+          ...(['primary', 'default'].includes(model.buttonType) && model.allStyles.shadowStyles),
+          ...model.allStyles.stylingBoxAsCSS,
+          ...model.allStyles.jsStyle,
+          justifyContent: model.font?.align,
+        };
+      }
+
+      // Compute from device.styles
+      const styligBox = jsonSafeParse<StyleBoxValue>(stylesProp.stylingBox || '{}');
+      const dimensionsStyles = getDimensionsStyle(stylesProp.dimensions, styligBox, designerWidth);
+      const borderStyles = getBorderStyle(stylesProp.border, {});
+      const fontStyles = getFontStyle(stylesProp.font);
+      const shadowStyles = getShadowStyle(stylesProp.shadow);
+      const backgroundStyles = getBackgroundStyle(stylesProp.background, {});
+      const stylingBoxAsCSS = pickStyleFromModel(styligBox);
+
+      return {
+        ...dimensionsStyles,
+        ...(['primary', 'default'].includes(model.buttonType) && !model.readOnly && borderStyles),
+        ...fontStyles,
+        ...(['dashed', 'default'].includes(model.buttonType) && !model.readOnly && backgroundStyles),
+        ...(['primary', 'default'].includes(model.buttonType) && shadowStyles),
+        ...stylingBoxAsCSS,
+        ...model.allStyles.jsStyle,
+        justifyContent: stylesProp.font?.align,
+      };
+    }, [deviceModel.styles, model.allStyles, model.buttonType, model.readOnly, designerWidth]);
+
+    // Compute hover styles from device.hoverStyles (with fallback to root level for backward compatibility)
+    const hoverStyle = useMemo(() => {
+      // Try device-specific hover styles first, then fall back to root level
+      const hoverStyles = deviceModel.hoverStyles || (model as any).hoverStyles;
+
+      if (!hoverStyles) {
+        return undefined;
+      }
+
+      const hoverDimensions = hoverStyles.dimensions;
+      const hoverBorder = hoverStyles.border;
+      const hoverFont = hoverStyles.font;
+      const hoverShadow = hoverStyles.shadow;
+      const hoverBackground = hoverStyles.background;
+      const hoverStylingBox = hoverStyles.stylingBox;
+
+      if (!hoverDimensions && !hoverBorder && !hoverFont && !hoverShadow && !hoverBackground && !hoverStylingBox) {
+        return undefined;
+      }
+
+      const styligBox = jsonSafeParse<StyleBoxValue>(hoverStylingBox || '{}');
+      const dimensionsStyles = getDimensionsStyle(hoverDimensions, styligBox, designerWidth);
+      const borderStyles = getBorderStyle(hoverBorder, {});
+      const fontStyles = getFontStyle(hoverFont);
+      const shadowStyles = getShadowStyle(hoverShadow);
+      const backgroundStyles = getBackgroundStyle(hoverBackground, {});
+      const stylingBoxAsCSS = pickStyleFromModel(styligBox);
+
+      return {
+        ...dimensionsStyles,
+        ...(['primary', 'default'].includes(model.buttonType) && !model.readOnly && borderStyles),
+        ...fontStyles,
+        ...(['dashed', 'default'].includes(model.buttonType) && !model.readOnly && backgroundStyles),
+        ...(['primary', 'default'].includes(model.buttonType) && shadowStyles),
+        ...stylingBoxAsCSS,
+        justifyContent: hoverFont?.align,
+      };
+    }, [deviceModel.hoverStyles, (model as any).hoverStyles, model.buttonType, model.readOnly, designerWidth, currentDevice, deviceModel])
 
     return model.hidden ? null : (
       <ConfigurableButton
         {...restProps}
         readOnly={model.readOnly}
         block={restProps?.block}
-        style={finalStyle}
+        style={regularStyles}
+        hoverStyle={hoverStyle}
         form={form}
       />
     );

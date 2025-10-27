@@ -17,6 +17,7 @@ import { getSettings } from './settingsForm';
 import { migratePrevStyles } from '../_common-migrations/migrateStyles';
 import { defaultHeaderStyles, defaultStyles } from './utils';
 import { useFormComponentStyles } from '@/hooks/formComponentHooks';
+import StyleModeToggle from '@/designer-components/_settings/styleModeToggle';
 
 const CollapsiblePanelComponent: IToolboxComponent<ICollapsiblePanelComponentProps> = {
   type: 'collapsiblePanel',
@@ -43,6 +44,7 @@ const CollapsiblePanelComponent: IToolboxComponent<ICollapsiblePanelComponentPro
       content,
       className,
       hidden,
+      showStyleModeToggle,
     } = model;
 
 
@@ -55,13 +57,20 @@ const CollapsiblePanelComponent: IToolboxComponent<ICollapsiblePanelComponentPro
     const headerStyles = useFormComponentStyles({ ...{ ...model.headerStyles, border: ghost ? null : model.headerStyles?.border } }).fullStyle;
 
     const isIconHidden = expandIconPosition === 'hide';
-    const extra = ((headerComponents?.length > 0 || formMode === 'designer') && !hasCustomHeader) ? (
+    const headerComponentsExtra = ((headerComponents?.length > 0 || formMode === 'designer') && !hasCustomHeader) ? (
       <ComponentsContainer
         containerId={model.header?.id}
         direction="horizontal"
         dynamicComponents={isDynamic ? headerComponents : []}
       />
     ) : null;
+
+    const extra = showStyleModeToggle ? (
+      <>
+        <StyleModeToggle />
+        {headerComponentsExtra}
+      </>
+    ) : headerComponentsExtra;
 
     return hidden ? null : (
       <ParentProvider model={model}>

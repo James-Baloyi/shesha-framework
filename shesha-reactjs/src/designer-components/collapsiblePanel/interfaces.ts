@@ -34,6 +34,7 @@ export interface ICollapsiblePanelComponentProps extends IConfigurableFormCompon
   desktop?: any;
   mobile?: any;
   tablet?: any;
+  showStyleModeToggle?: boolean;
 };
 
 // TODO: implement generic guard on the component level

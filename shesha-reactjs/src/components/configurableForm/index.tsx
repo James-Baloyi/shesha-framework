@@ -14,6 +14,7 @@ import { ShaFormProvider } from '@/providers/form/providers/shaFormProvider';
 import { IShaFormInstance } from '@/providers/form/store/interfaces';
 import ParentProvider from '@/providers/parentProvider';
 import { ShaSpin } from '..';
+import { SettingsFormContextWrapper } from './settingsFormContextWrapper';
 
 export type ConfigurableFormProps<Values extends object = object> = Omit<IConfigurableFormProps<Values>, 'form' | 'formRef' | 'shaForm'> & {
   form?: FormInstance<any>;
@@ -139,38 +140,40 @@ export const ConfigurableForm = <Values extends object = object>(props: Configur
               <EditViewMsg persistedFormProps={showFormInfoOverlay ? shaForm.form : undefined} />
             </BlockOverlay>
             <ShaFormProvider shaForm={shaForm}>
-              <ParentProvider
-                model={null}
-                formMode={shaForm.formMode}
-                formFlatMarkup={shaForm.flatStructure}
-                formApi={shaForm.getPublicFormApi()}
-                name={ConfigurableItemIdentifierToString(formId)}
-                isScope
-              >
-                {markupLoadingState.status === 'ready' && (
-                  <FormWithFlatMarkup
-                    {...props}
-                    isActionsOwner={isActionsOwner}
-                    form={form}
-                    initialValues={shaForm.initialValues}
-                    formFlatMarkup={shaForm.flatStructure}
-                    formSettings={shaForm.settings}
-                    persistedFormProps={shaForm.form}
-                    onMarkupUpdated={() => {
-                      shaForm.reloadMarkup();
-                    }}
-                    shaForm={shaForm}
-                    actions={actions}
-                    sections={sections}
-                  />
-                )}
-                {markupLoadingState.status === 'failed' && (
-                  <MarkupErrorRender formId={formId} markupLoadingState={markupLoadingState} />
-                )}
-                {markupLoadingState.status === 'loading' && (
-                  <></>
-                )}
-              </ParentProvider>
+              <SettingsFormContextWrapper isEnabled={isSettingsForm}>
+                <ParentProvider
+                  model={null}
+                  formMode={shaForm.formMode}
+                  formFlatMarkup={shaForm.flatStructure}
+                  formApi={shaForm.getPublicFormApi()}
+                  name={ConfigurableItemIdentifierToString(formId)}
+                  isScope
+                >
+                  {markupLoadingState.status === 'ready' && (
+                    <FormWithFlatMarkup
+                      {...props}
+                      isActionsOwner={isActionsOwner}
+                      form={form}
+                      initialValues={shaForm.initialValues}
+                      formFlatMarkup={shaForm.flatStructure}
+                      formSettings={shaForm.settings}
+                      persistedFormProps={shaForm.form}
+                      onMarkupUpdated={() => {
+                        shaForm.reloadMarkup();
+                      }}
+                      shaForm={shaForm}
+                      actions={actions}
+                      sections={sections}
+                    />
+                  )}
+                  {markupLoadingState.status === 'failed' && (
+                    <MarkupErrorRender formId={formId} markupLoadingState={markupLoadingState} />
+                  )}
+                  {markupLoadingState.status === 'loading' && (
+                    <></>
+                  )}
+                </ParentProvider>
+              </SettingsFormContextWrapper>
             </ShaFormProvider>
           </div>
         )}

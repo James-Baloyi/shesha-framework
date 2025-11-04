@@ -183,12 +183,12 @@ const AttachmentsEditor: IToolboxComponent<IAttachmentsEditorProps> = {
     .add<IAttachmentsEditorProps>(7, (prev) => {
       // Migrate old style properties to new responsive structure
       const migrated = migratePrevStyles(prev, defaultStyles());
-      // Ensure container styles are added to each device
+      // Ensure defaults are present and container styles are added to each device
       return {
         ...migrated,
-        desktop: { ...migrated.desktop, container: migrated.desktop?.container || containerDefaultStyles() },
-        mobile: { ...migrated.mobile, container: migrated.mobile?.container || containerDefaultStyles() },
-        tablet: { ...migrated.tablet, container: migrated.tablet?.container || containerDefaultStyles() },
+        desktop: { ...defaultStyles(), ...migrated.desktop, container: migrated.desktop?.container || containerDefaultStyles() },
+        mobile: { ...defaultStyles(), ...migrated.mobile, container: migrated.mobile?.container || containerDefaultStyles() },
+        tablet: { ...defaultStyles(), ...migrated.tablet, container: migrated.tablet?.container || containerDefaultStyles() },
       };
     })
     .add<IAttachmentsEditorProps>(8, (prev) => ({ ...prev, downloadZip: prev.downloadZip || false, propertyName: prev.propertyName ?? '' }))

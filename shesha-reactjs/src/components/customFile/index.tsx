@@ -25,6 +25,7 @@ export interface ICustomFileProps extends IInputStyles {
   thumbnailHeight?: string;
   borderRadius?: number;
   hideFileName?: boolean;
+  gap?: string | number;
   container?: IStyleType;
   primaryColor?: string;
   enableStyleOnReadonly?: boolean;
@@ -66,6 +67,7 @@ export const CustomFile: FC<ICustomFileProps> = (props) => {
         maxHeight={props?.maxHeight}
         layout={props?.filesLayout}
         listType={props?.listType}
+        gap={typeof props?.gap === 'string' ? parseInt(props.gap, 10) : props?.gap}
         downloadedFileStyles={props?.downloadedFileStyles}
       />
     </div>

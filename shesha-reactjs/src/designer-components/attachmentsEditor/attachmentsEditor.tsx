@@ -21,9 +21,16 @@ import { migrateFormApi } from '../_common-migrations/migrateFormApi1';
 import { GHOST_PAYLOAD_KEY } from '@/utils/form';
 import { containerDefaultStyles, defaultStyles, downloadedFileDefaultStyles } from './utils';
 import { useFormComponentStyles } from '@/hooks/formComponentHooks';
+import { migratePrevStyles } from '../_common-migrations/migrateStyles';
 
 export type layoutType = 'vertical' | 'horizontal' | 'grid';
 export type listType = 'text' | 'thumbnail';
+
+export interface IAttachmentsEditorStyleProps extends IStyleType {
+  container?: IStyleType;
+  downloadedFileStyles?: IStyleType;
+}
+
 export interface IAttachmentsEditorProps extends IConfigurableFormComponent, IInputStyles {
   ownerId: string;
   ownerType: string;
@@ -45,9 +52,13 @@ export interface IAttachmentsEditorProps extends IConfigurableFormComponent, IIn
   thumbnailHeight?: string;
   borderRadius?: number;
   hideFileName?: boolean;
+  gap?: string | number;
   container?: IStyleType;
   primaryColor?: string;
   downloadedFileStyles?: IStyleType;
+  desktop?: IAttachmentsEditorStyleProps;
+  mobile?: IAttachmentsEditorStyleProps;
+  tablet?: IAttachmentsEditorStyleProps;
 }
 
 const AttachmentsEditor: IToolboxComponent<IAttachmentsEditorProps> = {
@@ -169,7 +180,17 @@ const AttachmentsEditor: IToolboxComponent<IAttachmentsEditorProps> = {
       onFileChanged: migrateFormApi.withoutFormData(prev?.onFileChanged),
     }))
     .add<IAttachmentsEditorProps>(6, (prev) => ({ ...prev, listType: !prev.listType ? 'text' : prev.listType, filesLayout: prev.filesLayout ?? 'horizontal' }))
-    .add<IAttachmentsEditorProps>(7, (prev) => ({ ...prev, desktop: { ...defaultStyles(), container: containerDefaultStyles() }, mobile: { ...defaultStyles() }, tablet: { ...defaultStyles() } }))
+    .add<IAttachmentsEditorProps>(7, (prev) => {
+      // Migrate old style properties to new responsive structure
+      const migrated = migratePrevStyles(prev, defaultStyles());
+      // Ensure container styles are added to each device
+      return {
+        ...migrated,
+        desktop: { ...migrated.desktop, container: migrated.desktop?.container || containerDefaultStyles() },
+        mobile: { ...migrated.mobile, container: migrated.mobile?.container || containerDefaultStyles() },
+        tablet: { ...migrated.tablet, container: migrated.tablet?.container || containerDefaultStyles() },
+      };
+    })
     .add<IAttachmentsEditorProps>(8, (prev) => ({ ...prev, downloadZip: prev.downloadZip || false, propertyName: prev.propertyName ?? '' }))
     .add<IAttachmentsEditorProps>(9, (prev) => ({ ...prev, propertyName: prev.propertyName ?? '', onChangeCustom: prev?.onFileChanged }))
     .add<IAttachmentsEditorProps>(10, (prev) => ({

@@ -57,7 +57,9 @@ export const RefListStatus: FC<IRefListStatusProps> = (props) => {
   if (typeof itemData?.itemValue === 'undefined' && !listItem?.loading) return null;
 
   return listItem?.loading ? (
-    <Skeleton.Button />
+    <div className={styles.shaStatusTagContainer}>
+      <Skeleton.Button />
+    </div>
   ) : (
 
     <div className={styles.shaStatusTagContainer}>

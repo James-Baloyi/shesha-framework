@@ -8,6 +8,7 @@ import { filterDynamicComponents } from './utils';
 import { IPropertiesTabsComponentProps } from './models';
 import { useFormState, useFormActions } from '@/providers/form';
 import { useShaFormDataUpdate } from '@/providers/form/providers/shaFormProvider';
+import { IConfigurableFormComponent } from '@/interfaces';
 
 interface SearchableTabsProps {
   model: IPropertiesTabsComponentProps;
@@ -18,6 +19,7 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTabKey, setActiveTabKey] = useState('1');
   const searchRefs = useRef(new Map());
+  const isInitialMount = useRef(true);
   const { styles } = useStyles();
 
   const formState = useFormState(false);
@@ -27,6 +29,19 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchQuery(e.target.value);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    // Allow Tab key to navigate away from search input
+    if (e.key === 'Tab') {
+      // Don't prevent default Tab behavior
+      return;
+    }
+    // Allow Escape to clear search
+    if (e.key === 'Escape' && searchQuery) {
+      setSearchQuery('');
+      e.preventDefault();
+    }
   };
 
   const renderSearchInput = (options?: {
@@ -44,6 +59,7 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
         placeholder="Search properties"
         value={searchQuery}
         onChange={handleSearchChange}
+        onKeyDown={handleSearchKeyDown}
         suffix={<SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} />}
         ref={options?.ref}
         className={options?.className}
@@ -59,7 +75,9 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
     ) : input;
   };
 
-  const focusActiveTabSearch = useCallback(() => {
+  const focusActiveTabSearch = useCallback((shouldFocus: boolean = true) => {
+    if (!shouldFocus) return;
+    
     const activeSearchInput = searchRefs.current.get(activeTabKey);
     if (activeSearchInput) {
       // Small delay to ensure the tab is rendered
@@ -76,16 +94,20 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
   // Focus search input when search query changes and we have matching results
   useEffect(() => {
     if (searchQuery) {
-      focusActiveTabSearch();
+      focusActiveTabSearch(true);
     }
   }, [searchQuery, focusActiveTabSearch]);
 
-  // Focus search input when tab changes
+  // Only focus search on tab change if user explicitly switched tabs (not on initial render)
   useEffect(() => {
-    focusActiveTabSearch();
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    focusActiveTabSearch(true);
   }, [activeTabKey, focusActiveTabSearch]);
 
-  const isComponentHidden = (component): boolean => {
+  const isComponentHidden = (component: IConfigurableFormComponent): boolean => {
     if (formState.name === "modalSettings") {
       if (component.inputs) {
         const visibleInputs = component.inputs.filter((input) => {

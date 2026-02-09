@@ -85,7 +85,7 @@ export const useStyles = createStyles(({ css, cx }) => {
 
       .ant-form-item-control-input {
         width: 100%;
-        min-height: --ant-control-height;
+        min-height: var(--ant-control-height);
         max-width: 100%;
       }
 

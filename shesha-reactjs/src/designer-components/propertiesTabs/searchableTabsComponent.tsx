@@ -59,7 +59,13 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
     ) : input;
   };
 
-  const focusActiveTabSearch = useCallback(() => {
+  const focusActiveTabSearch = useCallback((force = false) => {
+    // Only auto-focus if explicitly forced or if search query is not empty
+    // This prevents stealing focus during normal tab navigation
+    if (!force && !searchQuery) {
+      return;
+    }
+    
     const activeSearchInput = searchRefs.current.get(activeTabKey);
     if (activeSearchInput) {
       // Small delay to ensure the tab is rendered
@@ -67,7 +73,7 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
         activeSearchInput.focus();
       }, 50);
     }
-  }, [activeTabKey]);
+  }, [activeTabKey, searchQuery]);
 
   const handleTabChange = (newActiveKey: string): void => {
     setActiveTabKey(newActiveKey);
@@ -76,14 +82,9 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
   // Focus search input when search query changes and we have matching results
   useEffect(() => {
     if (searchQuery) {
-      focusActiveTabSearch();
+      focusActiveTabSearch(true);
     }
   }, [searchQuery, focusActiveTabSearch]);
-
-  // Focus search input when tab changes
-  useEffect(() => {
-    focusActiveTabSearch();
-  }, [activeTabKey, focusActiveTabSearch]);
 
   const isComponentHidden = (component): boolean => {
     if (formState.name === "modalSettings") {

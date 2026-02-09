@@ -1,6 +1,6 @@
 import { createStyles } from '@/styles';
 
-export const useStyles = createStyles(({ css, cx, token }) => {
+export const useStyles = createStyles(({ css, cx, token, responsive }) => {
   const searchField = cx(css`
     z-index: unset;
 
@@ -19,6 +19,10 @@ export const useStyles = createStyles(({ css, cx, token }) => {
 
     .ant-form-item-vertical .ant-form-item-row {
       flex-direction: row !important;
+      
+      ${responsive.tablet} {
+        flex-direction: column !important;
+      }
     }
 
     .sha-toolbar-btn-configurable, .ant-btn {

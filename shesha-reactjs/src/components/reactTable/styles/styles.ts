@@ -575,6 +575,20 @@ export const useMainStyles = createStyles(({ css, cx, token, prefixCls, iconPref
             background: ${rowSelectedBackgroundColor || token.colorPrimary} !important;
             color: white;
 
+            /* Target text elements while preserving semantic colors for validation states */
+            td, th, span:not(.ant-form-item-feedback-icon):not(.ant-form-item-explain *):not(.error):not(.warning):not(.ant-alert *),
+            div:not(.ant-form-item-explain):not(.error):not(.warning):not(.ant-alert),
+            p, label, button, a {
+              color: white !important;
+            }
+
+            /* Icons should be white */
+            .${iconPrefixCls},
+            .${iconPrefixCls} svg {
+              color: white !important;
+              fill: white !important;
+            }
+
             .ant-form-item-control-input-content, button, a {
                     color: white;
               }

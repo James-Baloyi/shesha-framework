@@ -9,6 +9,11 @@ export const useStyles = createStyles(({ css, cx, token }) => {
     }
   `);
 
+  const container = cx(css`
+    container-type: inline-size;
+    width: 100%;
+  `);
+
   const content = cx(css`
     .ant-tabs-tab, .ant-tabs-nav-operations {
       height: 30px;
@@ -17,8 +22,10 @@ export const useStyles = createStyles(({ css, cx, token }) => {
       --ant-tabs-card-padding-sm: 0 8px;
     }
 
-    .ant-form-item-vertical .ant-form-item-row {
-      flex-direction: row !important;
+    @container (min-width: 800px) {
+      .ant-form-item-vertical .ant-form-item-row {
+        flex-direction: row !important;
+      }
     }
 
     .sha-toolbar-btn-configurable, .ant-btn {
@@ -45,6 +52,7 @@ export const useStyles = createStyles(({ css, cx, token }) => {
 
   return {
     searchField,
+    container,
     content,
   };
 });

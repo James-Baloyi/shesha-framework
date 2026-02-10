@@ -18,6 +18,7 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTabKey, setActiveTabKey] = useState('1');
   const searchRefs = useRef(new Map());
+  const userInitiatedTabChange = useRef(false);
   const { styles } = useStyles();
 
   const formState = useFormState(false);
@@ -49,6 +50,7 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
         className={options?.className}
         style={options?.style}
         autoFocus={options?.autoFocus}
+        tabIndex={0}
       />
     );
 
@@ -70,6 +72,7 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
   }, [activeTabKey]);
 
   const handleTabChange = (newActiveKey: string): void => {
+    userInitiatedTabChange.current = true;
     setActiveTabKey(newActiveKey);
   };
 
@@ -80,9 +83,14 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
     }
   }, [searchQuery, focusActiveTabSearch]);
 
-  // Focus search input when tab changes
+  // Focus search input when tab changes (but not for user-initiated tab changes)
   useEffect(() => {
-    focusActiveTabSearch();
+    if (!userInitiatedTabChange.current) {
+      focusActiveTabSearch();
+    } else {
+      // Reset the flag after processing
+      userInitiatedTabChange.current = false;
+    }
   }, [activeTabKey, focusActiveTabSearch]);
 
   const isComponentHidden = (component): boolean => {
@@ -174,7 +182,7 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
 
 
   return (
-    <>
+    <div className={styles.container}>
       {newFilteredTabs.length === 0 &&
         renderSearchInput({
           autoFocus: true,
@@ -192,7 +200,7 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
             className={styles.content}
           />
         )}
-    </>
+    </div>
   );
 };
 

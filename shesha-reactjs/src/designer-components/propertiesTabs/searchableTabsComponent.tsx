@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Tabs, Input, Empty } from 'antd';
 import ParentProvider from '@/providers/parentProvider';
 import { ComponentsContainer } from '@/components';
@@ -108,8 +108,8 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
     }
   };
 
-  const newFilteredTabs = tabs
-    .map((tab: any, index: number) => {
+  const newFilteredTabs = useMemo(() => tabs
+    .map((tab, index: number) => {
       const filteredComponents = tab.children ?? filterDynamicComponents(tab.components, searchQuery);
 
       const visibleComponents = Array.isArray(filteredComponents)
@@ -151,7 +151,9 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
         hidden: tab.hidden || !hasVisibleComponents,
       };
     })
-    .filter((tab) => !tab.hidden);
+    .filter((tab) => !tab.hidden),
+    [tabs, searchQuery, formState.name, formActions, model, styles]
+  );
 
   // Auto-switch to the first tab that has visible components when searching
   useEffect(() => {

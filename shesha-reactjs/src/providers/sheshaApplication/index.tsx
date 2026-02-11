@@ -17,6 +17,7 @@ import {
   DynamicActionsDispatcherProvider,
   MetadataDispatcherProvider,
   AuthProvider,
+  AutoLogoutProvider,
   ShaRoutingProvider,
   AppConfiguratorProvider,
   DynamicModalProvider,
@@ -106,7 +107,9 @@ const ShaApplicationProvider: FC<PropsWithChildren<IShaApplicationProviderProps>
                           authRef={authRef}
                           homePageUrl={homePageUrl}
                         >
-                          {authChildren}
+                          <AutoLogoutProvider>
+                            {authChildren}
+                          </AutoLogoutProvider>
                         </AuthProvider>
                       )}
                     >

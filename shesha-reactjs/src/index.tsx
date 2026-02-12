@@ -38,3 +38,8 @@ export { type DocumentDefinition, type IDocumentInstance } from './configuration
 export { DocumentInstance } from './configuration-studio/cs/documentInstance';
 export { DocumentDefinitionRegistration } from './configuration-studio/document-definitions/documentDefinitionRegistration';
 export { useConfigurationStudio } from './configuration-studio/cs/contexts';
+
+export { type ScreenDefinition, type IScreenProps } from './screen-registry/models';
+export { ScreenRegistration, type IScreenRegistrationProps } from './screen-registry/screenRegistration';
+export { useScreenRegistrations } from './screen-registry/hooks';
+export { useScreenRegistry } from './screen-registry/contexts';

@@ -7,6 +7,7 @@ import { EntityCrudActions } from '@/providers/dynamicActions/implementations/en
 import { StandardApis } from '@/providers/dynamicActions/implementations/standardApis';
 import { UrlActions } from '@/providers/dynamicActions/implementations/dataSourceDynamicMenu/urlDynamicMenuItem';
 import { EntityActions } from '@/providers/dynamicActions/implementations/dataSourceDynamicMenu/entityDynamicMenuItem';
+import { AppScreenRegistration } from '@/screens';
 
 export interface IAppProviderProps {
   backendUrl: string;
@@ -27,6 +28,7 @@ export const AppProvider: FC<PropsWithChildren<IAppProviderProps>> = ({ children
             <EntityActions>
               <StandardApis>
                 <StoredFilesProvider baseUrl={backendUrl} ownerId="" ownerType="">
+                  <AppScreenRegistration />
                   {children}
                 </StoredFilesProvider>
               </StandardApis>

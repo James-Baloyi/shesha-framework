@@ -149,7 +149,7 @@ const createRepository = (args: IWithInMemoryRepositoryArgs): IRepository => {
     return Promise.reject('Export to Excel not implemented');
   };
 
-  const reorder = (payload: RowsReorderPayload): Promise<void> => {
+  const reorder = (payload: RowsReorderPayload): Promise<any> => {
     const newRows = payload.getNew();
     args.onChange(newRows);
 

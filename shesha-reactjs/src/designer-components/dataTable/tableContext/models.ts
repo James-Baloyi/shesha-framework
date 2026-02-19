@@ -31,19 +31,19 @@ export interface ITableContextComponentProps extends Omit<IConfigurableFormCompo
   onAfterRowReorder?: IConfigurableActionConfiguration;
 }
 
-export interface IBeforeRowReorderArguments {
+export interface IBeforeRowReorderArguments<TData = unknown> {
   oldIndex: number;
   newIndex: number;
-  rowData: any;
-  allData: any[];
+  rowData: TData;
+  allData: TData[];
 }
 
-export interface IAfterRowReorderArguments {
+export interface IAfterRowReorderArguments<TData = unknown, TResponse = unknown> {
   oldIndex: number;
   newIndex: number;
-  rowData: any;
-  allData: any[];
-  response?: any;
+  rowData: TData;
+  allData: TData[];
+  response?: TResponse;
 }
 
 /**

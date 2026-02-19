@@ -290,7 +290,7 @@ const createRepository = (args: ICreateBackendRepositoryArgs): IBackendRepositor
     FileSaver.saveAs(new Blob([response.data]), 'Export.xlsx');
   };
 
-  const reorder = async (payload: RowsReorderPayload): Promise<void> => {
+  const reorder = async (payload: RowsReorderPayload): Promise<any> => {
     let reorderUrl = `${GENERIC_ENTITIES_ENDPOINT}/Reorder`;
     if (payload.customReorderEndpoint?.trim().length > 0)
       reorderUrl = payload.customReorderEndpoint;
@@ -325,6 +325,7 @@ const createRepository = (args: ICreateBackendRepositoryArgs): IBackendRepositor
         // real update
         payload.applyOrder(orderedRows);
       }
+      return response.data?.result;
     } catch (error) {
       payload.applyOrder(oldRows);
       throw error;

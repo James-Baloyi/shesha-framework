@@ -16,7 +16,7 @@ export interface IRepository<TCreateOptions = any, TUpdateOptions = any, TDelete
   prepareColumns: (configurableColumns: IConfigurableColumnsProps[]) => Promise<DataTableColumnDto[]>;
   fetch: (payload: IGetListDataPayload) => Promise<ITableDataInternalResponse>;
   exportToExcel: (payload: IGetListDataPayload) => Promise<void>;
-  reorder: (payload: RowsReorderPayload) => Promise<any>;
+  reorder: (payload: RowsReorderPayload) => Promise<EntityReorderResponse | void>;
   supportsReordering?: (args: SupportsReorderingArgs) => boolean | string;
   supportsGrouping?: (args: SupportsGroupingArgs) => boolean;
   performCreate: (rowIndex: number, data: any, options: TCreateOptions) => Promise<any>;

@@ -12,7 +12,7 @@ const cellProps: CellPropGetter<object> = (props, { cell }) => [
   {
     style: {
       justifyContent: cell.column.align === 'right' ? 'flex-end' : 'flex-start',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       display: 'flex',
     },
   },
@@ -122,7 +122,7 @@ export const RowCell: FC<IRowCellProps> = ({ cell, preContent, row, rowIndex, ce
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
     }
     : undefined;
 

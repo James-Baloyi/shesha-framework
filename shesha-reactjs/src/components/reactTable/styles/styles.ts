@@ -448,7 +448,7 @@ export const useMainStyles = createStyles(({ css, cx, token, prefixCls, iconPref
           }
 
           .${td} {
-            vertical-align: middle;
+            vertical-align: top;
             ${cellBorders && cellBorderColor ? `border: 1px solid ${cellBorderColor};` : ''}
             ${Object.entries(cellBorderStyles).map(([key, value]) => `${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value};`).join(' ')}
 
@@ -776,7 +776,7 @@ export const useMainStyles = createStyles(({ css, cx, token, prefixCls, iconPref
               : bodyTextAlign === 'center'
                 ? 'center'
                 : 'flex-start'} !important;
-            align-items: center !important;
+            align-items: flex-start !important;
 
             /* Force empty cells to maintain height */
             &:empty::before {

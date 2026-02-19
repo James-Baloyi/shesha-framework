@@ -4,6 +4,7 @@ import React, { FC } from 'react';
 import { FormIdentifier } from '@/interfaces';
 import { DynamicPage } from '@/generic-pages/dynamic';
 import { notFound } from 'next/navigation';
+import { useScreenRegistry } from '@/screen-registry/contexts';
 
 /*
 interface AsyncPageProps {
@@ -20,6 +21,15 @@ const DynamicPageInternal: FC<PageProps> = (props) => {
   // const params = use(props.params);
   // const searchParams = use(props.searchParams);
   const { params, searchParams } = props;
+
+  const screenRegistry = useScreenRegistry();
+  const screenPath = params.path && Array.isArray(params.path) ? params.path.join('/') : '';
+  const registeredScreen = screenRegistry.getScreen(screenPath);
+
+  if (registeredScreen) {
+    const ScreenComponent = registeredScreen.component;
+    return <ScreenComponent pathSegments={params.path} searchParams={searchParams} />;
+  }
 
   // possible values of path:
   // 1. array with one element: [formName]

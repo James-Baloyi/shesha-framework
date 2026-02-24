@@ -24,6 +24,25 @@ import { getUrlKeyParam } from '@/utils';
 import { wrapDisplayName } from '@/utils/react';
 import { isAjaxSuccessResponse } from '@/interfaces/ajaxResponse';
 
+// Extended data column interface with additional properties used in URL repository
+interface IExtendedDataColumnProps extends IConfigurableColumnsProps {
+  propertyName?: string;
+  allowSorting?: boolean;
+  dataType?: string;
+  dataFormat?: string;
+  referenceListName?: string;
+  referenceListModule?: string;
+  entityTypeName?: string;
+  entityTypeModule?: string;
+  allowInherited?: boolean;
+  metadata?: any;
+}
+
+// Type guard for extended data columns
+const isExtendedDataColumn = (col: IConfigurableColumnsProps): col is IExtendedDataColumnProps => {
+  return col.columnType === 'data';
+};
+
 export interface IWithUrlRepositoryArgs {
   getListUrl: string;
 }
@@ -128,8 +147,36 @@ const createRepository = (args: ICreateUrlRepositoryArgs): IUrlRepository => {
     });
   };
 
-  const prepareColumns = (_: IConfigurableColumnsProps[]): Promise<DataTableColumnDto[]> => {
-    return Promise.resolve([]);
+  const prepareColumns = (configurableColumns: IConfigurableColumnsProps[]): Promise<DataTableColumnDto[]> => {
+    if (!configurableColumns || configurableColumns.length === 0) {
+      return Promise.resolve([]);
+    }
+
+    // Convert configurable columns to DataTableColumnDto format
+    const dataTableColumns = configurableColumns
+      .filter(isExtendedDataColumn)
+      .map((col) => {
+        const result: DataTableColumnDto = {
+          propertyName: col.propertyName || col.accessor || col.caption,
+          name: col.propertyName || col.accessor || col.caption,
+          caption: col.caption,
+          description: col.description,
+          dataType: col.dataType ?? 'string',
+          dataFormat: col.dataFormat,
+          referenceListName: col.referenceListName,
+          referenceListModule: col.referenceListModule,
+          entityTypeName: col.entityTypeName,
+          entityTypeModule: col.entityTypeModule,
+          allowInherited: col.allowInherited ?? false,
+          isFilterable: true, // Enable filtering for all URL source columns
+          isSortable: col.allowSorting !== false, // Default to true unless explicitly disabled
+          metadata: col.metadata,
+        };
+
+        return result;
+      });
+
+    return Promise.resolve(dataTableColumns);
   };
 
   const performUpdate = (_rowIndex: number, _: any): Promise<any> => {

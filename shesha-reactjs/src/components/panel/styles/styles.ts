@@ -115,7 +115,7 @@ export const useStyles = createStyles(({ css, cx, token, prefixCls }, {
       margin-right: ${marginRight};
     }
    
-    > .ant-collapse-item > .ant-collapse-content {
+    > .ant-collapse-item.ant-collapse-item-active > .ant-collapse-content {
       width: ${width};
       min-width: ${minWidth};
       max-width: ${maxWidth};
@@ -136,14 +136,15 @@ export const useStyles = createStyles(({ css, cx, token, prefixCls }, {
       border-right: ${ghost ? 'none' : borderRightWidth || borderWidth} ${borderRightStyle || borderStyle} ${borderRightColor || borderColor};
       border-left: ${ghost ? 'none' : borderLeftWidth || borderWidth} ${borderLeftStyle || borderStyle} ${borderLeftColor || borderColor};
       border-bottom: ${ghost ? 'none' : borderBottomWidth || borderWidth} ${borderBottomStyle || borderStyle} ${borderBottomColor || borderColor};
+      ${height || maxHeight ? 'display: flex; flex-direction: column;' : ''}
 
       > .ant-collapse-content-box {
         --ant-collapse-content-padding: 0px !important;
         padding: 0px !important;
-        height: 100%;
+        height: ${height || maxHeight ? '100%' : 'auto'};
         width: 100%;
-        overflow: ${overflow?.overflow ?? 'auto'};
-        ${overflow};
+        overflow: ${overflow?.overflow ?? (height || maxHeight ? 'auto' : 'visible')};
+        ${height || maxHeight ? 'flex: 1 1 auto;' : ''}
       }
     }
 
@@ -214,7 +215,7 @@ export const useStyles = createStyles(({ css, cx, token, prefixCls }, {
             margin-left: -8px;
           }
         }
-        > .ant-collapse-content {
+        &.ant-collapse-item-active > .ant-collapse-content {
           border: none;
           > .ant-collapse-content-box {
             padding: 5px 0;
@@ -245,15 +246,20 @@ export const useStyles = createStyles(({ css, cx, token, prefixCls }, {
       }
     }
 
-    > .ant-collapse-item > .${prefixCls}-collapse-content-box {
+    > .ant-collapse-item.ant-collapse-item-active > .ant-collapse-content {
+      ${height || maxHeight ? 'display: flex; flex-direction: column;' : ''}
+    }
+
+    > .ant-collapse-item.ant-collapse-item-active > .${prefixCls}-collapse-content-box {
       padding: 5px 0;
       width: ${width};
       min-width: ${minWidth};
       max-width: ${maxWidth};
-      height: max-content;
+      height: ${height || maxHeight ? '100%' : 'auto'};
       min-height: ${minHeight};
       max-height: ${maxHeight};
-      overflow: ${overflow ?? 'auto'};
+      overflow: ${overflow?.overflow ?? (height || maxHeight ? 'auto' : 'visible')};
+      ${height || maxHeight ? 'flex: 1 1 auto;' : ''}
       padding-top: ${paddingTop} !important;
       padding-bottom: ${paddingBottom} !important;
       padding-left: ${paddingLeft} !important;

@@ -9,6 +9,7 @@ import {
   IFlatComponentsStructure,
   IFormComponentContainer,
   IFormSettings,
+  IStyleType,
 } from '@/providers/form/models';
 import { Migrator, MigratorFluent } from '@/utils/fluentMigrator/migrator';
 import { IModelMetadata, IPropertyMetadata } from './metadata';
@@ -190,6 +191,12 @@ export type IToolboxComponent<TModel extends IConfigurableFormComponent = IConfi
   actualModelPropertyFilter?: (name: string, value: any) => boolean;
 
   editorAdapter?: IEditorAdapter;
+
+  /**
+   * Returns hardcoded style defaults for this component (used as last-resort fallback at render time).
+   * If not provided, category-level defaults from getHardcodedDefaults() are used.
+   */
+  getDefaultStyles?: () => IStyleType;
 
   /**
    * Controls dimension preservation in designer mode.

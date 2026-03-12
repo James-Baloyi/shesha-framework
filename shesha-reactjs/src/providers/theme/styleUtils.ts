@@ -190,3 +190,102 @@ export const getThemeBaseStyles = (
       return {};
   }
 };
+
+export type ComponentCategory = 'inputComponents' | 'layoutComponents' | 'standardComponents' | 'inlineComponents';
+
+const inputBorder: IBorderValue = {
+  border: {
+    all: { width: '1px', style: 'solid', color: '#d9d9d9' },
+    top: { width: '1px', style: 'solid', color: '#d9d9d9' },
+    bottom: { width: '1px', style: 'solid', color: '#d9d9d9' },
+    left: { width: '1px', style: 'solid', color: '#d9d9d9' },
+    right: { width: '1px', style: 'solid', color: '#d9d9d9' },
+  },
+  radius: { all: 8, topLeft: 8, topRight: 8, bottomLeft: 8, bottomRight: 8 },
+  borderType: 'all',
+  radiusType: 'all',
+};
+
+/**
+ * Returns hardcoded style defaults for input components (last-resort fallback).
+ * These are the same values previously baked into individual defaultStyles() functions.
+ */
+export const getInputComponentHardcodedDefaults = (): IStyleType => ({
+  background: { type: 'color', color: '#fff' },
+  font: { weight: '400', size: 14, color: '#000', type: 'Segoe UI' },
+  border: inputBorder,
+  dimensions: { width: '100%', height: '32px', minHeight: '0px', maxHeight: 'auto', minWidth: '0px', maxWidth: 'auto' },
+  shadow: { offsetX: 0, offsetY: 0, blurRadius: 0, spreadRadius: 0, color: 'rgba(0,0,0,0)' },
+});
+
+/**
+ * Returns hardcoded style defaults for layout components (last-resort fallback).
+ */
+export const getLayoutComponentHardcodedDefaults = (): IStyleType => ({
+  background: { type: 'color', color: '' },
+  font: { weight: '400', size: 14, color: '#000', type: 'Segoe UI' },
+  border: {
+    border: {
+      all: { width: '1px', style: 'none', color: '#d9d9d9' },
+    },
+    radius: { all: 8 },
+    borderType: 'all',
+    radiusType: 'all',
+  },
+  dimensions: { width: 'auto', height: 'auto', minHeight: '32px', maxHeight: 'auto', minWidth: '0px', maxWidth: 'auto' },
+  shadow: { offsetX: 0, offsetY: 0, blurRadius: 0, spreadRadius: 0, color: '#000000' },
+});
+
+/**
+ * Returns hardcoded style defaults for inline components (last-resort fallback).
+ */
+export const getInlineComponentHardcodedDefaults = (): IStyleType => ({
+  background: { type: 'color' },
+  font: { weight: '400', size: 14, type: 'Segoe UI', align: 'center' },
+  border: {
+    border: {
+      all: { width: '1px', style: 'solid', color: '#d9d9d9' },
+    },
+    radius: { all: 8 },
+    borderType: 'all',
+  },
+  dimensions: { width: 'auto', height: '32px', minHeight: '0px', maxHeight: 'auto', minWidth: '0px', maxWidth: 'auto' },
+  shadow: { offsetX: 0, offsetY: 0, blurRadius: 0, spreadRadius: 0, color: '#000000' },
+});
+
+/**
+ * Returns hardcoded style defaults for standard components (last-resort fallback).
+ */
+export const getStandardComponentHardcodedDefaults = (): IStyleType => ({
+  background: { type: 'color', color: '' },
+  font: { weight: '400', size: 14, color: '#000', type: 'Segoe UI' },
+  border: {
+    border: {
+      all: { width: '1px', style: 'none', color: '#d9d9d9' },
+    },
+    radius: { all: 8 },
+    borderType: 'all',
+    radiusType: 'all',
+  },
+  dimensions: { width: '100%', height: 'auto', minHeight: '0px', maxHeight: 'auto', minWidth: '0px', maxWidth: 'auto' },
+  shadow: { offsetX: 0, offsetY: 0, blurRadius: 0, spreadRadius: 0, color: 'rgba(0,0,0,0)' },
+});
+
+/**
+ * Returns hardcoded style defaults for a given component category.
+ * Used as the last-resort fallback (tier 3) in the 3-tier merge.
+ */
+export const getHardcodedDefaults = (category: ComponentCategory): IStyleType => {
+  switch (category) {
+    case 'inputComponents':
+      return getInputComponentHardcodedDefaults();
+    case 'layoutComponents':
+      return getLayoutComponentHardcodedDefaults();
+    case 'inlineComponents':
+      return getInlineComponentHardcodedDefaults();
+    case 'standardComponents':
+      return getStandardComponentHardcodedDefaults();
+    default:
+      return {};
+  }
+};

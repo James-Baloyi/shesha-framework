@@ -17,17 +17,11 @@ interface IGenericTextProps
   style?: CSSProperties;
 }
 
-const getColorByContentType = (contentType: ContentType, style: CSSProperties, theme: IConfigurableTheme): string | undefined => {
-  switch (contentType) {
-    case 'custom':
-      return style?.color;
-    case 'secondary':
-      return theme?.text?.secondary;
-    case '':
-      return theme?.text?.default;
-    default:
-      return undefined;
-  }
+const getColorByContentType = (contentType: ContentType | undefined, style: CSSProperties, theme: IConfigurableTheme): string | undefined => {
+  if (contentType === 'custom') return style?.color;
+  if (contentType === 'secondary') return theme?.text?.secondary;
+  if (!contentType) return theme?.text?.default ?? style?.color;
+  return undefined;
 };
 
 export const GenericText: FC<PropsWithChildren<IGenericTextProps>> = ({

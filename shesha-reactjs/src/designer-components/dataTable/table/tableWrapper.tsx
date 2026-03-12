@@ -51,7 +51,7 @@ export const TableWrapper: FC<TableWrapperProps> = (props) => {
   const formDesigner = useFormDesignerOrUndefined();
   const hasAutoConfiguredRef = useRef(false);
 
-  const calculatedStyles = useFormComponentStyles(props);
+  const calculatedStyles = useFormComponentStyles(props, { componentCategory: 'layoutComponents' });
   const allStyles = props.allStyles ?? calculatedStyles;
   const componentIdRef = useRef(id);
   const normalizedConfiguredColumns = useMemo(

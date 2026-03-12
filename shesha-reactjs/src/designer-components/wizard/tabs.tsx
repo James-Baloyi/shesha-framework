@@ -43,7 +43,7 @@ export const Tabs: FC<Omit<IWizardComponentProps, 'size'>> = ({ form, ...model }
 
   const { primaryTextColor, secondaryTextColor, primaryBgColor, secondaryBgColor } = model;
   const colors = { primaryBgColor, secondaryBgColor, primaryTextColor, secondaryTextColor };
-  const activeStepStyle = useFormComponentStyles(visibleSteps[current]);
+  const activeStepStyle = useFormComponentStyles(visibleSteps[current], { componentCategory: 'layoutComponents' });
   const { fontSize, fontFamily, fontWeight, color, height, minHeight, maxHeight, ...rest } = activeStepStyle.fullStyle;
   const overflow = getOverflowStyle(true, false);
   const { styles } = useStyles({

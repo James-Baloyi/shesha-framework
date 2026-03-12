@@ -58,7 +58,7 @@ export const MenuListComponent: IToolboxComponent<IMenuListProps> = {
   Factory: ({ model }) => {
     const { data } = useFormData();
     const { loadedMenu, changeMainMenu, saveMainMenu } = useMainMenu();
-    const allStyles = useFormComponentStyles(model as MenuListStyleProps);
+    const allStyles = useFormComponentStyles(model as MenuListStyleProps, { componentCategory: 'standardComponents' });
 
     const context: IConfigurableComponentContext<ISideBarMenuProps> = {
       settings: loadedMenu,

@@ -27,12 +27,12 @@ const DrawerComponent: IToolboxComponent<IDrawerProps> = {
       backgroundStyles: headerBackgroundStyles,
       shadowStyles: headerShadowStyles,
       jsStyle: headerJsStyle,
-    } = useFormComponentStyles(headerStyles);
+    } = useFormComponentStyles(headerStyles, { componentCategory: 'layoutComponents' });
     const {
       backgroundStyles: footerBackgroundStyles,
       shadowStyles: footerShadowStyles,
       jsStyle: footerJsStyle,
-    } = useFormComponentStyles(footerStyles);
+    } = useFormComponentStyles(footerStyles, { componentCategory: 'layoutComponents' });
 
     const additionalHeaderStyles: CSSProperties = removeUndefinedProps({
       ...headerShadowStyles,

@@ -33,7 +33,7 @@ const ContainerComponent: ContainerComponentDefinition = {
     const { theme } = useTheme();
 
     // For containers, use wrapperStyle instead of style for margins/dimensions
-    const containerStyles = useFormComponentStyles(model, { useWrapperStyle: true });
+    const containerStyles = useFormComponentStyles(model, { useWrapperStyle: true, componentCategory: 'layoutComponents' });
 
     const {
       dimensionsStyles,

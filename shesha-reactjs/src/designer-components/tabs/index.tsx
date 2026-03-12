@@ -40,7 +40,7 @@ const TabsComponent: TabsComponentDefinition = {
       }
     }, [defaultActiveKey]);
 
-    const cardStyles = useFormComponentStyles({ ...model.card });
+    const cardStyles = useFormComponentStyles({ ...model.card }, { componentCategory: 'layoutComponents' });
 
     const { styles } = useStyles({ styles: model.allStyles.fullStyle, cardStyles: tabType === 'line' ? { ...cardStyles.fontStyles, ...cardStyles.dimensionsStyles } : cardStyles.fullStyle, position: tabPosition, tabType, tabLineColor, overflow: model.allStyles.overflowStyles });
 

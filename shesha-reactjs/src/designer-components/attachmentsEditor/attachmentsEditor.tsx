@@ -179,7 +179,7 @@ const AttachmentsEditor: IToolboxComponent<IAttachmentsEditorProps> = {
 
     const {
       fullStyle: downloadedFileFullStyle,
-    } = useFormComponentStyles(model.downloadedFileStyles ?? downloadedFileDefaultStyles());
+    } = useFormComponentStyles(model.downloadedFileStyles ?? downloadedFileDefaultStyles(), { componentCategory: 'inputComponents' });
 
     const executeScript = (script, value): void => {
       executeScriptSync(script, {

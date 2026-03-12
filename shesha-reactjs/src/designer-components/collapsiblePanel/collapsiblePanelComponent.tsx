@@ -50,7 +50,7 @@ const CollapsiblePanelComponent: CollapsiblePanelComponentDefinition = {
 
     const headerComponents = model?.header?.components ?? [];
 
-    const headerStyles = useFormComponentStyles({ ...{ ...model.headerStyles, border: ghost ? null : model.headerStyles?.border } }).fullStyle;
+    const headerStyles = useFormComponentStyles({ ...{ ...model.headerStyles, border: ghost ? null : model.headerStyles?.border } }, { componentCategory: 'layoutComponents' }).fullStyle;
 
     const isIconHidden = expandIconPosition === 'hide';
     const extra = ((headerComponents?.length > 0 || formMode === 'designer') && !hasCustomHeader) ? (

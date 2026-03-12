@@ -50,7 +50,7 @@ const RenderButton: FC<{ props: ButtonGroupItemProps; uuid: string; form?: FormI
   const { size, buttonType } = props;
   const model = props;
 
-  const { backgroundStyles, fontStyles, borderStyles, shadowStyles, dimensionsStyles, stylingBoxAsCSS, jsStyle } = useFormComponentStyles(model);
+  const { backgroundStyles, fontStyles, borderStyles, shadowStyles, dimensionsStyles, stylingBoxAsCSS, jsStyle } = useFormComponentStyles(model, { componentCategory: 'inlineComponents' });
 
   const isPrimaryOrDefault = ['primary', 'default'].includes(buttonType);
 

@@ -18,9 +18,9 @@ import { FormComponentValidationProvider, useValidationErrorsActionsOrDefault, u
  * Priority: 1) Explicit componentCategory from toolbox, 2) isInput flag, 3) Component type matching
  */
 const getComponentCategory = (
-  componentType: string, 
+  componentType: string,
   isInput?: boolean,
-  toolboxComponentCategory?: UseFormComponentStylesOptions['componentCategory']
+  toolboxComponentCategory?: UseFormComponentStylesOptions['componentCategory'],
 ): UseFormComponentStylesOptions['componentCategory'] => {
   // Priority 1: Use explicit componentCategory from toolbox component if available
   if (toolboxComponentCategory) {
@@ -36,7 +36,7 @@ const getComponentCategory = (
   const layoutComponentTypes = [
     'container', 'card', 'tabs', 'collapsiblePanel', 'panel',
     'columns', 'sizableColumns', 'dataList', 'dataTable',
-    'drawer', 'wizard', 'sectionSeparator', 'divider'
+    'drawer', 'wizard', 'sectionSeparator', 'divider',
   ];
   if (layoutComponentTypes.includes(componentType)) {
     return 'layoutComponents';
@@ -45,7 +45,7 @@ const getComponentCategory = (
   // Priority 4: Inline components: inline elements
   const inlineComponentTypes = [
     'button', 'link', 'text', 'icon', 'iconPicker',
-    'refListStatus', 'tag', 'badge'
+    'refListStatus', 'tag', 'badge',
   ];
   if (inlineComponentTypes.includes(componentType)) {
     return 'inlineComponents';
@@ -119,7 +119,7 @@ const FormComponentInner: FC<IFormComponentProps> = ({ componentModel }) => {
 
   // Determine component category for theme styling
   const componentCategory = getComponentCategory(componentModel.type, toolboxComponent?.isInput, toolboxComponent?.componentCatergory);
-  
+
   actualModel.allStyles = useFormComponentStyles(actualModel, { componentCategory });
 
   const calculatedModel = useCalculatedModel(actualModel, toolboxComponent?.useCalculateModel, toolboxComponent?.calculateModel);

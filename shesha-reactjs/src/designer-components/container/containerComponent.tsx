@@ -64,7 +64,7 @@ const ContainerComponent: ContainerComponentDefinition = {
       noDefaultStyling: model.noDefaultStyling,
       gridColumnsCount: model.gridColumnsCount,
       flexWrap: model.flexWrap,
-      gap: model.gap ? addPx(model.gap, allData) : `${addPx( theme?.layoutComponents?.gridGapVertical, allData)} ${addPx( theme?.layoutComponents?.gridGapHorizontal, allData)}`,
+      gap: model.gap ? addPx(model.gap, allData) : `${addPx(theme?.layoutComponents?.gridGapVertical, allData)} ${addPx(theme?.layoutComponents?.gridGapHorizontal, allData)}`,
     }), [
       model.display,
       model.flexDirection,

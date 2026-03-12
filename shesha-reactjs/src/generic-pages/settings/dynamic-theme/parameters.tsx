@@ -138,17 +138,17 @@ const ThemeParameters: FC<ThemeParametersProps> = ({ value: theme, onChange, rea
                 );
               })}
               <RenderColor
-              colorName="Component background"
-              initialColor={inputSettings?.background?.color || theme?.componentBackground || '#ffffff'}
-              className={styles.themeColorSpace}
-              colorPickerClassName={styles.themeColorPicker}
-              presetColors={BACKGROUND_PRESET_COLORS}
-              onChange={(color: any) =>
-                updateInputComponents({
-                  background: { ...inputSettings?.background, color: color?.toHexString?.() ?? color },
-                })}
-              readonly={readonly}
-            />
+                colorName="Component background"
+                initialColor={inputSettings?.background?.color || theme?.componentBackground || '#ffffff'}
+                className={styles.themeColorSpace}
+                colorPickerClassName={styles.themeColorPicker}
+                presetColors={BACKGROUND_PRESET_COLORS}
+                onChange={(color: any) =>
+                  updateInputComponents({
+                    background: { ...inputSettings?.background, color: color?.toHexString?.() ?? color },
+                  })}
+                readonly={readonly}
+              />
             </Space>
           </Space>
         </Space>

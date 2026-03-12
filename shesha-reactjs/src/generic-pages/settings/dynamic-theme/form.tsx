@@ -22,12 +22,11 @@ const FormExample: FC<FormExampleProps> = ({ theme }) => {
   };
 
   const { fullStyle } = useFormComponentStyles({ ...inputSettings, jsStyle: '' });
-  const allStyles = { ...fullStyle, backgroundColor: theme?.componentBackground };
+  const allStyles = { ...fullStyle, backgroundColor: inputSettings?.background?.color };
   const { marginTop: marginTopAll, marginBottom: marginBottomAll, marginLeft: marginLeftAll, marginRight: marginRightAll, ...rest } = allStyles;
   const marginStyle = { marginTop: marginTopAll, marginBottom: marginBottomAll, marginLeft: marginLeftAll, marginRight: marginRightAll };
   const styles = { ...rest };
 
-  console.log("Margins :: ", marginStyle)
   return (
     <Form
       layout={formLayout?.layout === 'horizontal' || inputSettings?.labelAlign !== 'top' ? 'horizontal' : 'vertical'}

@@ -49,6 +49,7 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
         className={options?.className}
         style={options?.style}
         autoFocus={options?.autoFocus}
+        tabIndex={-1}
       />
     );
 
@@ -73,17 +74,12 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
     setActiveTabKey(newActiveKey);
   };
 
-  // Focus search input when search query changes and we have matching results
+  // Focus search input only when search query changes (not on tab change)
   useEffect(() => {
     if (searchQuery) {
       focusActiveTabSearch();
     }
   }, [searchQuery, focusActiveTabSearch]);
-
-  // Focus search input when tab changes
-  useEffect(() => {
-    focusActiveTabSearch();
-  }, [activeTabKey, focusActiveTabSearch]);
 
   const isComponentHidden = (component): boolean => {
     if (formState.name === "modalSettings") {
@@ -153,14 +149,22 @@ const SearchableTabs: React.FC<SearchableTabsProps> = ({ model }) => {
     })
     .filter((tab) => !tab.hidden);
 
-  // Auto-switch to the first tab that has visible components when searching
+  // Only auto-switch tabs if the current tab becomes hidden due to filtering
   useEffect(() => {
     if (searchQuery && newFilteredTabs.length > 0) {
-      const firstVisibleTab = newFilteredTabs.find((tab) =>
-        Array.isArray(tab.components) ? tab.components.length > 0 : !!tab.components,
+      const currentTab = newFilteredTabs.find((tab) => tab.key === activeTabKey);
+      const currentTabHasContent = currentTab && (
+        Array.isArray(currentTab.components) ? currentTab.components.length > 0 : !!currentTab.components
       );
-      if (firstVisibleTab && firstVisibleTab.key !== activeTabKey) {
-        setActiveTabKey(firstVisibleTab.key);
+
+      // Only switch if the current tab has no visible components
+      if (!currentTabHasContent) {
+        const firstVisibleTab = newFilteredTabs.find((tab) =>
+          Array.isArray(tab.components) ? tab.components.length > 0 : !!tab.components,
+        );
+        if (firstVisibleTab && firstVisibleTab.key !== activeTabKey) {
+          setActiveTabKey(firstVisibleTab.key);
+        }
       }
     }
   }, [searchQuery, newFilteredTabs, activeTabKey]);

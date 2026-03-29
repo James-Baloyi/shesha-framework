@@ -142,14 +142,31 @@ const StoredFileProvider: FC<PropsWithChildren<IStoredFileProviderProps>> = (pro
   };
 
   useEffect(() => {
-    if (uploadMode === 'async') doFetchFileInfo();
+    // In async mode, always fetch file info from server
+    if (uploadMode === 'async') {
+      doFetchFileInfo();
+      return;
+    }
+    
+    // In sync mode, check if we have an already-uploaded file (file ID) or a new File object
+    if (newFileId) {
+      // If newFileId is a File object, it's a newly selected file - don't fetch
+      const isFileObject = newFileId instanceof File;
+      if (!isFileObject) {
+        // newFileId is a string (file ID of already uploaded file) - fetch from server
+        doFetchFileInfo();
+      }
+    }
   }, [uploadMode, ownerId, ownerType, propertyName, newFileId]);
 
   useEffect(() => {
     if (uploadMode === 'sync' && value) {
-      const fileInfo: IStoredFile = value
-        ? {
-          // id: value.uid,
+      // Check if value is a File object (new upload) 
+      const isFileObject = value instanceof File || (value?.name && value?.size && value?.type && !value?.id);
+      
+      if (isFileObject) {
+        // New file selected - create file info from File object
+        const fileInfo: IStoredFile = {
           uid: value.uid,
           url: null,
           status: 'done',
@@ -157,10 +174,9 @@ const StoredFileProvider: FC<PropsWithChildren<IStoredFileProviderProps>> = (pro
           size: value.size,
           type: value.type,
           originFileObj: null,
-        }
-        : null;
-
-      dispatch(fetchFileInfoSuccessAction(fileInfo));
+        };
+        dispatch(fetchFileInfoSuccessAction(fileInfo));
+      }
     }
     if (uploadMode === 'sync' && !Boolean(value)) {
       dispatch(deleteFileSuccessAction());
@@ -168,7 +184,7 @@ const StoredFileProvider: FC<PropsWithChildren<IStoredFileProviderProps>> = (pro
   }, [uploadMode, value]);
 
   useEffect(() => {
-    if (!isFetchingFileInfo && uploadMode === 'async') {
+    if (!isFetchingFileInfo) {
       if (isAjaxSuccessResponse(fetchingFileInfoResponse)) {
         const fetchedFile = fetchingFileInfoResponse.result;
         if (fetchedFile) {
@@ -191,7 +207,7 @@ const StoredFileProvider: FC<PropsWithChildren<IStoredFileProviderProps>> = (pro
         // TODO: handle error
       }
     }
-  }, [isFetchingFileInfo, fetchingFileInfoResponse, fetchingFileInfoError]);
+  }, [isFetchingFileInfo, fetchingFileInfoResponse, fetchingFileInfoError, uploadMode]);
 
   const downloadFileAsync = (payload: IDownloadFilePayload): void => {
     dispatch(downloadFileRequestAction());

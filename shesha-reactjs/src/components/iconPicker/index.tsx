@@ -11,6 +11,7 @@ import { TwoToneIconTypes, TWO_FACED_ICON_GROUPS } from './iconNamesTwoTone';
 import { humanizeString } from '@/utils/string';
 import classNames from 'classnames';
 import { useStyles } from './styles/styles';
+import TrojanIconPicker from './Trojan';
 
 export type ShaIconTypes = FilledIconTypes | OutlinedIconTypes | TwoToneIconTypes;
 type IconModes = 'outlined' | 'filled' | 'twoFaced';
@@ -75,6 +76,7 @@ const IconPicker: FC<IIconPickerProps> = ({
   const [localSelectedIcon, setLocalSelectedIcon] = useState<ShaIconTypes>(defaultValue);
   const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [useTrojan, setUseTrojan] = useState(false);
   const [searchOption, setSearchOption] = useState<IOption>({
     mode: 'outlined',
     group: ICON_MODE_GROUPS['outlined'],
@@ -177,6 +179,30 @@ const IconPicker: FC<IIconPickerProps> = ({
         )}
         className={styles.shaIconPickerModal}
       >
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+          <Radio.Group
+            value={useTrojan ? 'trojan' : 'legacy'}
+            onChange={(e) => setUseTrojan(e.target.value === 'trojan')}
+            optionType="button"
+            options={[
+              { label: 'Legacy', value: 'legacy' },
+              { label: 'New (react-icons)', value: 'trojan' },
+            ]}
+          />
+        </div>
+        {useTrojan ? (
+          <TrojanIconPicker
+            selectedIcon={localSelectedIcon as unknown as string}
+            onSelect={(name, _lib, Component) => {
+              if (readOnly) return;
+              setLocalSelectedIcon(name as ShaIconTypes);
+              setShowModal(false);
+              onIconChange?.(<Component size={30} />, name as ShaIconTypes);
+            }}
+            style={{ width: '100%' }}
+          />
+        ) : (
+          <>
         <div className={styles.shaIconPickerSearch}>
           <Radio.Group
             options={ICON_MODE_OPTIONS}
@@ -212,6 +238,8 @@ const IconPicker: FC<IIconPickerProps> = ({
             </div>
           ))}
         </div>
+          </>
+        )}
       </Modal>
     </div>
   );

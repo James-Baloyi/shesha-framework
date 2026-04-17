@@ -74,6 +74,7 @@ export const useStyles = createStyles(({ css, cx, token, iconPrefixCls }) => {
                         border-radius: 4px;
     
                         .${iconPrefixCls},
+                        svg,
                         .${shaIconPickerIconListIconName} {
                             transform: scale(1.25);
                         }

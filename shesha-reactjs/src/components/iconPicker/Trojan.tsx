@@ -19,6 +19,8 @@ import React, {
   useRef,
 } from "react";
 import type { IconType } from "react-icons";
+import { Input, Radio, RadioChangeEvent } from "antd";
+import { useStyles } from "./styles/styles";
 
 // ─── Library registry ─────────────────────────────────────────────────────────
 
@@ -114,8 +116,6 @@ export interface IconPickerProps {
   selectedIcon?: string;
   /** Icon size in px rendered in the grid cells */
   iconSize?: number;
-  /** Number of columns in the grid */
-  columns?: number;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -177,99 +177,23 @@ function useDebounce<T>(value: T, ms = 200): T {
   return debounced;
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-interface StyleTabsProps {
-  libraries: LibraryMeta[];
-  active: LibraryKey;
-  onChange: (key: LibraryKey) => void;
-}
-
-const StyleTabs: React.FC<StyleTabsProps> = ({ libraries, active, onChange }) => (
-  <div style={styles.tabs}>
-    {libraries.map((lib) => (
-      <button
-        key={lib.key}
-        type="button"
-        onClick={() => onChange(lib.key)}
-        title={lib.label}
-        style={{
-          ...styles.tab,
-          ...(active === lib.key ? { ...styles.tabActive, borderColor: lib.accent } : {}),
-        }}
-      >
-        <span
-          style={{
-            ...styles.tabDot,
-            background: lib.accent,
-          }}
-        />
-        <span style={styles.tabLabel}>{lib.label}</span>
-      </button>
-    ))}
-  </div>
-);
-
-interface IconGridProps {
-  icons: IconEntry[];
-  selectedIcon?: string;
-  iconSize: number;
-  columns: number;
-  onSelect: (entry: IconEntry) => void;
-}
-
-/** Simple windowed grid — swap for react-window for 1000+ icons in production */
-const IconGrid: React.FC<IconGridProps> = ({
-  icons,
-  selectedIcon,
-  iconSize,
-  columns,
-  onSelect,
-}) => {
-  if (icons.length === 0) {
-    return <div style={styles.emptyState}>No icons match your search.</div>;
-  }
-
-  return (
-    <div
-      style={{
-        ...styles.grid,
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-      }}
-    >
-      {icons.map(({ name, Component }) => (
-        <button
-          key={name}
-          type="button"
-          title={name}
-          aria-label={name}
-          aria-pressed={name === selectedIcon}
-          onClick={() => onSelect({ name, Component })}
-          style={{
-            ...styles.cell,
-            ...(name === selectedIcon ? styles.cellSelected : {}),
-          }}
-        >
-          <Component size={iconSize} />
-        </button>
-      ))}
-    </div>
-  );
-};
-
 // ─── Main component ───────────────────────────────────────────────────────────
+
+const LIBRARY_OPTIONS = ICON_LIBRARIES.map((lib) => ({
+  label: lib.label,
+  value: lib.key,
+}));
 
 export const IconPicker: React.FC<IconPickerProps> = ({
   onSelect,
   selectedIcon,
-  iconSize = 20,
-  columns = 8,
+  iconSize = 30,
   className,
   style: styleProp,
 }) => {
+  const { styles } = useStyles();
   const [activeLib, setActiveLib] = useState<LibraryKey>(ICON_LIBRARIES[0].key);
   const [query, setQuery] = useState("");
-  const searchRef = useRef<HTMLInputElement>(null);
 
   const debouncedQuery = useDebounce(query, 200);
   const { icons, loading, error } = useIconLibrary(activeLib);
@@ -287,184 +211,66 @@ export const IconPicker: React.FC<IconPickerProps> = ({
     [onSelect, activeLib]
   );
 
-  const handleLibChange = useCallback((key: LibraryKey) => {
-    setActiveLib(key);
+  const handleLibChange = useCallback((e: RadioChangeEvent) => {
+    setActiveLib(e.target.value);
     setQuery("");
-    searchRef.current?.focus();
+  }, []);
+
+  const onSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
   }, []);
 
   return (
-    <div className={className} style={{ ...styles.root, ...styleProp }}>
-      {/* Style switcher */}
-      <StyleTabs
-        libraries={ICON_LIBRARIES}
-        active={activeLib}
-        onChange={handleLibChange}
-      />
-
-      {/* Search */}
-      <div style={styles.searchWrapper}>
-        <input
-          ref={searchRef}
-          type="search"
-          placeholder={`Search ${icons.length.toLocaleString()} icons…`}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={styles.search}
-          aria-label="Search icons"
+    <div className={className} style={styleProp}>
+      <div className={styles.shaIconPickerSearch}>
+        <Radio.Group
+          options={LIBRARY_OPTIONS}
+          value={activeLib}
+          onChange={handleLibChange}
+          optionType="button"
+          size="small"
         />
+        <div className={styles.shaIconPickerSearchInputContainer}>
+          <Input.Search
+            allowClear
+            onChange={onSearchChange}
+            value={query}
+            placeholder={`Search ${icons.length.toLocaleString()} icons...`}
+          />
+        </div>
       </div>
 
-      {/* Results header */}
-      <div style={styles.meta}>
-        {!loading && !error && (
-          <span>
-            {filtered.length.toLocaleString()} icon
-            {filtered.length !== 1 ? "s" : ""}
-            {debouncedQuery ? ` for "${debouncedQuery}"` : ""}
-          </span>
-        )}
-      </div>
-
-      {/* Icon grid */}
-      <div style={styles.gridWrapper}>
+      <div className={styles.shaIconPickerIconList}>
         {loading ? (
-          <div style={styles.statusCenter}>Loading icons…</div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200 }}>
+            Loading icons...
+          </div>
         ) : error ? (
-          <div style={{ ...styles.statusCenter, color: "#ef4444" }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200, color: '#ef4444' }}>
             Failed to load icons: {error.message}
           </div>
+        ) : filtered.length === 0 ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200 }}>
+            No icons match your search.
+          </div>
         ) : (
-          <IconGrid
-            icons={filtered}
-            selectedIcon={selectedIcon}
-            iconSize={iconSize}
-            columns={columns}
-            onSelect={handleSelect}
-          />
+          <div className={styles.shaIconPickerIconListGroupBody}>
+            {filtered.map(({ name, Component }) => (
+              <span
+                key={name}
+                className={styles.shaIconPickerIconListIcon}
+                onClick={() => handleSelect({ name, Component })}
+                title={name}
+              >
+                <Component size={iconSize} style={{ transform: 'scale(.83)' }} />
+                <span className={styles.shaIconPickerIconListIconName}>{name}</span>
+              </span>
+            ))}
+          </div>
         )}
       </div>
     </div>
   );
 };
-
-// ─── Inline styles (replace with CSS Modules / Tailwind as needed) ─────────────
-
-const styles = {
-  root: {
-    display: "flex",
-    flexDirection: "column" as const,
-    background: "#0f0f13",
-    border: "1px solid #2a2a35",
-    borderRadius: 12,
-    overflow: "hidden",
-    fontFamily: "'DM Mono', 'JetBrains Mono', monospace",
-    fontSize: 13,
-    color: "#e0e0e0",
-    width: 520,
-  },
-  tabs: {
-    display: "flex",
-    overflowX: "auto" as const,
-    padding: "10px 12px 0",
-    gap: 4,
-    scrollbarWidth: "none" as const,
-  },
-  tab: {
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-    padding: "6px 10px",
-    borderRadius: "6px 6px 0 0",
-    border: "1px solid transparent",
-    borderBottom: "none",
-    background: "transparent",
-    color: "#888",
-    cursor: "pointer",
-    whiteSpace: "nowrap" as const,
-    transition: "color 0.15s, background 0.15s",
-    fontSize: 12,
-  },
-  tabActive: {
-    background: "#1a1a24",
-    color: "#e0e0e0",
-    borderTopWidth: 2,
-  },
-  tabDot: {
-    width: 7,
-    height: 7,
-    borderRadius: "50%",
-    flexShrink: 0,
-  },
-  tabLabel: {},
-  searchWrapper: {
-    padding: "12px 14px 6px",
-    background: "#1a1a24",
-    borderBottom: "1px solid #2a2a35",
-  },
-  search: {
-    width: "100%",
-    background: "#0f0f13",
-    border: "1px solid #2a2a35",
-    borderRadius: 6,
-    padding: "7px 12px",
-    color: "#e0e0e0",
-    fontSize: 13,
-    outline: "none",
-    boxSizing: "border-box" as const,
-    fontFamily: "inherit",
-  },
-  meta: {
-    padding: "6px 16px 4px",
-    background: "#1a1a24",
-    color: "#555",
-    fontSize: 11,
-    letterSpacing: "0.04em",
-    minHeight: 22,
-  },
-  gridWrapper: {
-    height: 320,
-    overflowY: "auto" as const,
-    background: "#1a1a24",
-    padding: 8,
-  },
-  grid: {
-    display: "grid",
-    gap: 2,
-  },
-  cell: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    aspectRatio: "1",
-    background: "transparent",
-    border: "1px solid transparent",
-    borderRadius: 6,
-    cursor: "pointer",
-    color: "#9ca3af",
-    transition: "background 0.1s, color 0.1s, border-color 0.1s",
-  },
-  cellSelected: {
-    background: "#1e3a5f",
-    borderColor: "#3b82f6",
-    color: "#60a5fa",
-  },
-  emptyState: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    height: 200,
-    color: "#555",
-    fontSize: 13,
-  },
-  statusCenter: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    height: 200,
-    color: "#888",
-  },
-} satisfies Record<string, React.CSSProperties>;
 
 export default IconPicker;

@@ -18,7 +18,8 @@ export const useStyles = createStyles(({ css }) => {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 100%;
+    width: fit-content;
+    max-width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;

@@ -2,7 +2,8 @@ import { createStyles } from '@/styles';
 
 export const useStyles = createStyles(({ css }) => {
   const innerEntityReferenceSpanBoxStyle = css`
-    width: 100%;
+    width: fit-content;
+    max-width: 100%;
     margin: 0;
     padding: 0;
     text-overflow: ellipsis;

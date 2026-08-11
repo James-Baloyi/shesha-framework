@@ -110,7 +110,7 @@ const SubForm: FC<ISubFormProps> = ({ readOnly }) => {
               ))}
             {showFormError && (
               <div className={styles.subFormError}>
-                <ValidationErrors error={formError} />
+                <ValidationErrors error={formError} renderMode="alert" />
               </div>
             )}
             <div>

@@ -352,33 +352,10 @@ export const getSettings: SettingsFormMarkupFactory = ({ fbf }) => {
                 hidden: { _code: 'return getSettingValue(data?.dataSource) !== "api";', _mode: 'code', _value: false },
                 mode: "dialog",
                 description: "Triggered after the sub-form creates its object in the back-end, via the 'Post form data' action",
-                exposedVariables: [
-                  {
-                    name: 'response',
-                    description: 'The entity returned by the back-end',
-                    type: 'object',
-                  },
-                  {
-                    name: 'data',
-                    description: 'Form data',
-                    type: 'object',
-                  },
-                  {
-                    name: 'globalState',
-                    description: 'The global state',
-                    type: 'object',
-                  },
-                  {
-                    name: 'message',
-                    description: 'Toast message',
-                    type: 'object',
-                  },
-                  {
-                    name: 'application',
-                    description: 'The application context',
-                    type: 'object',
-                  },
-                ],
+                availableConstantsExpression: "return metadataBuilder.object(\"constants\")\r\n .addAllStandard()\r\n" +
+                  " .addObject(\"response\", \"The entity returned by the back-end\", undefined)\r\n" +
+                  " .addObject(\"submittedValue\", \"The entity returned by the back-end (alias of response, kept for older handlers)\", undefined)\r\n" +
+                  " .build();",
                 wrapInTemplate: true,
                 templateSettings: {
                   functionName: 'onCreated',
@@ -394,33 +371,10 @@ export const getSettings: SettingsFormMarkupFactory = ({ fbf }) => {
                 hidden: { _code: 'return getSettingValue(data?.dataSource) !== "api";', _mode: 'code', _value: false },
                 mode: "dialog",
                 description: "Triggered after the sub-form updates its object in the back-end, via the 'Update form data' action",
-                exposedVariables: [
-                  {
-                    name: 'response',
-                    description: 'The entity returned by the back-end',
-                    type: 'object',
-                  },
-                  {
-                    name: 'data',
-                    description: 'Form data',
-                    type: 'object',
-                  },
-                  {
-                    name: 'globalState',
-                    description: 'The global state',
-                    type: 'object',
-                  },
-                  {
-                    name: 'message',
-                    description: 'Toast message',
-                    type: 'object',
-                  },
-                  {
-                    name: 'application',
-                    description: 'The application context',
-                    type: 'object',
-                  },
-                ],
+                availableConstantsExpression: "return metadataBuilder.object(\"constants\")\r\n .addAllStandard()\r\n" +
+                  " .addObject(\"response\", \"The entity returned by the back-end\", undefined)\r\n" +
+                  " .addObject(\"submittedValue\", \"The entity returned by the back-end (alias of response, kept for older handlers)\", undefined)\r\n" +
+                  " .build();",
                 wrapInTemplate: true,
                 templateSettings: {
                   functionName: 'onUpdated',

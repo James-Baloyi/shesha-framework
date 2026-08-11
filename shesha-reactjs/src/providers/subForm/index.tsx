@@ -12,9 +12,11 @@ import { App, ColProps } from 'antd';
 import {
   componentsFlatStructureToTree,
   componentsTreeToFlatStructure,
+  executeScriptSync,
   upgradeComponents,
-  useApplicationContextData,
+  useAvailableConstantsDataNoRefresh,
 } from '@/providers/form/utils';
+import { addContextData } from '@/components/formDesigner/components/utils';
 import { DEFAULT_FORM_SETTINGS, IFormDto } from '../form/models';
 import { GetDataError, useActualContextExecution, useDeepCompareMemo } from '@/hooks';
 import { ISubFormProviderProps } from './interfaces';
@@ -29,7 +31,6 @@ import { useDeepCompareEffect } from '@/hooks/useDeepCompareEffect';
 import { useForm } from '@/providers/form';
 import { UseFormConfigurationArgs } from '../form/api';
 import { useFormDesignerComponents } from '@/providers/form/hooks';
-import { useGlobalState } from '@/providers/globalState';
 import { useModelApiHelper } from '@/components/configurableForm/useActionEndpoint';
 import {
   IPersistedFormPropsWithComponents,
@@ -52,8 +53,6 @@ import { IEntity, IGenericGetPayload } from '@/interfaces/gql';
 import { isDefined, isNullOrWhiteSpace } from '@/utils/nullables';
 import { buildUrl } from '@/utils';
 import { getClassNameOrUndefined, getIdOrUndefined } from '@/utils/entity';
-import { IGlobalState } from '../globalState/contexts';
-import { MessageInstance } from 'antd/es/message/interface';
 import { useDataContextManagerActionsOrUndefined } from '../dataContextManager/hooks';
 import { throwError } from '@/utils/errors';
 
@@ -112,20 +111,6 @@ const describeDynamicFormLoadingError = (
 
 const EMPTY_OBJECT = {};
 
-type OnCreatedFunction = (
-  value: ISubFormProviderProps['value'],
-  globalState: IGlobalState['globalState'],
-  submittedValue: IEntity,
-  responseData: IEntity,
-  message: MessageInstance,
-  application: ReturnType<typeof useApplicationContextData>) => void;
-type OnUpdated = (
-  value: ISubFormProviderProps['value'],
-  globalState: IGlobalState['globalState'],
-  responseData: IEntity,
-  message: MessageInstance,
-  application: ReturnType<typeof useApplicationContextData>) => void;
-
 const SubFormProvider: FC<PropsWithChildren<ISubFormProviderProps>> = (props) => {
   const {
     formSelectionMode,
@@ -157,11 +142,13 @@ const SubFormProvider: FC<PropsWithChildren<ISubFormProviderProps>> = (props) =>
   const contextId = context ? (ctxManager?.getDataContext(context)?.uid ?? context) : undefined;
 
   const [state, dispatch] = useReducer(subFormReducer, SUB_FORM_CONTEXT_INITIAL_STATE);
-  const { message, notification } = App.useApp();
+  const { notification } = App.useApp();
 
   const form = useForm();
-  const { globalState } = useGlobalState();
-  const appContextData = useApplicationContextData();
+  // the interactive constants context shared by the standard event handlers; reads live values, so it can be
+  // captured once here and reused inside the debounced create/update callbacks. It also carries the standard
+  // `globalState`, `message` and `application` constants that the create/update handlers used to receive as args
+  const availableConstants = useAvailableConstantsDataNoRefresh();
   // the dynamic mode resolves its own form, starting with the name-mode `formId` would fetch it before the mode effect clears it
   const [formConfig, setFormConfig] = useState<UseFormConfigurationArgs>({
     formId: formSelectionMode === 'dynamic' ? undefined : formId,
@@ -491,12 +478,7 @@ const SubFormProvider: FC<PropsWithChildren<ISubFormProviderProps>> = (props) =>
           onChangeInternal(result);
           if (!isNullOrWhiteSpace(onCreated)) {
             // `response` is the documented name, `submittedValue` is kept for handlers written against the old one
-            try {
-              const func = new Function('data, globalState, submittedValue, response, message, application', onCreated) as OnCreatedFunction;
-              func(value, globalState, result, result, message, appContextData);
-            } catch (error) {
-              console.error("Sub-form 'On Created' handler failed", error);
-            }
+            executeScriptSync(onCreated, addContextData(availableConstants, { response: result, submittedValue: result }));
           }
         })
         .catch((error) => {
@@ -518,12 +500,8 @@ const SubFormProvider: FC<PropsWithChildren<ISubFormProviderProps>> = (props) =>
           const result = extractAjaxResponse(response.data);
           onChangeInternal(result);
           if (!isNullOrWhiteSpace(onUpdated)) {
-            try {
-              const func = new Function('data, globalState, response, message, application', onUpdated) as OnUpdated;
-              func(value, globalState, result, message, appContextData);
-            } catch (error) {
-              console.error("Sub-form 'On Updated' handler failed", error);
-            }
+            // `response` is the documented name, `submittedValue` is kept for handlers written against the old one
+            executeScriptSync(onUpdated, addContextData(availableConstants, { response: result, submittedValue: result }));
           }
         })
         .catch((error) => {

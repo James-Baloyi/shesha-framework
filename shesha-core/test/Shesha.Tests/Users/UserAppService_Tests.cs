@@ -221,6 +221,17 @@ namespace Shesha.Tests.Users
 
                 token = verifyResponse.Token;
 
+                // the same link must remain valid when opened again (e.g. from another browser or
+                // after a mail-client prefetch), see #2532
+                var repeatedResponse = await userAppService.ValidateResetCodeAsync(new ResetPasswordValidateCodeInput()
+                {
+                    Code = currentPin,
+                    Username = Convert.ToBase64String(Encoding.UTF8.GetBytes(userName)),
+                    Method = (long)RefListPasswordResetMethods.EmailLink
+                });
+                repeatedResponse.IsSuccess.ShouldBeTrue("Email link stopped working after the first validation");
+                repeatedResponse.Token.ShouldBe(token);
+
                 await uow.CompleteAsync();
             }
 

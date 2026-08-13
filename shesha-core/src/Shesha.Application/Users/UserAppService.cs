@@ -469,12 +469,23 @@ namespace Shesha.Users
 
             if (response.IsSuccess)
             {
-                user.SetNewPasswordResetCode();
-                await _userManager.UpdateAsync(user);
+                if ((RefListPasswordResetMethods)input.Method == RefListPasswordResetMethods.EmailLink)
+                {
+                    // An email link may be loaded more than once before the user completes the reset
+                    // (opened in another browser/device, prefetched by a mail client). Keep the reset code
+                    // intact so repeated validations succeed until the link expires;
+                    // ResetPasswordUsingTokenAsync clears it once the password is actually reset.
+                    response.Token = user.PasswordResetCode;
+                }
+                else
+                {
+                    // one-time pins are single-use: rotate the code so the pin cannot be validated again
+                    user.SetNewPasswordResetCode();
+                    await _userManager.UpdateAsync(user);
 
-                // real password reset will be done using token
-                response.Token = user.PasswordResetCode;
-                // response.Username = user.UserName;
+                    // real password reset will be done using token
+                    response.Token = user.PasswordResetCode;
+                }
             }
             return response;
         }

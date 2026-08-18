@@ -236,8 +236,6 @@ export const useStyles = createStyles(({ css, cx, token, prefixCls }) => {
                element, so the selected background needs !important to take effect at all */
             &.selected {
                 background-color: ${token.colorPrimaryBgHover} !important;
-                outline: 2px solid ${token.colorPrimary};
-                outline-offset: -2px;
             }
         }
 

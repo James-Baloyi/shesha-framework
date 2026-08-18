@@ -183,6 +183,10 @@ export const useStyles = createStyles(({ css, cx, token, prefixCls }) => {
                 box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 8px -1px rgba(0, 0, 0, 0.05);
                 transform: translateY(-2px);
             }
+
+            &.selected {
+                background-color: ${token.colorPrimaryBgHover} !important;
+            }
         }
 
         .${shaDatalistCard} > *,
@@ -218,16 +222,22 @@ export const useStyles = createStyles(({ css, cx, token, prefixCls }) => {
             border-radius: 6px;
             transition: background-color 0.2s ease-in-out;
 
-            &.selected {
-                background-color: ${token.colorPrimaryBgHover};
-            }
-
             &:hover {
-                background-color: ${token.colorFillTertiary};
-
                 &>.${shaDatalistComponentAddItemBtn} {
                     display: block;
                 }
+            }
+
+            &:not(.selected):hover {
+                background-color: ${token.colorFillTertiary};
+            }
+
+            /* the item's configured style (background included) is applied inline on this same
+               element, so the selected background needs !important to take effect at all */
+            &.selected {
+                background-color: ${token.colorPrimaryBgHover} !important;
+                outline: 2px solid ${token.colorPrimary};
+                outline-offset: -2px;
             }
         }
 

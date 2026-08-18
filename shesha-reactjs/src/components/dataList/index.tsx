@@ -49,37 +49,73 @@ import { DataListItemRenderer } from './itemRenderer';
 import { GroupLevelInfo, GroupLevels, GrouppedRow, IDataListProps, NewItemInitializer, RowOrGroup, RowsGroup } from './models';
 import { useStyles } from './styles/styles';
 
+const PORTAL_SELECTOR = [
+  '.ant-select-dropdown',
+  '.ant-picker-dropdown',
+  '.ant-dropdown',
+  '.ant-drawer',
+  '.ant-tooltip',
+  '.ant-popover',
+  '.ant-modal',
+  '.ant-message',
+  '.ant-notification',
+].join(',');
+
+
+const INTERACTIVE_SELECTOR = [
+  'a[href]',
+  'button',
+  'input',
+  'textarea',
+  'select',
+  'label',
+  'summary',
+  '[contenteditable="true"]',
+  '[tabindex]:not([tabindex="-1"])',
+  '[role="button"]',
+  '[role="link"]',
+  '[role="checkbox"]',
+  '[role="radio"]',
+  '[role="switch"]',
+  '[role="tab"]',
+  '[role="menuitem"]',
+  '[role="option"]',
+  '[role="combobox"]',
+  '[role="listbox"]',
+  '[role="textbox"]',
+  '[role="spinbutton"]',
+  '[role="slider"]',
+  '.anticon',
+  '.ant-btn',
+  '.ant-select',
+  '.ant-picker',
+  '.ant-input-number',
+  '.ant-input-affix-wrapper',
+  '.ant-checkbox',
+  '.ant-radio',
+  '.ant-switch',
+  '.ant-slider',
+  '.ant-rate',
+  '.ant-upload',
+  '.ant-tabs-tab',
+  '.ant-collapse-header',
+  '.ant-pagination',
+  '.sha-form-cell',
+].join(',');
+
 const isInteractiveTarget = (target: EventTarget | null): boolean => {
   if (!(target instanceof Element)) return false;
 
-  const isInPortal =
-    target.closest('.ant-select-dropdown') ||
-    target.closest('.ant-picker-dropdown') ||
-    target.closest('.ant-dropdown') ||
-    target.closest('.ant-drawer') ||
-    target.closest('.ant-tooltip') ||
-    target.closest('.ant-modal');
+  // portal content is unmounted while the click is still bubbling, which detaches it from the
+  // tree closest() would walk - treat anything already gone as interactive
+  if (!target.isConnected) return true;
 
-  if (isInPortal) return true;
+  return Boolean(target.closest(PORTAL_SELECTOR)) || Boolean(target.closest(INTERACTIVE_SELECTOR));
+};
 
-  const tag = target.tagName;
-  return (
-    tag === 'INPUT' ||
-    tag === 'TEXTAREA' ||
-    tag === 'SELECT' ||
-    tag === 'BUTTON' ||
-    !!target.closest('.ant-select') ||
-    !!target.closest('.ant-picker') ||
-    !!target.closest('.ant-input-number') ||
-    !!target.closest('.ant-checkbox') ||
-    !!target.closest('.ant-radio') ||
-    !!target.closest('.ant-switch') ||
-    !!target.closest('.ant-slider') ||
-    !!target.closest('.ant-rate') ||
-    !!target.closest('.ant-upload') ||
-    !!target.closest('.sha-form-cell') ||
-    !!target.closest('[contenteditable="true"]')
-  );
+const isTextSelectionInProgress = (): boolean => {
+  const selection = window.getSelection();
+  return isDefined(selection) && !selection.isCollapsed;
 };
 
 interface EntityForm {
@@ -687,10 +723,9 @@ export const DataList: FC<IDataListProps> = ({
       });
     };
 
-    const selected = isDefined(selectedRow) && (
-      (selectedRow.index === index && !(selectedRows.length > 0)) ||
-      (selectedRows.length > 0 && selectedRows.some(({ id }) => id === item.id))
-    );
+    const selected = selectedRows.length > 0
+      ? selectedRows.some(({ id }) => id === item.id)
+      : isDefined(selectedRow) && (isDefined(item.id) ? selectedRow.id === item.id : selectedRow.index === index);
 
 
     const itemStyles: CSSProperties = {
@@ -737,7 +772,7 @@ export const DataList: FC<IDataListProps> = ({
               // Skip selection/click events when interacting with form fields (dropdown, picker, etc.)
               // or content rendered in portals — otherwise inline-editing clicks toggle row selection
               // and, in multiple-select mode, double-toggle via the wrapping Checkbox label.
-              if (isInteractiveTarget(e.target)) {
+              if (isInteractiveTarget(e.target) || isTextSelectionInProgress()) {
                 e.stopPropagation();
                 return;
               }

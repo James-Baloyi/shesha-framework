@@ -118,6 +118,19 @@ const isTextSelectionInProgress = (): boolean => {
   return isDefined(selection) && !selection.isCollapsed;
 };
 
+/**
+ * Match a selected row against a rendered item. Prefers `id` so that sorting, filtering or paging
+ * can't shift the match onto the wrong row, and falls back to the positional index for rows that
+ * have no id yet (e.g. newly added, unsaved items).
+ */
+const isSameRow = (
+  selectedId: string | undefined,
+  selectedIndex: number | undefined,
+  itemId: string | undefined,
+  itemIndex: number,
+): boolean =>
+  isDefined(selectedId) && isDefined(itemId) ? selectedId === itemId : selectedIndex === itemIndex;
+
 interface EntityForm {
   entityType: string | IEntityTypeIdentifier;
   isFetchingFormId?: boolean;
@@ -208,9 +221,12 @@ export const DataList: FC<IDataListProps> = ({
     createFormInfo.current = undefined;
   }, [formId, formType, createFormId, createFormType, entityType, formSelectionMode]);
 
+  // `selectedIds` has to be here: in multiple mode the rendered `selected` flag is derived from it,
+  // and it can change without `selectedRows` changing (a controlled update from the parent, or a
+  // direct `changeSelectedIds` call), which would otherwise leave every checkbox stale.
   useDeepCompareEffect(() => {
     updateContent();
-  }, [selectedRow, selectedRows, selectionMode]);
+  }, [selectedRow, selectedRows, selectedIds, selectionMode]);
 
   const allData = useAvailableConstantsData();
   const { executeAction, useActionDynamicContext } = useConfigurableActionDispatcher();
@@ -254,8 +270,11 @@ export const DataList: FC<IDataListProps> = ({
         onSelectionChange(selectedItems, selectedIndices);
       }
     } else {
-      // Single selection mode
-      const isCurrentlySelected = selectedRow?.index === index;
+      // Single selection mode. Match on id where possible so the toggle agrees with the `selected`
+      // flag used for rendering - matching purely on index disagrees with it once rows are sorted,
+      // filtered or paged.
+      const isCurrentlySelected =
+        isDefined(selectedRow) && isSameRow(selectedRow.id, selectedRow.index, row.id, index);
 
       if (isCurrentlySelected) {
         // Deselecting - don't trigger onListItemSelect
@@ -325,7 +344,11 @@ export const DataList: FC<IDataListProps> = ({
   const getFormIdFromExpression = (item: ITableRowData): FormFullName | undefined => {
     if (!formIdExpression) return undefined;
 
-    return executeScriptSync(formIdExpression, { ...allData, item });
+    // `data` on the application context is the host form's data, which is empty when the DataList
+    // is the page content - expose the row under `data` so per-row expressions work, matching the
+    // context shape used by DataTable and the DataList designer component. `item` is kept for
+    // backwards compatibility with existing expressions.
+    return executeScriptSync(formIdExpression, { ...allData, item, data: item });
   };
 
   const { formInfoBlockVisible } = useAppConfigurator();
@@ -723,9 +746,15 @@ export const DataList: FC<IDataListProps> = ({
       });
     };
 
-    const selected = selectedRows.length > 0
-      ? selectedRows.some(({ id }) => id === item.id)
-      : isDefined(selectedRow) && (isDefined(item.id) ? selectedRow.id === item.id : selectedRow.index === index);
+    // Read the same state the toggle in `onSelectRowLocal` writes, per mode. The previous version
+    // gated both branches on `selectedRow`, which is only ever set in single mode - in multiple mode
+    // it left every checkbox permanently unchecked while `selectedIds` tracked the selection
+    // correctly underneath, so rows never appeared to tick but Select All still reacted to them.
+    const selected = selectionMode === 'multiple'
+      ? selectedIds.includes(item.id)
+      : isDefined(selectedRow) && isSameRow(selectedRow.id, selectedRow.index, item.id, index);
+
+    const isSelectable = selectionMode === 'single' || selectionMode === 'multiple';
 
 
     const itemStyles: CSSProperties = {
@@ -751,16 +780,23 @@ export const DataList: FC<IDataListProps> = ({
       <div key={`row-${index}`} style={wrapperStyle}>
         <ConditionalWrap
           condition={selectionMode === 'multiple'}
+          // The selection control is a *sibling* of the row content, not its parent. Wrapping the
+          // content in antd's <label> made every click inside the row a label activation, which could
+          // only be suppressed with preventDefault - and that cancelled the default action of nested
+          // controls too, so checkboxes/radios/switches inside a row stopped toggling. Keeping them
+          // as siblings means there is nothing to suppress.
+          // Single mode renders no control at all: the row itself is the toggle and the `selected`
+          // class is the indicator.
           wrap={(children) => (
-            <Checkbox
-              className={classNames(styles.shaDatalistComponentItemCheckbox, { selected })}
-              checked={selected}
-              onChange={() => {
-                onSelectRowLocal(index, item);
-              }}
-            >
+            <div className={classNames(styles.shaDatalistComponentItemCheckbox, { selected })}>
+              <Checkbox
+                checked={selected}
+                onChange={() => {
+                  onSelectRowLocal(index, item);
+                }}
+              />
               {children}
-            </Checkbox>
+            </div>
           )}
         >
           <div
@@ -769,15 +805,15 @@ export const DataList: FC<IDataListProps> = ({
               { selected },
             )}
             onClick={(e) => {
-              // Skip selection/click events when interacting with form fields (dropdown, picker, etc.)
-              // or content rendered in portals — otherwise inline-editing clicks toggle row selection
-              // and, in multiple-select mode, double-toggle via the wrapping Checkbox label.
-              if (isInteractiveTarget(e.target) || isTextSelectionInProgress()) {
-                e.stopPropagation();
-                return;
-              }
-              // In multiple mode the wrapping Checkbox handles selection via onChange
-              if (selectionMode === 'single') {
+              // Skip selection/click events when interacting with form fields (dropdown, picker, etc.),
+              // content rendered in portals, or while the user is drag-selecting text in the row.
+              // Just bail out: the row is no longer nested in the control's <label>, so there is no
+              // default action to cancel and nested controls keep working normally.
+              if (isInteractiveTarget(e.target) || isTextSelectionInProgress()) return;
+
+              // The control is a sibling now, so clicking the row body no longer activates it via the
+              // label - drive the selection explicitly to keep the whole row clickable.
+              if (isSelectable) {
                 onSelectRowLocal(index, item);
               }
               if (onListItemClick) {

@@ -23,7 +23,7 @@ const ConfigurableActionConfiguratorComponent: ConfigurableActionConfiguratorCom
     }
     return (
       <Form.Item name={model.propertyName} labelCol={{ span: 0 }} wrapperCol={{ span: 24 }} noStyle>
-        <ConfigurableActionConfigurator allowedActions={model.allowedActions} editorConfig={model} level={1} readOnly={model.readOnly} label={model.label as string} description={model.description} hideLabel={model.hideLabel} />
+        <ConfigurableActionConfigurator allowedActions={model.allowedActions} additionalConstants={model.additionalConstants} editorConfig={model} level={1} readOnly={model.readOnly} label={model.label as string} description={model.description} hideLabel={model.hideLabel} />
       </Form.Item>
     );
   },

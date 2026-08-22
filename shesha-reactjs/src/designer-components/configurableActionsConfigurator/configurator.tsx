@@ -4,17 +4,18 @@ import { useConfigurableActionDispatcher, useForm } from '@/providers';
 import { IConfigurableActionGroupDictionary } from '@/providers/configurableActionsDispatcher/models';
 import { SourceFilesFolderProvider } from '@/providers/sourceFileManager/sourcesFolderProvider';
 import { arrayHasAtLeastNDefined } from '@/utils/array';
-import { useAvailableStandardConstantsMetadata } from '@/utils/metadata/hooks';
+import { useAvailableConstantsMetadata } from '@/utils/metadata/hooks';
+import { IObjectMetadataBuilder } from '@/utils/metadata/metadataBuilder';
 import { isDefined, isNullOrWhiteSpace } from '@/utils/nullables';
 import { nanoid } from '@/utils/uuid';
 import { Collapse, Form } from 'antd';
-import { FC, ReactNode, useMemo } from 'react';
+import { FC, ReactNode, useCallback, useMemo } from 'react';
 import FormItem from '../_settings/components/formItem';
 import { StyledLabel } from '../_settings/utils/utils';
 import { SettingInput } from '../settingsInput/settingsInput';
 import { ActionArgumentsEditor } from './actionArgumensEditor';
 import { ActionSelect } from './actionSelect';
-import { IConfigurableActionConfiguratorComponentProps } from './interfaces';
+import { IActionConfiguratorConstant, IConfigurableActionConfiguratorComponentProps } from './interfaces';
 
 const { Panel } = Collapse;
 
@@ -46,7 +47,13 @@ export const ConfigurableActionConfigurator: FC<IConfigurableActionConfiguratorP
   const { getActions, getConfigurableActionOrNull } = useConfigurableActionDispatcher();
   const actions = getActions();
 
-  const availableConstants = useAvailableStandardConstantsMetadata();
+  const { additionalConstants } = props;
+  const addExtraConstants = useCallback((builder: IObjectMetadataBuilder): void => {
+    additionalConstants?.forEach((constant) => {
+      builder.add(constant.dataType, constant.path, constant.description);
+    });
+  }, [additionalConstants]);
+  const availableConstants = useAvailableConstantsMetadata({ addGlobalConstants: true, onBuild: addExtraConstants });
 
   const formValues = useMemo<IActionFormModel | null>(() => {
     if (!value)
@@ -153,7 +160,7 @@ export const ConfigurableActionConfigurator: FC<IConfigurableActionConfiguratorP
                 <Collapse defaultActiveKey={['1']}>
                   <Panel header={<StyledLabel label="On Success Handler" />} key="1">
                     <Form.Item name="onSuccess">
-                      <ConfigurableActionConfigurator editorConfig={props.editorConfig} level={props.level + 1} readOnly={readOnly} />
+                      <ConfigurableActionConfigurator editorConfig={props.editorConfig} level={props.level + 1} readOnly={readOnly} additionalConstants={props.additionalConstants} />
                     </Form.Item>
                   </Panel>
                 </Collapse>
@@ -165,7 +172,7 @@ export const ConfigurableActionConfigurator: FC<IConfigurableActionConfiguratorP
                 <Collapse defaultActiveKey={['1']}>
                   <Panel header={<StyledLabel label="On Fail Handler" />} key="1">
                     <Form.Item name="onFail">
-                      <ConfigurableActionConfigurator editorConfig={props.editorConfig} level={props.level + 1} readOnly={readOnly} />
+                      <ConfigurableActionConfigurator editorConfig={props.editorConfig} level={props.level + 1} readOnly={readOnly} additionalConstants={props.additionalConstants} />
                     </Form.Item>
                   </Panel>
                 </Collapse>
@@ -188,6 +195,11 @@ interface IConfigurableActionConfiguratorProps {
   level: number;
   readOnly?: boolean | undefined;
   allowedActions?: string[] | undefined;
+  /**
+   * Extra constants the owning component injects into the action's evaluation context at runtime,
+   * advertised in the arguments/script editors on top of the standard set
+   */
+  additionalConstants?: IActionConfiguratorConstant[] | undefined;
 }
 
 interface IActionFormModel extends Omit<IConfigurableActionConfiguration, 'actionOwner' | 'actionName'> {

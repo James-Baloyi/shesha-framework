@@ -469,32 +469,48 @@ export const getSettings: SettingsFormMarkupFactory = ({ fbf }) => {
                   propertyName: 'onListItemClick',
                   label: 'On List Item Click',
                   description: 'Action to execute when a list item is clicked',
+                  additionalConstants: [
+                    { path: 'selectedItem', dataType: 'object', description: 'The item this event fired for. Fresh for this event — unlike selectedRow, which still holds the previous selection while the event runs' },
+                    { path: 'selectedIndex', dataType: 'number', description: 'Index of the item this event fired for' },
+                  ],
                 })
                 .addConfigurableActionConfigurator({
                   id: nanoid(),
                   propertyName: 'onListItemHover',
                   label: 'On List Item Hover',
                   description: 'Action to execute when hovering over a list item',
+                  additionalConstants: [
+                    { path: 'selectedItem', dataType: 'object', description: 'The item this event fired for. Fresh for this event — unlike selectedRow, which still holds the previous selection while the event runs' },
+                    { path: 'selectedIndex', dataType: 'number', description: 'Index of the item this event fired for' },
+                  ],
                 })
                 .addContainer(// Wrap selection configurators in a container with conditional visibility
                   {
                     id: nanoid(),
                     hidden: { _code: 'return (getSettingValue(data?.selectionMode) || "none") === "none";', _mode: 'code', _value: false },
-                    components: [
-                      {
+                    components: [...fbf()
+                      .addConfigurableActionConfigurator({
                         id: nanoid(),
-                        type: 'configurableActionConfigurator',
                         propertyName: 'onListItemSelect',
                         label: 'On List Item Select',
                         description: 'Action to execute when a list item is selected (does not trigger on unselect)',
-                      },
-                      {
+                        additionalConstants: [
+                          { path: 'selectedItem', dataType: 'object', description: 'The item that was just selected. Fresh for this event — unlike selectedRow, which still holds the previous selection while the event runs' },
+                          { path: 'selectedIndex', dataType: 'number', description: 'Index of the item that was just selected' },
+                        ],
+                      })
+                      .addConfigurableActionConfigurator({
                         id: nanoid(),
-                        type: 'configurableActionConfigurator',
                         propertyName: 'onSelectionChange',
                         label: 'On Selection Change',
                         description: 'Action to execute when the selection changes (triggers on both select and unselect)',
-                      },
+                        additionalConstants: [
+                          { path: 'selectedItems', dataType: 'array', description: 'All items selected after this change' },
+                          { path: 'selectedIndices', dataType: 'array', description: 'Indexes of all items selected after this change' },
+                          { path: 'selectedIds', dataType: 'array', description: 'Ids of all items selected after this change' },
+                        ],
+                      })
+                      .toJson(),
                     ],
                   })
                 .toJson(),

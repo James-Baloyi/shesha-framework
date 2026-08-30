@@ -116,6 +116,7 @@ export const getSettings: SettingsFormMarkupFactory = ({ fbf, removeStyleRouter 
                       {
                         type: 'buttonGroupConfigurator', propertyName: 'buttons', label: 'Configure Modal Buttons', jsSetting: true,
                         visibleJs: 'return getSettingValue(data?.footerButtons) === "custom";',
+                        modelType: modelTypeFromEntityType,
                       },
                     ],
                   })

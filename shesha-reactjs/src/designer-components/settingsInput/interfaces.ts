@@ -215,6 +215,8 @@ export interface IButtonGroupConfiguratorSettingsInputProps extends ISettingsInp
   buttonText?: string | undefined;
   buttonTextReadOnly?: string | undefined;
   title?: string | undefined;
+  /** Model the configured buttons execute against (e.g. a dialog's target entity); nested editors offer its properties instead of the host form's */
+  modelType?: string | IEntityTypeIdentifier | undefined | IPropertySetting<string>;
 }
 
 // Editable Tag Group

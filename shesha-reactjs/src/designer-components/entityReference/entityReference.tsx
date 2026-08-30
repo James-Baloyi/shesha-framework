@@ -176,6 +176,9 @@ const EntityReferenceComponent: EntityReferenceComponentDefinition = {
   },
   settingsFormMarkup: getSettings,
 
+  // dialog buttons and additional properties execute in the dialog's context; evaluating their
+  // mustache templates here would bake in the parent form's values (e.g. {{data.id}} = parent id)
+  actualModelPropertyFilter: (name) => name !== 'buttons' && name !== 'additionalProperties',
   getDefaultStyles: () => defaultStyles(),
   migrator: (m) =>
     m

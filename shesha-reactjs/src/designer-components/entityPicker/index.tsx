@@ -223,7 +223,8 @@ const EntityPickerComponent: EntityPickerComponentDefinition = {
       </ConfigurableFormItem>
     );
   },
-  actualModelPropertyFilter: (name) => name !== 'filters',
+  // `buttons` execute in the picker dialog's context — see the same exclusion on entityReference
+  actualModelPropertyFilter: (name) => name !== 'filters' && name !== 'buttons',
   migrator: (m) => m
     .add<IEntityPickerComponentProps>(0, (prev) => {
       return {

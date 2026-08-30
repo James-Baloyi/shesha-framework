@@ -108,7 +108,11 @@ export const getSettings: SettingsFormMarkupFactory = ({ fbf, removeStyleRouter 
                   ],
                 })
                 .addSettingsInputRow({
-                  inputs: [{ type: 'buttonGroupConfigurator', propertyName: 'buttons', label: 'Configure Modal Buttons', jsSetting: true }],
+                  inputs: [{
+                    type: 'buttonGroupConfigurator', propertyName: 'buttons', label: 'Configure Modal Buttons', jsSetting: true,
+                    // buttons run inside the dialog, so their editors must offer the referenced entity's properties
+                    modelType: { _code: 'return getSettingValue(data?.entityType);', _mode: 'code' },
+                  }],
                   visibleJs: 'return data?.footerButtons === "custom";',
                 })
                 .addSettingsInputRow({

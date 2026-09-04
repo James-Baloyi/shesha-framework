@@ -386,7 +386,11 @@ const TableComponent: TableComponentDefinition = {
     })
     .add<ITableComponentProps>(29, (prev) => ({ ...prev, actionIconSize: prev.actionIconSize ?? '14px' })) // Set default actionIconSize for existing tables
     .add<ITableComponentProps>(30, (prev) => migratePermissionsToVisiblePermissions(migrateHiddenToVisible(prev)))
-    .add<ITableComponentProps>(31, (prev) => ({ ...prev, visible: prev.visible ?? true })),
+    .add<ITableComponentProps>(31, (prev) => {
+      // a stored model may still carry the legacy `hidden`, convert it before defaulting
+      const migrated = migrateHiddenToVisible(prev);
+      return { ...migrated, visible: migrated.visible ?? true };
+    }),
   actualModelPropertyFilter: (name, value) => {
     // row event actions carry templates like {{selectedRow.id}} that only resolve when the event fires
     if (ROW_EVENT_ACTION_PROPERTIES.includes(name))

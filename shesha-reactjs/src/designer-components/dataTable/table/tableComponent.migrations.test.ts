@@ -43,6 +43,12 @@ describe('datatable migrations - visible', () => {
     expect(model.hidden).toBeUndefined();
   });
 
+  it('a stored version 30 table that still carries hidden: true ends up hidden', () => {
+    const model = upgrade({ ...baseModel, version: 30, hidden: true }, false);
+    expect(model.visible).toBe(false);
+    expect(model.hidden).toBeUndefined();
+  });
+
   it('a js visibility setting is preserved', () => {
     const setting = { _mode: 'code', _code: 'return data.x;', _value: false };
     const model = upgrade({ ...baseModel, version: 30, visible: setting } as unknown as IConfigurableFormComponent, false);

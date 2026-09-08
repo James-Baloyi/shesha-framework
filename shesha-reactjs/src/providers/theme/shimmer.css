@@ -1,0 +1,90 @@
+/* Hold one Shift and tap the other twice. Every button shimmers, glows and dances for two seconds. */
+.sha-shimmer .ant-btn {
+  --sha-shimmer-delay: 0ms;
+  position: relative;
+  isolation: isolate;
+  color: #fff !important;
+  border-color: transparent !important;
+  background-color: transparent !important;
+  background-image: linear-gradient(
+    100deg,
+    #ff2d55, #ff9500, #ffd60a, #34c759, #00c7be, #32ade6, #007aff, #5856d6, #af52de, #ff2d55, #ff9500, #ffd60a
+  ) !important;
+  background-size: 400% 100% !important;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 35%);
+  transform-origin: 50% 60%;
+  will-change: transform, background-position, box-shadow, filter;
+  animation:
+    sha-shimmer-sweep 2s linear both,
+    sha-shimmer-dance 2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both,
+    sha-shimmer-glow 2s ease-in-out both;
+  animation-delay: var(--sha-shimmer-delay);
+}
+
+/* a soft light sweeping across the face of each button, on top of the rainbow */
+.sha-shimmer .ant-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 55%) 50%, transparent 70%);
+  background-size: 250% 100%;
+  animation: sha-shimmer-gleam 1s ease-in-out 2 both;
+  animation-delay: var(--sha-shimmer-delay);
+}
+
+/* icons take a bow of their own */
+.sha-shimmer .ant-btn .anticon {
+  display: inline-flex;
+  animation: sha-shimmer-twirl 2s cubic-bezier(0.68, -0.4, 0.32, 1.4) both;
+  animation-delay: var(--sha-shimmer-delay);
+}
+
+@keyframes sha-shimmer-sweep {
+  from { background-position: 0% 50%; }
+  to { background-position: 300% 50%; }
+}
+
+@keyframes sha-shimmer-dance {
+  0% { transform: translateY(0) rotate(0) scale(1); }
+  12% { transform: translateY(-7px) rotate(-4deg) scale(1.07); }
+  24% { transform: translateY(0) rotate(4deg) scale(1.03); }
+  36% { transform: translateY(-5px) rotate(-3deg) scale(1.06); }
+  48% { transform: translateY(0) rotate(3deg) scale(1.02); }
+  60% { transform: translateY(-3px) rotate(-2deg) scale(1.04); }
+  72% { transform: translateY(0) rotate(1.5deg) scale(1.01); }
+  84% { transform: translateY(-1px) rotate(-0.5deg) scale(1.02); }
+  100% { transform: translateY(0) rotate(0) scale(1); }
+}
+
+@keyframes sha-shimmer-glow {
+  0% { box-shadow: 0 0 0 0 rgb(255 45 85 / 0%); filter: saturate(1) hue-rotate(0deg); }
+  20% { box-shadow: 0 0 22px 6px rgb(255 149 0 / 55%); filter: saturate(1.4) hue-rotate(40deg); }
+  50% { box-shadow: 0 0 28px 8px rgb(0 199 190 / 60%); filter: saturate(1.6) hue-rotate(180deg); }
+  80% { box-shadow: 0 0 22px 6px rgb(175 82 222 / 55%); filter: saturate(1.4) hue-rotate(300deg); }
+  100% { box-shadow: 0 0 0 0 rgb(255 45 85 / 0%); filter: saturate(1) hue-rotate(360deg); }
+}
+
+@keyframes sha-shimmer-gleam {
+  from { background-position: 200% 0; }
+  to { background-position: -50% 0; }
+}
+
+@keyframes sha-shimmer-twirl {
+  0% { transform: rotate(0) scale(1); }
+  40% { transform: rotate(380deg) scale(1.35); }
+  70% { transform: rotate(350deg) scale(0.95); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* colour only for people who have asked the OS for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .sha-shimmer .ant-btn {
+    animation: sha-shimmer-sweep 2s linear both, sha-shimmer-glow 2s ease-in-out both;
+  }
+  .sha-shimmer .ant-btn::after,
+  .sha-shimmer .ant-btn .anticon {
+    animation: none;
+  }
+}

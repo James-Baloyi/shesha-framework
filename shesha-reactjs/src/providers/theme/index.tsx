@@ -2,10 +2,12 @@ import { App, ConfigProvider, ThemeConfig } from 'antd';
 import { FC, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import './interFont.generated.css';
 import './baseFont.css';
+import './shimmer.css';
 import { IConfigurableTheme, IThemeActionsContext, IThemeStateContext, THEME_CONTEXT_INITIAL_STATE, UiActionsContext, UiStateContext } from './contexts';
 import { defaultRequiredMark } from './shaRequiredMark';
 import { useSettings, useSheshaApplication } from '..';
 import { isNotNullOrWhiteSpace } from '@/utils/nullables';
+import { useShiftShimmer } from './useShiftShimmer';
 
 export interface ThemeProviderProps {
   prefixCls?: string;
@@ -30,6 +32,7 @@ const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
 
   const settings = useSettings();
   const application = useSheshaApplication();
+  useShiftShimmer();
   application.registerInitialization('theme', async () => {
     // load theme settings
     const theme = await settings.getSetting<IConfigurableTheme>({ module: 'Shesha', name: 'Shesha.ThemeSettings' });

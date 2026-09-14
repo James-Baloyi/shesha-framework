@@ -13,7 +13,7 @@ import { ShaForm } from '@/providers/form';
 import { useParent } from '@/providers/parentProvider';
 import TableContextEmptyState from './tableContextEmptyState';
 import { getEntityTypeName, isEntityTypeIdEmpty } from '@/providers/metadataDispatcher/entities/utils';
-import { ITableRowData } from '@/providers/dataTable/interfaces';
+import { ITableRowData, RowPredicate } from '@/providers/dataTable/interfaces';
 import { isNullOrWhiteSpace } from '@/utils';
 
 interface ITableContextInnerProps extends Omit<ITableContextComponentProps, 'disableRefresh'> {
@@ -21,6 +21,7 @@ interface ITableContextInnerProps extends Omit<ITableContextComponentProps, 'dis
   disableRefresh: boolean;
   permanentFilter: string | undefined;
   permanentFilterReady: boolean;
+  permanentRowFilter: RowPredicate | undefined;
 };
 
 /**
@@ -108,6 +109,7 @@ export const TableContextInner: FCUnwrapped<ITableContextInnerProps> = (props) =
             allowReordering={allowReordering ? evaluateYesNo(allowReordering, props.formMode) : false}
             permanentFilter={props.permanentFilter}
             permanentFilterReady={props.permanentFilterReady}
+            permanentRowFilter={props.permanentRowFilter}
             disableRefresh={props.disableRefresh}
             customReorderEndpoint={customReorderEndpoint}
             onBeforeRowReorder={onBeforeRowReorder}
@@ -152,9 +154,9 @@ export const TableContext: FCUnwrapped<ITableContextComponentProps & { formMode:
   const disableRefresh: boolean = useActualContextExecution(props.disableRefresh, undefined, false);
 
   const propertyMetadataAccessor = useNestedPropertyMetadatAccessor(props.entityType);
-  const { filter: permanentFilter, ready: permanentFilterReady } = useFormEvaluatedFilterWithReadiness({ filter: props.permanentFilter, metadataAccessor: propertyMetadataAccessor });
+  const { filter: permanentFilter, ready: permanentFilterReady, rowPredicate } = useFormEvaluatedFilterWithReadiness({ filter: props.permanentFilter, metadataAccessor: propertyMetadataAccessor });
   const memoFilter = useDeepCompareMemo(() => permanentFilter, [permanentFilter]);
 
 
-  return <MemoTableContextInner key={uniqueKey} {...props} disableRefresh={disableRefresh} permanentFilter={memoFilter} permanentFilterReady={permanentFilterReady} />;
+  return <MemoTableContextInner key={uniqueKey} {...props} disableRefresh={disableRefresh} permanentFilter={memoFilter} permanentFilterReady={permanentFilterReady} permanentRowFilter={rowPredicate} />;
 };

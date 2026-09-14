@@ -10,10 +10,11 @@ interface ExpressionValueEditorProps {
   readOnly: boolean;
   /** Hide the skip-when-empty toggle, for example on a specification condition. */
   showRequiredToggle: boolean;
+  placeholder?: string | undefined;
 }
 
 /** An expression-sourced value: the editor for its language plus the skip-when-empty toggle. */
-export const ExpressionValueEditor: React.FC<ExpressionValueEditorProps> = ({ value, onChange, readOnly, showRequiredToggle }) => (
+export const ExpressionValueEditor: React.FC<ExpressionValueEditorProps> = ({ value, onChange, readOnly, showRequiredToggle, placeholder }) => (
   <div className="sha-query-builder-func-editor">
     <div className="sha-query-builder-func-args">
       <div className="sha-query-builder-func-arg sha-query-builder-control-slot sha-query-builder-func-arg--expression">
@@ -30,6 +31,7 @@ export const ExpressionValueEditor: React.FC<ExpressionValueEditorProps> = ({ va
               value={value.expression}
               onChange={(expression) => onChange({ ...value, expression })}
               readOnly={readOnly}
+              placeholder={placeholder}
             />
           )}
       </div>

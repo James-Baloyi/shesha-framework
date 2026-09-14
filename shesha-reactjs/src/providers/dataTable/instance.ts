@@ -23,7 +23,7 @@ import {
   ISelectionProps,
   ISortingItem,
   isTableRowData,
-  IStoredFilter, ITableColumn, ITableFilter, ITableRowData,
+  IStoredFilter, ITableColumn, ITableFilter, ITableRowData, RowPredicate,
   JsonLogicFilter, RowSelection,
 } from "./interfaces";
 import { IDataTableStateContext } from "./interfaces.state";
@@ -116,6 +116,12 @@ export class DatasetInstance implements IDatasetInstance {
   state: IDataTableStateContext;
 
   initialPageSize: number = 10;
+
+  /** Row-scoped part of the permanent filter; see `setPermanentRowFilter`. */
+  private rowPredicate: RowPredicate | undefined;
+
+  /** The page as the server returned it, before the row predicate, so a new predicate can be applied without a refetch. */
+  private lastFetchedRows: ITableRowData[] = [];
 
   initialCurrentPage: number = DATA_TABLE_CONTEXT_INITIAL_STATE.currentPage;
 
@@ -284,7 +290,9 @@ export class DatasetInstance implements IDatasetInstance {
 
       // TODO: if current page is not available after change of the page size - reset page number to 1
 
-      const { rows, totalPages, totalRows, totalRowsBeforeFilter } = data;
+      const { rows: fetchedRows, totalPages, totalRows, totalRowsBeforeFilter } = data;
+      this.lastFetchedRows = fetchedRows;
+      const rows = this.applyRowPredicate(fetchedRows);
 
       const selectedRow = this.getRowSelection(rows, this.state.selectedRow?.id);
 
@@ -517,6 +525,16 @@ export class DatasetInstance implements IDatasetInstance {
     // refetch when the filters were changed or a previous fetch was skipped because filters were not evaluated yet
     if (this.isInitialized && (filtersChanged || this.fetchSkippedDueToDependencies))
       void this.fetchData();
+  };
+
+  private applyRowPredicate = (rows: ITableRowData[]): ITableRowData[] => this.rowPredicate ? rows.filter(this.rowPredicate) : rows;
+
+  setPermanentRowFilter = (predicate: RowPredicate | undefined): void => {
+    if (this.rowPredicate === predicate) return;
+    this.rowPredicate = predicate;
+    if (!this.isInitialized || this.state.isFetchingTableData) return;
+    const rows = this.applyRowPredicate(this.lastFetchedRows);
+    this.updateState((state) => ({ ...state, tableData: rows, selectedRow: this.getRowSelection(rows, state.selectedRow?.id) }));
   };
 
   setPermanentFilter = (filter: FilterExpression | undefined): void => {

@@ -31,6 +31,8 @@ export interface RuleNode {
   id: string;
   /** Property path, or a specification name when the field kind is `specification`. */
   field?: string | undefined;
+  /** A function over the record in place of a property, e.g. `{{UPPER(row.country)}}`. Applied in the browser after the fetch. */
+  fieldExpression?: ExpressionValue | undefined;
   operator?: string | undefined;
   values: RuleValue[];
 }

@@ -563,6 +563,13 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             height: 32px;
         }
 
+        /* A function on the left side carries an expression editor and a skip box, so it takes a value column's width. */
+        .sha-query-builder-rule-row > .sha-query-builder-packed-control.is-function {
+            max-width: none;
+            flex: 1 1 460px;
+            min-width: 440px;
+        }
+
         .sha-query-builder-source-slot {
             width: 58px;
             min-width: 58px;

@@ -173,6 +173,7 @@ export const DataTableProviderWithRepository: FC<PropsWithChildren<IDataTablePro
     dataFetchingMode,
     permanentFilter,
     permanentFilterReady = true,
+    permanentRowFilter,
     needToRegisterContext = true,
     initialPageSize,
     grouping,
@@ -218,6 +219,10 @@ export const DataTableProviderWithRepository: FC<PropsWithChildren<IDataTablePro
     onBeforeRowReorder,
     onAfterRowReorder,
   ]);
+
+  useEffect(() => {
+    instance.setPermanentRowFilter(permanentRowFilter);
+  }, [instance, permanentRowFilter]);
 
   const content = (
     <DataTableActionsContext.Provider value={instance}>

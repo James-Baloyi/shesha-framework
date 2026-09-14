@@ -20,16 +20,17 @@ interface MustacheExpressionEditorProps {
   value: string;
   onChange: (value: string) => void;
   readOnly: boolean;
+  placeholder?: string | undefined;
 }
 
-export const MustacheExpressionEditor: React.FC<MustacheExpressionEditorProps> = ({ value, onChange, readOnly }) => {
+export const MustacheExpressionEditor: React.FC<MustacheExpressionEditorProps> = ({ value, onChange, readOnly, placeholder }) => {
   const { fields } = useQueryBuilderState();
   const availableConstants = useAvailableConstantsMetadata({ standardConstants: EXPRESSION_STANDARD_CONSTANTS });
   const fieldPaths = React.useMemo(
     () => fields.map((field) => field.propertyName).filter(isNotNullOrWhiteSpace),
     [fields],
   );
-  const fieldContext = React.useMemo(() => buildExpressionContextFromPaths(fieldPaths), [fieldPaths]);
+  const fieldContext = React.useMemo(() => buildExpressionContextFromPaths(fieldPaths, { rootKey: 'row', additionalRoots: [] }), [fieldPaths]);
   const constantsContext = useAsyncMemo(() => buildExpressionContextFromMetadata(availableConstants), [availableConstants], {});
   const context = React.useMemo(() => mergeExpressionContexts(fieldContext, constantsContext ?? {}), [constantsContext, fieldContext]);
 
@@ -41,7 +42,7 @@ export const MustacheExpressionEditor: React.FC<MustacheExpressionEditorProps> =
       context={context}
       className="sha-query-builder-mustache-expression-input"
       controlClassName="sha-query-builder-mustache-expression-control"
-      placeholder="Expression"
+      placeholder={placeholder ?? 'Expression'}
       inline
       allowExpand
     />

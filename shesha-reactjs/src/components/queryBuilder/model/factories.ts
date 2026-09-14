@@ -1,5 +1,5 @@
 import { nanoid } from '@/utils/uuid';
-import { Conjunction, GroupNode, QueryTree, RuleNode, RuleValue, ValueSource } from './types';
+import { Conjunction, GroupNode, QueryTree, RuleNode, RuleValue, ValueSource, ExpressionValue } from './types';
 
 export const newNodeId = (): string => nanoid();
 
@@ -15,12 +15,14 @@ export const createGroup = (conjunction: Conjunction = 'and'): GroupNode => ({
 
 export const createEmptyTree = (): QueryTree => createGroup();
 
+export const createExpressionValue = (): ExpressionValue => ({ source: 'expression', language: 'mustache', expression: '', required: true });
+
 export const createValue = (source: ValueSource): RuleValue => {
   switch (source) {
     case 'field':
       return { source: 'field' };
     case 'expression':
-      return { source: 'expression', language: 'mustache', expression: '', required: true };
+      return createExpressionValue();
     default:
       return { source: 'value' };
   }

@@ -1,5 +1,6 @@
 import { JsonLogicFilter } from '@/interfaces/jsonLogic';
 import { isDefined } from '@/utils/nullables';
+import { isRecord } from '@/utils/object';
 import { getOperator } from '../catalogue/operators';
 import { GroupNode, isGroupNode, isRawRuleNode, QueryNode, QueryTree, RuleNode, RuleValue } from '../model/types';
 
@@ -22,10 +23,19 @@ const exportValue = (value: RuleValue | undefined): unknown | undefined => {
   }
 };
 
+/** The left operand: a property path, or a function over the row (an expression node the browser resolves per record). */
+const exportLeft = (rule: RuleNode): Logic | undefined => {
+  if (rule.fieldExpression) {
+    const left = exportValue(rule.fieldExpression);
+    return isRecord(left) ? left : undefined;
+  }
+  return isDefined(rule.field) && rule.field !== '' ? varNode(rule.field) : undefined;
+};
+
 const exportRule = (rule: RuleNode): Logic | undefined => {
   const def = getOperator(rule.operator);
-  if (!def || !isDefined(rule.field) || rule.field === '') return undefined;
-  const field = varNode(rule.field);
+  const field = exportLeft(rule);
+  if (!def || field === undefined) return undefined;
   const values = rule.values.slice(0, def.cardinality).map(exportValue);
   if (values.length < def.cardinality || values.some((v) => v === undefined)) return undefined;
   const [a, b] = values;

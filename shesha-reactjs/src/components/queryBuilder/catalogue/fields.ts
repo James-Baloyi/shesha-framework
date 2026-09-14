@@ -85,3 +85,12 @@ export const findField = (fields: IProperty[], path: string | undefined): QueryF
 };
 
 export const isDateLikeKind = (kind: FieldKind | undefined): boolean => kind === 'date' || kind === 'datetime' || kind === 'time';
+
+/** What a rule compares when its left side is a function: text-like, since the result type is only known per row. */
+export const EXPRESSION_FIELD: QueryField = {
+  path: '',
+  label: 'Function',
+  kind: 'text',
+  property: { label: 'Function', propertyName: '', dataType: DataTypes.string, visible: true, childProperties: [] },
+  settings: {},
+};

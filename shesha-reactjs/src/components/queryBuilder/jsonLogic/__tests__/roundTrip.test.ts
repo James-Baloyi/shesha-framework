@@ -154,6 +154,24 @@ describe('import fallbacks', () => {
     expect(exportToJsonLogic(tree)).toEqual(logic);
   });
 
+  it('reads a function over the row as the left side and writes it back', () => {
+    const fn = { evaluate: [{ expression: '{{UPPER(row.country)}}', type: 'mustache', required: true }] };
+    const cases: Logic[] = [
+      { and: [{ '==': [fn, 'ZA'] }] },
+      { and: [{ in: ['za', fn] }] },
+      { and: [{ '>=': [fn, 10] }] },
+      { and: [{ '<=': [1, fn, 5] }] },
+      { and: [{ '!': fn }] },
+    ];
+    for (const logic of cases) {
+      const tree = importFromJsonLogic(logic);
+      expect(rawRules(tree)).toHaveLength(0);
+      const first = tree.children[0];
+      expect(first?.kind === 'rule' && first.fieldExpression?.expression).toBe('{{UPPER(row.country)}}');
+      expect(exportToJsonLogic(tree)).toEqual(logic);
+    }
+  });
+
   it('wraps a bare rule in a root group', () => {
     const tree = importFromJsonLogic({ '==': [{ var: 'a' }, 1] });
     expect(tree.conjunction).toBe('and');

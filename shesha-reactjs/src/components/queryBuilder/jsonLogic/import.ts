@@ -1,7 +1,7 @@
 import { JsonLogicFilter } from '@/interfaces/jsonLogic';
 import { isDefined } from '@/utils/nullables';
 import { createEmptyTree, newNodeId } from '../model/factories';
-import { Conjunction, ExpressionLanguage, GroupNode, QueryNode, QueryTree, RawRuleNode, RuleNode, RuleValue, ScalarValue } from '../model/types';
+import { Conjunction, ExpressionLanguage, ExpressionValue, GroupNode, QueryNode, QueryTree, RawRuleNode, RuleNode, RuleValue, ScalarValue } from '../model/types';
 
 type Logic = Record<string, unknown>;
 
@@ -35,19 +35,34 @@ const importValue = (node: unknown): RuleValue | undefined => {
   return undefined;
 };
 
-const rule = (field: string, operator: string, values: RuleValue[] = []): RuleNode => ({ kind: 'rule', id: newNodeId(), field, operator, values });
+/** The left side of a rule: a property path, or a function over the row. */
+type Left = { field: string } | { fieldExpression: ExpressionValue };
+
+const asLeft = (node: unknown): Left | undefined => {
+  const path = varPath(node);
+  if (path !== undefined) return { field: path };
+  const value = importValue(node);
+  return value?.source === 'expression' ? { fieldExpression: value } : undefined;
+};
+
+const rule = (left: Left, operator: string, values: RuleValue[] = []): RuleNode => ({ kind: 'rule', id: newNodeId(), ...left, operator, values });
+const propertyRule = (field: string, operator: string, values: RuleValue[] = []): RuleNode => rule({ field }, operator, values);
 
 const raw = (json: unknown, reason: string): RawRuleNode => ({ kind: 'raw', id: newNodeId(), json, reason });
 
-/** Comparison with the property on either side; returns [path, otherOperand] or undefined. */
-const splitComparison = (args: unknown): [string, unknown] | undefined => {
+/** Comparison with the left side on either side: a property first, then a function over the row. */
+const splitComparison = (args: unknown): [Left, unknown] | undefined => {
   const list = asList(args);
   if (!list || list.length !== 2) return undefined;
   const [a, b] = list;
-  const left = varPath(a);
-  if (left !== undefined) return [left, b];
-  const right = varPath(b);
-  return right !== undefined ? [right, a] : undefined;
+  const pathA = varPath(a);
+  if (pathA !== undefined) return [{ field: pathA }, b];
+  const pathB = varPath(b);
+  if (pathB !== undefined) return [{ field: pathB }, a];
+  const leftA = asLeft(a);
+  if (leftA) return [leftA, b];
+  const leftB = asLeft(b);
+  return leftB ? [leftB, a] : undefined;
 };
 
 const importRule = (node: Logic): QueryNode => {
@@ -55,9 +70,9 @@ const importRule = (node: Logic): QueryNode => {
   if (!entry) return raw(node, 'A rule must have exactly one operator');
   const [operator, args] = entry;
 
-  const withValue = (key: string, path: string, operand: unknown): QueryNode => {
+  const withValue = (key: string, left: Left, operand: unknown): QueryNode => {
     const value = importValue(operand);
-    return value ? rule(path, key, [value]) : raw(node, `Unsupported value for '${key}'`);
+    return value ? rule(left, key, [value]) : raw(node, `Unsupported value for '${key}'`);
   };
 
   switch (operator) {
@@ -65,17 +80,17 @@ const importRule = (node: Logic): QueryNode => {
     case '!!': {
       const unaryList = asList(args);
       const unary = unaryList?.length === 1 ? unaryList[0] : args;
-      const path = varPath(unary);
-      if (path !== undefined) return rule(path, operator === '!' ? 'is_empty' : 'is_not_empty');
+      const left = asLeft(unary);
+      if (left) return rule(left, operator === '!' ? 'is_empty' : 'is_not_empty');
       if (operator === '!' && isObject(unary)) {
         const inner = single(unary);
         const innerList = inner?.[0] === 'in' ? asList(inner[1]) : undefined;
         if (innerList?.length === 2) {
           const [x, y] = innerList;
           const listPath = varPath(x);
-          if (listPath !== undefined && isScalarList(y)) return rule(listPath, 'none_of', [{ source: 'value', value: y }]);
-          const textPath = varPath(y);
-          if (textPath !== undefined) return withValue('not_contains', textPath, x);
+          if (listPath !== undefined && isScalarList(y)) return propertyRule(listPath, 'none_of', [{ source: 'value', value: y }]);
+          const text = asLeft(y);
+          if (text) return withValue('not_contains', text, x);
         }
       }
       return raw(node, `Unsupported '${operator}' shape`);
@@ -84,25 +99,25 @@ const importRule = (node: Logic): QueryNode => {
     case '!=': {
       const split = splitComparison(args);
       if (!split) return raw(node, `'${operator}' needs a property and a value`);
-      const [path, operand] = split;
-      if (operand === null) return rule(path, operator === '==' ? 'is_null' : 'is_not_null');
-      return withValue(operator === '==' ? 'is' : 'is_not', path, operand);
+      const [left, operand] = split;
+      if (operand === null) return rule(left, operator === '==' ? 'is_null' : 'is_not_null');
+      return withValue(operator === '==' ? 'is' : 'is_not', left, operand);
     }
     case 'in': {
       const list = asList(args);
       if (!list || list.length !== 2) return raw(node, "'in' needs two arguments");
       const [x, y] = list;
       const listPath = varPath(x);
-      if (listPath !== undefined && isScalarList(y)) return rule(listPath, 'any_of', [{ source: 'value', value: y }]);
-      const textPath = varPath(y);
-      if (textPath !== undefined) return withValue('contains', textPath, x);
+      if (listPath !== undefined && isScalarList(y)) return propertyRule(listPath, 'any_of', [{ source: 'value', value: y }]);
+      const text = asLeft(y);
+      if (text) return withValue('contains', text, x);
       return raw(node, "Unsupported 'in' shape");
     }
     case 'startsWith':
     case 'endsWith': {
       const list = asList(args);
-      const path = list?.length === 2 ? varPath(list[0]) : undefined;
-      return path !== undefined && list ? withValue(operator === 'startsWith' ? 'starts_with' : 'ends_with', path, list[1]) : raw(node, `'${operator}' needs a property first`);
+      const left = list?.length === 2 ? asLeft(list[0]) : undefined;
+      return left && list ? withValue(operator === 'startsWith' ? 'starts_with' : 'ends_with', left, list[1]) : raw(node, `'${operator}' needs a property first`);
     }
     case '>':
     case '>=':
@@ -110,25 +125,25 @@ const importRule = (node: Logic): QueryNode => {
     case '<=': {
       const list = asList(args);
       if (operator === '<=' && list?.length === 3) {
-        const path = varPath(list[1]);
+        const left = asLeft(list[1]);
         const lower = importValue(list[0]);
         const upper = importValue(list[2]);
-        return path !== undefined && lower && upper ? rule(path, 'between', [lower, upper]) : raw(node, 'Unsupported between shape');
+        return left && lower && upper ? rule(left, 'between', [lower, upper]) : raw(node, 'Unsupported between shape');
       }
-      const path = list?.length === 2 ? varPath(list[0]) : undefined;
+      const left = list?.length === 2 ? asLeft(list[0]) : undefined;
       const keys: Record<string, string> = { '>': 'greater', '>=': 'greater_or_equal', '<': 'less', '<=': 'less_or_equal' };
-      return path !== undefined && list ? withValue(keys[operator] ?? operator, path, list[1]) : raw(node, `'${operator}' needs a property first`);
+      return left && list ? withValue(keys[operator] ?? operator, left, list[1]) : raw(node, `'${operator}' needs a property first`);
     }
     case 'is_satisfied': {
       const list = asList(args) ?? [args];
       if (list.length > 2) return raw(node, 'A specification rule takes a name and at most one condition');
       const name = varPath(list[0]);
       if (name === undefined) return raw(node, 'A specification rule needs the specification name');
-      if (list.length === 1) return rule(name, 'is_satisfied');
+      if (list.length === 1) return propertyRule(name, 'is_satisfied');
       const condition = list[1];
-      if (typeof condition === 'string') return rule(name, 'is_satisfied_when', [{ source: 'expression', language: 'javascript', expression: condition, required: true }]);
+      if (typeof condition === 'string') return propertyRule(name, 'is_satisfied_when', [{ source: 'expression', language: 'javascript', expression: condition, required: true }]);
       const value = importValue(condition);
-      return value?.source === 'expression' ? rule(name, 'is_satisfied_when', [{ ...value, language: 'javascript' }]) : raw(node, 'Unsupported specification condition');
+      return value?.source === 'expression' ? propertyRule(name, 'is_satisfied_when', [{ ...value, language: 'javascript' }]) : raw(node, 'Unsupported specification condition');
     }
     default:
       return raw(node, `Operator '${operator}' is not supported by the builder`);

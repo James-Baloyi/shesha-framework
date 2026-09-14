@@ -1,13 +1,15 @@
 import { getOperator } from '../catalogue/operators';
-import { createGroup, createRule, createValue } from './factories';
+import { createExpressionValue, createGroup, createRule, createValue } from './factories';
 import { findNode, getGroupDepth, getSubtreeGroupDepth, insertChild, isDescendant, removeNode, updateNode } from './tree';
-import { Conjunction, DropPlacement, isGroupNode, isRuleNode, QueryTree, RuleNode, RuleValue, ValueSource } from './types';
+import { Conjunction, DropPlacement, ExpressionValue, isGroupNode, isRuleNode, QueryTree, RuleNode, RuleValue, ValueSource } from './types';
 
 export const MAX_GROUP_NESTING = 3;
 
 export type QueryAction =
   { type: 'replace'; tree: QueryTree } |
   { type: 'setField'; id: string; field: string | undefined; resetOperator: boolean } |
+  { type: 'setFieldSource'; id: string; source: 'field' | 'expression' } |
+  { type: 'setFieldExpression'; id: string; value: ExpressionValue } |
   { type: 'setOperator'; id: string; operator: string | undefined } |
   { type: 'setValue'; id: string; index: number; value: RuleValue } |
   { type: 'setValueSource'; id: string; index: number; source: ValueSource } |
@@ -68,6 +70,20 @@ export const queryReducer = (tree: QueryTree, action: QueryAction): QueryTree =>
         }
         return next;
       });
+
+    case 'setFieldSource':
+      return updateNode(tree, action.id, (node) => {
+        if (!isRuleNode(node)) return node;
+        const isExpression = node.fieldExpression !== undefined;
+        if ((action.source === 'expression') === isExpression) return node;
+        // the left side decides which operators make sense, so switching it starts the rule over
+        return action.source === 'expression'
+          ? { ...node, field: undefined, fieldExpression: createExpressionValue(), operator: undefined, values: [] }
+          : { ...node, fieldExpression: undefined, operator: undefined, values: [] };
+      });
+
+    case 'setFieldExpression':
+      return updateNode(tree, action.id, (node) => isRuleNode(node) ? { ...node, fieldExpression: action.value } : node);
 
     case 'setOperator':
       return updateNode(tree, action.id, (node) =>

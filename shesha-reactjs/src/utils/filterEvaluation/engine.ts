@@ -1,6 +1,7 @@
 import { JsonLogicFilter } from '@/interfaces/jsonLogic';
 import { isDefined, isNullOrWhiteSpace } from '@/utils/nullables';
-import { isRecord } from '@/utils/object';
+import { EvaluateNodeArgs, getEvaluateNodeArgs, isExpressionLanguage } from './evaluateNode';
+import { splitRowScoped } from './rowScope';
 import { coerceToDataType, getSiblingDataType } from './coerce';
 import { createJavaScriptEvaluator } from './expressions/javascript';
 import { createMustacheEvaluator } from './expressions/mustache';
@@ -21,18 +22,6 @@ const TEMPLATE_PATTERN = /\{\{(?:(?!}}).)*\}\}/;
 const CONJUNCTIONS = new Set(['and', 'or']);
 const SPECIFICATION_OPERATOR = 'is_satisfied';
 
-interface EvaluateNodeArgs {
-  expression: string;
-  type?: string | undefined;
-  required?: unknown;
-}
-
-/** The argument object of an `evaluate` node. `required` is left loose: legacy filters stored it in more than one shape. */
-const isEvaluateNodeArgs = (value: unknown): value is EvaluateNodeArgs =>
-  isRecord(value) && typeof value['expression'] === 'string' && (value['type'] === undefined || typeof value['type'] === 'string');
-
-const isExpressionLanguage = (type: unknown): type is ExpressionLanguage => type === 'mustache' || type === 'javascript';
-
 let debugLogging = false;
 
 /** Turns the per-filter console diagnostic on. Off by default: the log includes context values such as the signed-in user. */
@@ -51,9 +40,8 @@ type ParsedExpressionNode = { kind: 'supported'; node: ExpressionNode } |
 
 /** `{"evaluate":[{"expression","type","required"}]}`; a missing `type` is the legacy mustache node. */
 const asExpressionNode = (node: object): ParsedExpressionNode | undefined => {
-  if (!('evaluate' in node) || !Array.isArray(node.evaluate) || node.evaluate.length !== 1) return undefined;
-  const args: unknown = node.evaluate[0];
-  if (!isEvaluateNodeArgs(args)) return undefined;
+  const args: EvaluateNodeArgs | undefined = getEvaluateNodeArgs(node);
+  if (!args) return undefined;
   const { expression, type, required } = args;
   if (type !== undefined && !isExpressionLanguage(type)) return { kind: 'unsupported', expression, type };
   return { kind: 'supported', node: { expression, language: type ?? 'mustache', required: required === true } };
@@ -217,6 +205,11 @@ export const resolveFilterSync = (logic: JsonLogicFilter | undefined, options: R
   if (!isDefined(logic) || Object.keys(logic).length === 0)
     return { logic: undefined, status: 'ready', hasExpressions: false, unresolved: [] };
 
+  // rules that read the record cannot be sent: the browser applies them to the fetched page instead
+  const { server, row: rowFilter } = options.rowScope === 'inline' ? { server: logic, row: undefined } : splitRowScoped(logic);
+  if (server === undefined)
+    return { logic: undefined, status: 'ready', hasExpressions: true, unresolved: [], rowFilter };
+
   const defaults = createDefaultEvaluators();
   const session: Session = {
     context: options.context,
@@ -228,12 +221,18 @@ export const resolveFilterSync = (logic: JsonLogicFilter | undefined, options: R
     failed: false,
   };
 
-  const resolved = resolveLogic(session, logic);
+  const resolved = resolveLogic(session, server);
   const waiting = session.unresolved.some((item) => item.required && item.reason === 'empty');
   const status: FilterStatus = session.failed ? 'failed' : waiting ? 'waiting' : 'ready';
 
-  const result: ResolvedFilter = { logic: resolved ?? undefined, status, hasExpressions: session.hasExpressions, unresolved: session.unresolved };
-  logResolution(logic, result);
+  const result: ResolvedFilter = {
+    logic: resolved ?? undefined,
+    status,
+    hasExpressions: session.hasExpressions || rowFilter !== undefined,
+    unresolved: session.unresolved,
+    rowFilter,
+  };
+  if (options.rowScope !== 'inline') logResolution(logic, result);
   return result;
 };
 
@@ -241,7 +240,7 @@ export const resolveFilterSync = (logic: JsonLogicFilter | undefined, options: R
 const logResolution = (saved: JsonLogicFilter, result: ResolvedFilter): void => {
   if (!debugLogging || !result.hasExpressions) return;
   console.groupCollapsed(`[query builder] filter evaluated: ${result.status}`);
-  console.dir({ saved, evaluated: result.logic, unresolved: result.unresolved }, { depth: null });
+  console.dir({ saved, evaluated: result.logic, appliedInBrowser: result.rowFilter, unresolved: result.unresolved }, { depth: null });
   console.groupEnd();
 };
 

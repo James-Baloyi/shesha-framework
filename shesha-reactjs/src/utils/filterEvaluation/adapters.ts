@@ -90,6 +90,7 @@ const toStoredFilter = (filter: IStoredFilter, resolved: ResolvedFilter): IStore
   allFieldsEvaluatedSuccessfully: resolved.status === 'ready',
   unevaluatedExpressions: resolved.unresolved.filter((item) => item.required).map((item) => item.expression),
   expression: resolved.logic,
+  rowFilter: resolved.rowFilter,
 });
 
 const parseExpression = (filter: IStoredFilter): { logic: JsonLogicFilter | undefined; error?: string } => {

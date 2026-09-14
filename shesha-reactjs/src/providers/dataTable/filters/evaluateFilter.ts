@@ -2,7 +2,8 @@ import { useDeepCompareMemoize } from "@/hooks/index";
 import { IApplicationContext, IMatchData, useAvailableConstantsContexts, wrapConstantsData } from "@/providers/form/utils";
 import { NestedPropertyMetadatAccessor } from "@/providers/metadataDispatcher/contexts";
 import { evaluateDynamicFilters } from '@/utils/datatable';
-import { FilterExpression, IStoredFilter } from "../interfaces";
+import { buildEvaluationContext, createDefaultEvaluators, matchesRow } from '@/utils/filterEvaluation';
+import { FilterExpression, IStoredFilter, RowPredicate } from "../interfaces";
 import { useEffect, useRef, useState } from "react";
 import { useTouchableProxy } from "@/hooks/formComponentHooks";
 import { isDefined } from "@/utils/nullables";
@@ -25,6 +26,8 @@ export interface EvaluatedFilter {
   filter: string | undefined;
   /** false while the filter is still evaluating or contains unresolved required expressions (e.g. `{{data.id}}` before the form data has loaded) */
   ready: boolean;
+  /** Applies the rules that read `row` to fetched records; undefined when the filter has none. */
+  rowPredicate?: RowPredicate | undefined;
 }
 
 export const useFormEvaluatedFilterWithReadiness = (args: UseFormEvaluatedFilterArgs, additionalData?: object): EvaluatedFilter => {
@@ -57,11 +60,19 @@ export const useFormEvaluatedFilterWithReadiness = (args: UseFormEvaluatedFilter
 
       const result = response[0];
       const ready = !isDefined(result) || result.hasDynamicExpression !== true || result.allFieldsEvaluatedSuccessfully === true;
-      return { filter: JSON.stringify(result?.expression) || '', ready };
+      const rowFilter = result?.rowFilter;
+      const rowPredicate: RowPredicate | undefined = isDefined(rowFilter)
+        ? ((): RowPredicate => {
+          const options = { context: buildEvaluationContext(mappings), evaluators: createDefaultEvaluators() };
+          return (row) => matchesRow(row, rowFilter, options);
+        })()
+        : undefined;
+      return { filter: JSON.stringify(result?.expression) || '', ready, rowPredicate };
     };
     evaluateAsync().then((next) => {
+      // a row predicate closes over the current context, so it is always taken fresh
       if (!cancelled)
-        setEvaluatedFilters((prev) => prev.filter === next.filter && prev.ready === next.ready ? prev : next);
+        setEvaluatedFilters((prev) => prev.filter === next.filter && prev.ready === next.ready && prev.rowPredicate === undefined && next.rowPredicate === undefined ? prev : next);
     }).catch((error) => {
       console.error('Failed to evaluate filter', error);
     });

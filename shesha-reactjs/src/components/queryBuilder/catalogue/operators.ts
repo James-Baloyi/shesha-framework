@@ -49,6 +49,9 @@ export const getOperator = (key: string | undefined): OperatorDef | undefined =>
 export const getOperatorsForKind = (kind: FieldKind | undefined): OperatorDef[] =>
   OPERATORS.filter((op) => op.kinds.includes(kind ?? 'unknown'));
 
+/** A function over the row may yield text or a number, so both families apply. */
+export const getOperatorsForExpression = (): OperatorDef[] => OPERATORS.filter((op) => op.kinds.includes('text') || op.kinds.includes('number'));
+
 export const getDefaultOperator = (kind: FieldKind | undefined): OperatorDef | undefined => getOperatorsForKind(kind)[0];
 
 export const getOperatorCardinality = (key: string | undefined): OperatorCardinality => getOperator(key)?.cardinality ?? 0;

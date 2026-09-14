@@ -6,7 +6,7 @@ import {
   ColumnSorting,
   GroupingItem,
   ISortingItem,
-  FilterExpression,
+  FilterExpression, RowPredicate,
 } from './interfaces';
 import { IModelValidation } from '@/utils/errors';
 
@@ -43,6 +43,12 @@ export interface IDataTableProviderBaseProps {
    * False while the permanent filter is still evaluating; data fetching is held until it becomes true
    */
   permanentFilterReady?: boolean | undefined;
+
+  /**
+   * Part of the permanent filter that reads `row`. Applied in the browser to each fetched page, so a page can
+   * show fewer rows than its size; paging and totals still come from the server.
+   */
+  permanentRowFilter?: RowPredicate | undefined;
 
   /**
    * Disable refresh data expression

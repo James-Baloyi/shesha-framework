@@ -204,6 +204,9 @@ export interface IStoredFilter {
 
   expression?: FilterExpression | undefined;
 
+  /** Rules of `expression` that read `row`; the browser applies them to each fetched page. */
+  rowFilter?: JsonLogicFilter | undefined;
+
   /** Set when `expression` was a string that failed to parse as JSON. */
   hasInvalidExpression?: boolean | undefined;
 
@@ -313,6 +316,9 @@ export type ITableRowData = {
   id: string;
   [key: string]: unknown;
 };
+
+/** Decides whether a fetched row stays visible. Built from the row-scoped part of a filter. */
+export type RowPredicate = (row: ITableRowData) => boolean;
 
 export interface IColumnWidth {
   id: string;

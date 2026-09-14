@@ -2,7 +2,7 @@ import { IModelMetadata } from "@/interfaces";
 import { IConfigurableActionConfiguration } from "@/providers/configurableActionsDispatcher";
 import { IDataTableActionsContext } from "./interfaces.actions";
 import { IDataTableStateContext } from "./interfaces.state";
-import { ColumnSorting, DataFetchingMode, DatasetEvents, FilterExpression, GroupingItem, ISortingItem, SortMode } from "./interfaces";
+import { ColumnSorting, DataFetchingMode, DatasetEvents, FilterExpression, GroupingItem, ISortingItem, RowPredicate, SortMode } from "./interfaces";
 import { SubscribeFunc } from "@/utils/subscriptions/subscriptionManager";
 import { IDataTableProviderBaseProps } from "./provider.props";
 
@@ -46,6 +46,8 @@ export type MissingProps = keyof MissingProperties<IDataTableProviderBaseProps, 
 
 
 export type IDatasetInstance = IDataTableActionsContext & {
+  /** Row-scoped part of the permanent filter, applied to fetched rows in the browser. */
+  setPermanentRowFilter: (predicate: RowPredicate | undefined) => void;
   init: (args: DatatableInitArgs) => Promise<void>;
   state: IDataTableStateContext;
   subscribe: SubscribeFunc<DatasetEvents, IDatasetInstance>;

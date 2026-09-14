@@ -10,6 +10,24 @@ const ruleAt = (tree: QueryTree, index: number): RuleNode => {
 };
 
 describe('query model reducer', () => {
+  it('switches the left side between a property and a function over the row', () => {
+    let tree = createEmptyTree();
+    tree = queryReducer(tree, { type: 'addRule', groupId: tree.id });
+    const id = ruleAt(tree, 0).id;
+    tree = queryReducer(tree, { type: 'setField', id, field: 'country', resetOperator: true });
+    tree = queryReducer(tree, { type: 'setOperator', id, operator: 'is' });
+    tree = queryReducer(tree, { type: 'setFieldSource', id, source: 'expression' });
+    expect(ruleAt(tree, 0).field).toBeUndefined();
+    expect(ruleAt(tree, 0).fieldExpression).toEqual({ source: 'expression', language: 'mustache', expression: '', required: true });
+    expect(ruleAt(tree, 0).operator).toBeUndefined();
+    tree = queryReducer(tree, { type: 'setFieldExpression', id, value: { source: 'expression', language: 'mustache', expression: '{{UPPER(row.country)}}', required: true } });
+    expect(ruleAt(tree, 0).fieldExpression?.expression).toBe('{{UPPER(row.country)}}');
+    const same = queryReducer(tree, { type: 'setFieldSource', id, source: 'expression' });
+    expect(same).toBe(tree);
+    tree = queryReducer(tree, { type: 'setFieldSource', id, source: 'field' });
+    expect(ruleAt(tree, 0).fieldExpression).toBeUndefined();
+  });
+
   it('adds a rule and sizes its values to the operator', () => {
     let tree = createEmptyTree();
     tree = queryReducer(tree, { type: 'addRule', groupId: tree.id });

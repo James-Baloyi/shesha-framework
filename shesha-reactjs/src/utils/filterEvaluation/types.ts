@@ -39,6 +39,11 @@ export interface ResolveFilterOptions {
   evaluators?: Partial<Record<ExpressionLanguage, ExpressionEvaluator>> | undefined;
   argumentEvaluator?: ArgumentEvaluator | undefined;
   onExpressionEvaluated?: ((info: EvaluatedExpressionInfo) => void) | undefined;
+  /**
+   * `split` (default): rules that read `row` are carved out into `rowFilter` for the browser to apply after the fetch.
+   * `inline`: `row` is in the context, resolve everything in place. Used per record by `matchesRow`.
+   */
+  rowScope?: 'split' | 'inline' | undefined;
 }
 
 export type FilterStatus =
@@ -63,4 +68,6 @@ export interface ResolvedFilter {
   status: FilterStatus;
   hasExpressions: boolean;
   unresolved: UnresolvedExpression[];
+  /** Rules that read `row`, kept as saved. Apply with `filterRows` once the page is fetched. */
+  rowFilter?: JsonLogicFilter | undefined;
 }

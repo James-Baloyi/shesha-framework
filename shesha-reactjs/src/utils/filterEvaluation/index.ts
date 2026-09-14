@@ -2,7 +2,7 @@ export { resolveFilter, resolveFilterSync, buildEvaluationContext, collectVariab
 export { createMustacheEvaluator } from './expressions/mustache';
 export { createJavaScriptEvaluator } from './expressions/javascript';
 export { ROW_SCOPE, isRowScopedExpression, containsRowScopedNode, splitRowScoped } from './rowScope';
-export { matchesRow, filterRows } from './rowFilter';
+export { matchesRow, filterRows, matchesJsonLogic } from './rowFilter';
 export type {
   EvaluationContext,
   ExpressionEvaluator,

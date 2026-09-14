@@ -1,5 +1,5 @@
 import { resolveFilterSync } from '../engine';
-import { filterRows, matchesRow } from '../rowFilter';
+import { filterRows, matchesJsonLogic, matchesRow } from '../rowFilter';
 import { containsRowScopedNode, isRowScopedExpression, splitRowScoped } from '../rowScope';
 
 const rowExpr = (expression: string, required = true): object => ({ evaluate: [{ expression, type: 'mustache', required }] });
@@ -105,6 +105,20 @@ describe('matching fetched rows', () => {
     expect(matchesRow({ x: 1, country: 'za' }, { and: [logic, upperCountryIsZa] }, { context })).toBe(true);
     expect(matchesRow({ x: 1, country: 'uk' }, { and: [logic, upperCountryIsZa] }, { context })).toBe(false);
     spy.mockRestore();
+  });
+
+  it('evaluates resolved logic against a local record, as an in-memory source would', () => {
+    const people = [
+      { id: '1', name: 'Claude', surname: 'Amodei', hasAccess: false, joined: '2026-02-01' },
+      { id: '2', name: 'Dario', surname: 'Amodei', hasAccess: true, joined: '2021-01-15' },
+      { id: '3', name: 'Ada', surname: 'Lovelace', hasAccess: true, joined: '1843-12-01' },
+    ];
+    const logic = { and: [{ '==': [{ var: 'hasAccess' }, true] }, { in: ['amo', { var: 'surname' }] }, { '>=': [{ var: 'joined' }, '2000-01-01'] }] };
+    expect(people.filter((p) => matchesJsonLogic(p, logic) === true).map((p) => p.id)).toEqual(['2']);
+    expect(matchesJsonLogic(people[0]!, undefined)).toBe(true);
+    expect(matchesJsonLogic(people[0]!, {})).toBe(true);
+    expect(matchesJsonLogic(people[0]!, { is_satisfied: [{ var: 'spec' }] })).toBeUndefined();
+    expect(matchesJsonLogic({ id: 'x', address: { city: 'Cape Town' } }, { startsWith: [{ var: 'address.city' }, 'cape'] })).toBe(true);
   });
 
   it('filters a page', () => {

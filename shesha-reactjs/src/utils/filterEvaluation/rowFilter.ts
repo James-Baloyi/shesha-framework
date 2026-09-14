@@ -99,6 +99,17 @@ const evaluate = (node: unknown, row: RowRecord): unknown => {
 const warned = new Set<string>();
 
 /**
+ * Whether a record passes already-resolved JsonLogic: no expressions left, only the backend's operator set.
+ * This is what an in-memory data source uses on the filter string the table hands it. Returns undefined when
+ * the logic uses an operator the browser cannot evaluate, so the caller decides whether that keeps or drops the record.
+ */
+export const matchesJsonLogic = (record: RowRecord, logic: JsonLogicFilter | undefined): boolean | undefined => {
+  if (logic === undefined || Object.keys(logic).length === 0) return true;
+  const result = evaluate(logic, record);
+  return result === UNSUPPORTED ? undefined : truthy(result);
+};
+
+/**
  * Whether a fetched record passes the row part of a filter.
  *
  * The record is exposed to expressions as `row`, alongside the form context, so `{{UPPER(row.country)}}` resolves

@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react';
 import { IFontValue } from './interfaces';
 import { isDefined, isNullOrWhiteSpace } from '@/utils/nullables';
+import { ensureGoogleFont } from './googleFonts';
 
 // Bundled and self-hosted, so the default look is identical on every OS.
 export const DEFAULT_FONT_FAMILY = "'Inter Variable', sans-serif";
@@ -10,6 +11,7 @@ const GENERIC_FAMILY = /^(serif|sans-serif|monospace|cursive|fantasy|system-ui|u
 /** Inserts the bundled Inter fallback ahead of any generic family, so a font the OS lacks (e.g. Segoe UI on macOS) degrades to Inter, not the browser default. */
 export const withFontFallback = (family: string | null | undefined): string | undefined => {
   if (isNullOrWhiteSpace(family)) return undefined;
+  ensureGoogleFont(family);
   const trimmed = family.trim();
   if (trimmed.includes('Inter Variable')) return trimmed;
   const parts = trimmed.split(',').map((p) => p.trim()).filter((p) => p !== '');

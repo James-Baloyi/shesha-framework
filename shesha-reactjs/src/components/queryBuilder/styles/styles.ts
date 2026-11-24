@@ -3,7 +3,7 @@ import { createStyles, sheshaStyles } from '@/styles';
 export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
   const shaQueryBuilderBtns = "sha-query-builder-btns";
   const shaQueryBuilder = cx("sha-query-builder", css`
-        background-image: white !important;
+        background: ${token.colorBgContainer} !important;
     
         .query-builder-container {
             padding: unset !important;
@@ -40,8 +40,8 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             gap: 10px;
             padding: 10px;
             box-sizing: border-box;
-            background: #f5f5f5;
-            border: 1px solid #ececec;
+            background: ${token.colorFillTertiary};
+            border: 1px solid ${token.colorBorderSecondary};
             border-radius: 8px;
         }
 
@@ -60,7 +60,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             font-size: 16px;
             line-height: 22px;
             font-weight: 400;
-            color: #000;
+            color: ${token.colorText};
         }
 
         .sha-query-builder-empty-state-message {
@@ -69,7 +69,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             font-size: 14px;
             line-height: 22px;
             font-weight: 400;
-            color: #585858;
+            color: ${token.colorTextSecondary};
             font-family: Inter, Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -139,7 +139,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             justify-content: center;
             gap: 10px;
             padding: 10px;
-            background: #f8f8f8;
+            background: ${token.colorFillQuaternary};
             border-radius: 5px;
         }
 
@@ -176,7 +176,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         }
 
         .sha-query-builder-group-card .sha-query-builder-group-card {
-            border-color: color-mix(in srgb, ${token.colorPrimary} 45%, #fff);
+            border-color: color-mix(in srgb, ${token.colorPrimary} 45%, ${token.colorBgContainer});
             background: color-mix(in srgb, ${token.colorPrimary} 15%, transparent);
         }
 
@@ -246,7 +246,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             font-size: 14px;
             line-height: 22px;
             font-weight: 400;
-            color: #101828;
+            color: ${token.colorText};
         }
 
         .sha-query-builder-group-header .sha-query-builder-group-heading {
@@ -273,13 +273,13 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             border: none;
             background: transparent;
             box-shadow: none;
-            color: #667085;
+            color: ${token.colorTextSecondary};
         }
 
         .sha-query-builder-group-action-button.${prefixCls}-btn:hover:not(:disabled),
         .sha-query-builder-group-action-button.${prefixCls}-btn:focus-visible:not(:disabled) {
-            background: rgba(16, 24, 40, 0.06);
-            color: #344054;
+            background: ${token.colorFillSecondary};
+            color: ${token.colorTextSecondary};
         }
 
         .sha-query-builder-group-action-button.${prefixCls}-btn .${prefixCls}-btn-icon {
@@ -291,13 +291,13 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         }
 
         .sha-query-builder-group-action-button--danger.${prefixCls}-btn {
-            color: #d92d20;
+            color: ${token.colorError};
         }
 
         .sha-query-builder-group-action-button--danger.${prefixCls}-btn:hover:not(:disabled),
         .sha-query-builder-group-action-button--danger.${prefixCls}-btn:focus-visible:not(:disabled) {
-            background: #fef3f2;
-            color: #b42318;
+            background: ${token.colorErrorBg};
+            color: ${token.colorErrorActive};
         }
 
         .sha-query-builder-group-action-button--drag.${prefixCls}-btn,
@@ -310,7 +310,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            color: #f8fafc;
+            color: ${token.colorTextSecondary};
         }
 
         .sha-query-builder-item-row {
@@ -384,10 +384,10 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         .sha-query-builder-prefix-select .${prefixCls}-select {
             width: 100%;
             height: 32px;
-            border: 1px solid #d0d5dd;
+            border: 1px solid ${token.colorBorder};
             border-radius: 8px;
-            background: #fff;
-            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+            background: ${token.colorBgContainer};
+            box-shadow: ${token.boxShadowTertiary};
         }
 
         .sha-query-builder-prefix-select .${prefixCls}-select-selector {
@@ -421,7 +421,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             column-gap: 0;
             min-height: 58px;
             box-sizing: border-box;
-            background: #fff;
+            background: ${token.colorBgContainer};
             border-radius: 5px;
             overflow: visible;
         }
@@ -488,11 +488,11 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             min-height: 58px;
             padding: 0;
             border: 0;
-            border-left: 1px solid #eaecf0;
+            border-left: 1px solid ${token.colorBorderSecondary};
             border-radius: 0;
             background: transparent;
             box-shadow: none;
-            color: #667085;
+            color: ${token.colorTextSecondary};
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -501,7 +501,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         }
 
         .sha-query-builder-item-action + .sha-query-builder-item-action {
-            border-left-color: #f4f5f6;
+            border-left-color: ${token.colorBorderSecondary};
         }
 
         .sha-query-builder-item-action .anticon {
@@ -510,8 +510,8 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
 
         .sha-query-builder-item-action:hover:not(:disabled),
         .sha-query-builder-item-action:focus-visible:not(:disabled) {
-            background: #f8fafc;
-            color: #344054;
+            background: ${token.colorFillQuaternary};
+            color: ${token.colorTextSecondary};
         }
 
         .sha-query-builder-item-action:disabled {
@@ -528,13 +528,13 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         }
 
         .sha-query-builder-item-action--delete {
-            color: #f04438;
+            color: ${token.colorError};
         }
 
         .sha-query-builder-item-action--delete:hover:not(:disabled),
         .sha-query-builder-item-action--delete:focus-visible:not(:disabled) {
-            background: #fff5f3;
-            color: #d92d20;
+            background: ${token.colorErrorBg};
+            color: ${token.colorError};
         }
 
         .sha-query-builder-packed-control,
@@ -552,10 +552,10 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             display: grid;
             grid-template-columns: 60px minmax(0, 1fr);
             align-items: stretch;
-            border: 1px solid #d0d5dd;
+            border: 1px solid ${token.colorBorder};
             border-radius: 8px;
-            background: #fff;
-            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+            background: ${token.colorBgContainer};
+            box-shadow: ${token.boxShadowTertiary};
             overflow: hidden;
         }
 
@@ -567,8 +567,8 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             width: 58px;
             min-width: 58px;
             height: 32px;
-            border-right: 1px solid #d0d5dd;
-            background: #f9fafb;
+            border-right: 1px solid ${token.colorBorder};
+            background: ${token.colorFillQuaternary};
             display: flex;
             align-items: stretch;
         }
@@ -609,7 +609,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             align-items: center;
             justify-content: center;
             gap: 0 !important;
-            color: rgba(0, 0, 0, 0.45);
+            color: ${token.colorTextTertiary};
             cursor: pointer;
             transition: background-color 0.15s ease, color 0.15s ease;
         }
@@ -691,10 +691,10 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             min-width: 0;
             max-width: 155px;
             height: 32px;
-            border: 1px solid #d0d5dd;
+            border: 1px solid ${token.colorBorder};
             border-radius: 8px;
-            background: #fff;
-            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+            background: ${token.colorBgContainer};
+            box-shadow: ${token.boxShadowTertiary};
             overflow: hidden;
         }
 
@@ -716,10 +716,10 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             display: grid;
             grid-template-columns: 60px minmax(0, 1fr);
             align-items: stretch;
-            border: 1px solid #d0d5dd;
+            border: 1px solid ${token.colorBorder};
             border-radius: 8px;
-            background: #fff;
-            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+            background: ${token.colorBgContainer};
+            box-shadow: ${token.boxShadowTertiary};
             overflow: hidden;
         }
 
@@ -729,11 +729,11 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         }
 
         .sha-query-builder-value-shell--empty {
-            background: rgba(255, 255, 255, 0.6);
+            background: color-mix(in srgb, ${token.colorBgContainer} 60%, transparent);
         }
 
         .sha-query-builder-value-shell--empty .${prefixCls}-input-disabled {
-            color: #98a2b3;
+            color: ${token.colorTextTertiary};
         }
 
         .sha-query-builder-packed-control:has(.${prefixCls}-select-focused),
@@ -790,7 +790,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             justify-content: center;
             min-width: 8px;
             height: 32px;
-            color: #667085;
+            color: ${token.colorTextSecondary};
             font-size: 14px;
             line-height: 32px;
             user-select: none;
@@ -857,7 +857,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         }
 
         .sha-query-builder-func-args > .sha-query-builder-func-arg + .sha-query-builder-func-arg {
-            border-left: 1px solid #d0d5dd;
+            border-left: 1px solid ${token.colorBorder};
         }
 
         /* A boolean flag argument only needs room for its control, so it opts out of the even split. */
@@ -866,7 +866,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             width: auto;
             min-width: 33px;
             justify-content: center;
-            background: #fff;
+            background: ${token.colorBgContainer};
         }
 
         .sha-query-builder-func-arg .${prefixCls}-checkbox-wrapper {
@@ -1022,8 +1022,8 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-wrapper:hover .${prefixCls}-checkbox-checked:not(.${prefixCls}-checkbox-disabled) .${prefixCls}-checkbox-inner,
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-checked:not(.${prefixCls}-checkbox-disabled):hover .${prefixCls}-checkbox-inner,
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-checked:not(.${prefixCls}-checkbox-disabled):focus-within .${prefixCls}-checkbox-inner {
-            background-color: #52c41a;
-            border-color: #52c41a;
+            background-color: ${token.colorSuccess};
+            border-color: ${token.colorSuccess};
         }
 
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-checked .${prefixCls}-checkbox-inner::after {
@@ -1041,18 +1041,18 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-wrapper:hover .${prefixCls}-checkbox.${prefixCls}-checkbox-checked:not(.${prefixCls}-checkbox-disabled),
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox.${prefixCls}-checkbox-checked:not(.${prefixCls}-checkbox-disabled):hover,
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox.${prefixCls}-checkbox-checked:not(.${prefixCls}-checkbox-disabled):focus-within {
-            background-color: #52c41a;
-            border-color: #52c41a;
+            background-color: ${token.colorSuccess};
+            border-color: ${token.colorSuccess};
         }
 
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-checked .${prefixCls}-checkbox-input,
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-wrapper:hover .${prefixCls}-checkbox-checked:not(.${prefixCls}-checkbox-disabled) .${prefixCls}-checkbox-input,
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-checked:not(.${prefixCls}-checkbox-disabled) .${prefixCls}-checkbox-input:hover,
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-checked:not(.${prefixCls}-checkbox-disabled) .${prefixCls}-checkbox-input:focus-visible {
-            background-color: #52c41a;
-            border-color: #52c41a;
-            outline-color: #52c41a;
-            accent-color: #52c41a;
+            background-color: ${token.colorSuccess};
+            border-color: ${token.colorSuccess};
+            outline-color: ${token.colorSuccess};
+            accent-color: ${token.colorSuccess};
         }
 
         .sha-query-builder-ignore-unassigned-icon {
@@ -1063,7 +1063,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             height: 24px;
             flex-shrink: 0;
             aspect-ratio: 1 / 1;
-            color: #52c41a;
+            color: ${token.colorSuccess};
             font-size: 11px;
         }
 
@@ -1079,10 +1079,10 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             align-items: stretch;
             gap: 1px;
             padding: 1px;
-            border: 1px solid #d0d5dd;
+            border: 1px solid ${token.colorBorder};
             border-radius: 8px;
-            background: #ffffff;
-            box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+            background: ${token.colorBgContainer};
+            box-shadow: ${token.boxShadowTertiary};
             overflow: hidden;
             box-sizing: border-box;
         }
@@ -1103,19 +1103,19 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
             font-size: 14px;
             font-weight: 400;
             line-height: 20px;
-            font-family: Inter, sans-serif;
+            font-family: ${token.fontFamily};
             white-space: nowrap;
             cursor: pointer;
             border: none;
             border-radius: 7px;
             box-sizing: border-box;
             background: transparent;
-            color: #344054;
+            color: ${token.colorTextSecondary};
         }
 
         .sha-bool-btn-group__btn.is-active {
             background: ${token.colorPrimary};
-            color: #ffffff;
+            color: ${token.colorTextLightSolid};
         }
 
     `);
@@ -1126,19 +1126,19 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
 
         .${prefixCls}-tooltip-inner {
             padding: 10px 12px;
-            color: #344054;
+            color: ${token.colorTextSecondary};
             font-size: 12px;
             line-height: 1.45;
-            border: 1px solid #e4e7ec;
+            border: 1px solid ${token.colorBorderSecondary};
             border-radius: 8px;
-            box-shadow: 0 6px 16px rgba(16, 24, 40, 0.12);
+            box-shadow: ${token.boxShadowSecondary};
         }
 
         .sha-query-builder-hint-title {
             display: block;
             margin-bottom: 4px;
             font-weight: 600;
-            color: #1d2939;
+            color: ${token.colorText};
         }
 
         .sha-query-builder-hint-body {

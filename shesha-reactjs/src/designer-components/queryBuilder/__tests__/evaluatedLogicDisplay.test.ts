@@ -14,7 +14,7 @@ describe('resolveExpressionsForDisplay', () => {
 
   it('keeps expressions that need runtime data', () => {
     const node = { evaluate: [{ expression: '{{data.fromDate}}', type: 'mustache', required: true }] };
-    const logic = { and: [{ '>=': [{ var: 'creationTime' }, node]  }] };
+    const logic = { and: [{ '>=': [{ var: 'creationTime' }, node] }] };
     const resolved = resolveExpressionsForDisplay(logic) as { and: [{ '>=': [unknown, unknown] }] };
     expect(resolved.and[0]['>='][1]).toEqual(node);
   });

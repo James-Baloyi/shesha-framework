@@ -36,8 +36,8 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
 
         .query-builder-container.qb-has-rules,
         .query-builder-container.qb-empty {
-            background: #f5f5f5;
-            border: 1px solid #ededee;
+            background: ${token.colorFillTertiary};
+            border: 1px solid ${token.colorBorderSecondary};
             border-radius: ${queryBuilderSurfaceRadius};
             width: 100%;
             max-width: ${queryBuilderSurfaceWidth};
@@ -100,8 +100,8 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
 
         .query-builder-container.qb-has-rules,
         .query-builder-container.qb-empty {
-            background: #f5f5f5;
-            border: 1px solid #ededee;
+            background: ${token.colorFillTertiary};
+            border: 1px solid ${token.colorBorderSecondary};
             border-radius: ${queryBuilderSurfaceRadius};
             width: 100%;
             min-width: 0;
@@ -154,12 +154,12 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
         }
 
         .sha-query-builder-ignore-unassigned .${prefixCls}-checkbox-checked .${prefixCls}-checkbox-inner {
-            background-color: #52c41a;
-            border-color: #52c41a;
+            background-color: ${token.colorSuccess};
+            border-color: ${token.colorSuccess};
         }
 
         .sha-query-builder-ignore-unassigned-icon {
-            color: #52c41a;
+            color: ${token.colorSuccess};
             font-size: 12px;
         }
 
@@ -172,7 +172,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
   const shaQueryBuilderModalHelpText = cx("sha-query-builder-modal-help-text", css`
         font-size: 16px;
         line-height: 1.5;
-        color: #252525;
+        color: ${token.colorText};
     `);
 
   const shaQueryBuilderModalHelpWrap = cx("sha-query-builder-modal-help-wrap", css`
@@ -183,7 +183,7 @@ export const useStyles = createStyles(({ css, cx, prefixCls, token }) => {
     `);
 
   const shaQueryBuilderModalHelpIcon = cx("sha-query-builder-modal-help-icon", css`
-        color: rgba(0, 0, 0, 0.45);
+        color: ${token.colorTextTertiary};
         font-size: 16px;
         line-height: 1;
         display: inline-flex;

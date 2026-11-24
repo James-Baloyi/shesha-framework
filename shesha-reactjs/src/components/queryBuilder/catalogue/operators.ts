@@ -1,7 +1,7 @@
 import { FieldKind } from './fields';
 import { ExpressionLanguage, ValueSource } from '../model/types';
 
-export type OperatorCardinality = 0 | 1 | 2;
+type OperatorCardinality = 0 | 1 | 2;
 
 export interface OperatorDef {
   key: string;
@@ -49,6 +49,3 @@ export const getOperator = (key: string | undefined): OperatorDef | undefined =>
 export const getOperatorsForKind = (kind: FieldKind | undefined): OperatorDef[] =>
   OPERATORS.filter((op) => op.kinds.includes(kind ?? 'unknown'));
 
-export const getDefaultOperator = (kind: FieldKind | undefined): OperatorDef | undefined => getOperatorsForKind(kind)[0];
-
-export const getOperatorCardinality = (key: string | undefined): OperatorCardinality => getOperator(key)?.cardinality ?? 0;

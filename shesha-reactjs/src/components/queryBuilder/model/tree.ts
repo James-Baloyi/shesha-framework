@@ -25,7 +25,7 @@ export const findNode = (root: QueryTree, id: string): NodeLocation | undefined 
 };
 
 /** Ids from the root down to (and including) the node, or an empty array when the id is unknown. */
-export const getNodePath = (root: QueryTree, id: string): string[] => {
+const getNodePath = (root: QueryTree, id: string): string[] => {
   const visit = (group: GroupNode, trail: string[]): string[] | undefined => {
     if (group.id === id) return [...trail, group.id];
     for (const child of group.children) {

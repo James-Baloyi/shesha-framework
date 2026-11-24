@@ -58,7 +58,7 @@ export const getFieldKind = (dataType: string | undefined): FieldKind => {
 
 const isCustomSettings = (value: unknown): value is Partial<CustomFieldSettings> => isDefined(value) && typeof value === 'object';
 
-export const toQueryField = (property: IProperty): QueryField => ({
+const toQueryField = (property: IProperty): QueryField => ({
   path: property.propertyName,
   label: property.label,
   kind: getFieldKind(property.dataType),

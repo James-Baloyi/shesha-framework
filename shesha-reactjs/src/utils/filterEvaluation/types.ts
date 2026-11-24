@@ -18,13 +18,6 @@ export interface ExpressionEvaluator {
 
 export type VariableDataTypeResolver = (path: string) => string | undefined;
 
-/** Legacy hook: lets a caller override how a literal argument is converted. Kept for the existing adapters. */
-export interface ArgumentEvaluationResult {
-  handled: boolean;
-  value?: unknown;
-}
-export type ArgumentEvaluator = (operator: string, args: unknown[], argIndex: number) => ArgumentEvaluationResult;
-
 export interface EvaluatedExpressionInfo {
   expression: string;
   language: ExpressionLanguage;
@@ -37,7 +30,6 @@ export interface ResolveFilterOptions {
   /** Data type of a `var` path, used to coerce expression results compared against it. */
   getVariableDataType?: VariableDataTypeResolver | undefined;
   evaluators?: Partial<Record<ExpressionLanguage, ExpressionEvaluator>> | undefined;
-  argumentEvaluator?: ArgumentEvaluator | undefined;
   onExpressionEvaluated?: ((info: EvaluatedExpressionInfo) => void) | undefined;
 }
 

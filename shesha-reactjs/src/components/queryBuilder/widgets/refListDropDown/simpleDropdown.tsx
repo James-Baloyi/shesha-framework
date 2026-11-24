@@ -3,7 +3,7 @@ import GenericRefListDropDown from '@/components/refListDropDown/genericRefListD
 import { GetLabeledValueFunc, IGenericRefListDropDownProps, ISelectOption } from '@/components/refListDropDown/models';
 import { ReactNode } from 'react';
 
-export type IRefListSimpleDropdownProps<TValue = unknown> = Pick<IGenericRefListDropDownProps<TValue>, 'onChange' | 'referenceListId' | 'style' | 'size' | 'value' | 'readOnly'>;
+type IRefListSimpleDropdownProps<TValue = unknown> = Pick<IGenericRefListDropDownProps<TValue>, 'onChange' | 'referenceListId' | 'style' | 'size' | 'value' | 'readOnly'>;
 
 export const getOptionFromFetchedItem = (fetchedItem: ReferenceListItemDto): ISelectOption<number> => {
   const label = fetchedItem.item;

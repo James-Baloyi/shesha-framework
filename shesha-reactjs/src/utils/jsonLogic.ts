@@ -4,20 +4,6 @@ import { isNonEmptyArray } from './array';
 
 export type ExpressionNodeValue = string | number | boolean | object | null;
 
-/*
- * Expression evaluation moved to `@/utils/filterEvaluation`. The names below are kept so existing
- * callers keep compiling; new code should call `resolveFilter` / `resolveFilterSync` directly.
- */
-export {
-  convertJsonLogicNode,
-  convertJsonLogicNodeSync,
-  type IArgumentEvaluationResult,
-  type IJsonLogicConversionOptions,
-  type IJsonLogicConversionOptionsSync,
-  type OnEvaluatedArguments,
-} from './filterEvaluation/adapters';
-export type { ArgumentEvaluator as JsonLogicContainerProcessingCallback } from './filterEvaluation/types';
-
 type NodeCallback = (operator: string, args: unknown) => void;
 const processRecursive = (jsonLogic: object, callback: NodeCallback): void => {
   for (const operator in jsonLogic) {

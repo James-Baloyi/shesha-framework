@@ -5,7 +5,7 @@ import { NestedPropertyMetadatAccessor } from '@/providers/metadataDispatcher/co
 import { extractErrorMessage } from '@/utils/errors';
 import { isDefined, isNullOrWhiteSpace } from '@/utils/nullables';
 import { buildEvaluationContext, resolveFilter, resolveFilterSync } from './engine';
-import { ArgumentEvaluator, EvaluatedExpressionInfo, ResolvedFilter } from './types';
+import { ResolvedFilter } from './types';
 
 /*
  * Compatibility layer. These keep the signatures the rest of the codebase calls today while the
@@ -16,66 +16,6 @@ export interface IMatchData {
   match: string;
   data: unknown;
 }
-
-export interface IArgumentEvaluationResult {
-  handled: boolean;
-  value?: unknown | undefined;
-}
-
-export interface OnEvaluatedArguments {
-  expression: string;
-  result: unknown;
-  success: boolean;
-  unevaluatedExpressions: string[] | undefined;
-}
-
-export interface IJsonLogicConversionOptions {
-  argumentEvaluator: ArgumentEvaluator;
-  mappings: IMatchData[];
-  onEvaluated?: (args: OnEvaluatedArguments) => void;
-  getVariableDataType?: (variable: string) => Promise<string>;
-}
-
-export interface IJsonLogicConversionOptionsSync {
-  argumentEvaluator: ArgumentEvaluator;
-  mappings: IMatchData[];
-  onEvaluated?: (args: OnEvaluatedArguments) => void;
-  getVariableDataType?: (variable: string) => string;
-}
-
-const toLegacyCallback = (onEvaluated: ((args: OnEvaluatedArguments) => void) | undefined) =>
-  (info: EvaluatedExpressionInfo): void => {
-    if (!onEvaluated) return;
-    const { result } = info;
-    onEvaluated({
-      expression: info.expression,
-      result: result.status === 'resolved' ? result.value : result.status === 'empty' ? '' : null,
-      success: result.status === 'resolved' || (result.status === 'empty' && !info.required),
-      unevaluatedExpressions: result.status === 'empty' && info.required ? result.unevaluated : [],
-    });
-  };
-
-/** @deprecated use `resolveFilter` */
-export const convertJsonLogicNode = async (jsonLogic: object, options: IJsonLogicConversionOptions): Promise<object | null> => {
-  const resolved = await resolveFilter(jsonLogic as JsonLogicFilter, {
-    context: buildEvaluationContext(options.mappings),
-    argumentEvaluator: options.argumentEvaluator,
-    onExpressionEvaluated: toLegacyCallback(options.onEvaluated),
-    getVariableDataType: options.getVariableDataType ? (path) => options.getVariableDataType!(path) : undefined,
-  });
-  return resolved.logic ?? null;
-};
-
-/** @deprecated use `resolveFilterSync` */
-export const convertJsonLogicNodeSync = (jsonLogic: object, options: IJsonLogicConversionOptionsSync): object | null => {
-  const resolved = resolveFilterSync(jsonLogic as JsonLogicFilter, {
-    context: buildEvaluationContext(options.mappings),
-    argumentEvaluator: options.argumentEvaluator,
-    onExpressionEvaluated: toLegacyCallback(options.onEvaluated),
-    getVariableDataType: options.getVariableDataType,
-  });
-  return resolved.logic ?? null;
-};
 
 const EMPTY_FILTERS: IStoredFilter[] = [];
 

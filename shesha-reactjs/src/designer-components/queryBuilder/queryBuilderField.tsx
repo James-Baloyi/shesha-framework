@@ -46,7 +46,7 @@ const QueryPreviewLine: FC<{ state: QueryPreviewState }> = ({ state }) => {
 const maxQueryBuilderModalWidth = 1240;
 const queryBuilderModalWidth = `min(${maxQueryBuilderModalWidth}px, 92vw)`;
 
-export const QueryBuilderField: FC<IQueryBuilderFieldProps> = (props) => {
+const QueryBuilderField: FC<IQueryBuilderFieldProps> = (props) => {
   const { styles } = useStyles();
   const [modalVisible, setModalVisible] = useState(false);
   const [jsonLogicResult, setJsonLogicResult] = useState<QueryChangeResult | undefined>(undefined);

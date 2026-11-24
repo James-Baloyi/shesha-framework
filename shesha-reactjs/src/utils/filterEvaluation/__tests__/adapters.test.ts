@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-deprecated -- these tests pin the behaviour of the compatibility adapters */
 import { IPropertyMetadata } from '@/interfaces/metadata';
 import { IStoredFilter } from '@/providers/dataTable/interfaces';
-import { convertJsonLogicNode, convertJsonLogicNodeSync, evaluateDynamicFilters, evaluateDynamicFiltersSync } from '../adapters';
+import { evaluateDynamicFilters, evaluateDynamicFiltersSync } from '../adapters';
+import { resolveFilterSync } from '../engine';
 
 const mappings = [{ match: 'data', data: { id: 'A1', empty: '' } }];
 
@@ -47,13 +48,12 @@ describe('legacy adapters', () => {
   });
 
   it('reports a throwing JavaScript expression as failed, not as waiting', () => {
-    const seen: unknown[] = [];
-    const result = convertJsonLogicNodeSync(
+    const result = resolveFilterSync(
       { and: [{ evaluate: [{ expression: 'throw new Error("boom")', type: 'javascript', required: true }] }] },
-      { argumentEvaluator: () => ({ handled: false }), mappings, onEvaluated: (args) => seen.push(args) },
+      { context: { data: { id: 'A1', empty: '' } } },
     );
-    expect(result).toEqual({ and: [false] });
-    expect(seen).toEqual([{ expression: 'throw new Error("boom")', result: null, success: false, unevaluatedExpressions: [] }]);
+    expect(result.logic).toEqual({ and: [false] });
+    expect(result.status).toBe('failed');
   });
 
   it('coerces resolved values to the compared property type', () => {
@@ -68,21 +68,12 @@ describe('legacy adapters', () => {
     expect(b?.expression).toEqual({ '==': [{ var: 'isActive' }, true] });
   });
 
-  it('convertJsonLogicNode keeps the onEvaluated callback contract', async () => {
-    const seen: unknown[] = [];
-    const result = await convertJsonLogicNode(
-      { '==': [{ var: 'id' }, { evaluate: [{ expression: '{{data.id}}', type: 'mustache', required: true }] }] },
-      { argumentEvaluator: () => ({ handled: false }), mappings, onEvaluated: (args) => seen.push(args) },
-    );
-    expect(result).toEqual({ '==': [{ var: 'id' }, 'A1'] });
-    expect(seen).toEqual([{ expression: '{{data.id}}', result: 'A1', success: true, unevaluatedExpressions: [] }]);
-  });
-
-  it('convertJsonLogicNodeSync returns null when everything is dropped', () => {
-    const result = convertJsonLogicNodeSync(
+  it('resolveFilterSync drops optional unresolved rules down to no logic at all', () => {
+    const result = resolveFilterSync(
       { and: [{ '==': [{ var: 'id' }, { evaluate: [{ expression: '{{data.empty}}', type: 'mustache', required: false }] }] }] },
-      { argumentEvaluator: () => ({ handled: false }), mappings },
+      { context: { data: { id: 'A1', empty: '' } } },
     );
-    expect(result).toBeNull();
+    expect(result.logic).toBeUndefined();
+    expect(result.status).toBe('ready');
   });
 });

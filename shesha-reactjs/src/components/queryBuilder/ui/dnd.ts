@@ -3,7 +3,7 @@ import { canMoveTo } from '../model/reducer';
 import { DropPlacement, QueryTree } from '../model/types';
 import { QueryAction } from '../model/reducer';
 
-export interface IDropHint {
+interface IDropHint {
   id: string;
   placement: DropPlacement;
 }

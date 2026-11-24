@@ -9,7 +9,7 @@ interface BoolButtonGroupProps {
   onChange: (value: boolean) => void;
 }
 
-export const BoolButtonGroup: React.FC<BoolButtonGroupProps> = ({ value, readOnly, labelYes, labelNo, onChange }) => (
+const BoolButtonGroup: React.FC<BoolButtonGroupProps> = ({ value, readOnly, labelYes, labelNo, onChange }) => (
   <div className={`sha-bool-btn-group${readOnly === true ? ' is-disabled' : ''}`}>
     <button
       type="button"

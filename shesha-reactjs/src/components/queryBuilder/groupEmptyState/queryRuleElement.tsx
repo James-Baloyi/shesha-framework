@@ -11,7 +11,7 @@ interface IQueryRuleElementProps {
   addGroupDisabled?: boolean;
 }
 
-export const QueryRuleElement: FC<IQueryRuleElementProps> = ({
+const QueryRuleElement: FC<IQueryRuleElementProps> = ({
   onAddRule,
   onAddGroup,
   disabled,

@@ -3,7 +3,7 @@ import { AppstoreOutlined, CaretDownOutlined, FunctionOutlined, NumberOutlined }
 import { Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 
-export type SourceSelectorVariant = 'field' | 'value';
+type SourceSelectorVariant = 'field' | 'value';
 
 /** The three places a rule operand can come from, in the order the menu lists them. */
 export type SourceKey = 'func' | 'field' | 'value';
@@ -11,7 +11,7 @@ export type SourceItem = [SourceKey, { label: string }];
 
 const SOURCE_ORDER: readonly SourceKey[] = ['func', 'field', 'value'];
 
-export const isSourceKey = (key: unknown): key is SourceKey => typeof key === 'string' && (SOURCE_ORDER as readonly string[]).includes(key);
+const isSourceKey = (key: unknown): key is SourceKey => typeof key === 'string' && (SOURCE_ORDER as readonly string[]).includes(key);
 
 export interface ISourceSelectorProps {
   valueSources: SourceItem[];

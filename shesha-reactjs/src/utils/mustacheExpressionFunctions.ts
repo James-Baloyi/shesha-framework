@@ -1,6 +1,6 @@
-export type MustacheFunctionCategory = 'String' | 'Date' | 'Number' | 'Logic';
+type MustacheFunctionCategory = 'String' | 'Date' | 'Number' | 'Logic';
 
-export interface MustacheFunctionArg {
+interface MustacheFunctionArg {
   name: string;
   description: string;
   optional?: boolean;

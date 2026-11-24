@@ -4,13 +4,13 @@ import { QueryBuilder } from '@/components/queryBuilder';
 import { useStyles } from './styles/styles';
 import { JsonLogicFilter } from '@/interfaces/jsonLogic';
 
-export interface IQueryBuilderPlainProps {
+interface IQueryBuilderPlainProps {
   value?: JsonLogicFilter | undefined;
   onChange?: ((value: JsonLogicFilter | null) => void) | undefined;
   readOnly?: boolean | undefined;
 }
 
-export const QueryBuilderPlain: FC<IQueryBuilderPlainProps> = ({ value, onChange, readOnly = false }) => {
+const QueryBuilderPlain: FC<IQueryBuilderPlainProps> = ({ value, onChange, readOnly = false }) => {
   const { styles } = useStyles();
   const handleChange = (jsonLogicResult: QueryChangeResult): void => {
     if (readOnly) return;

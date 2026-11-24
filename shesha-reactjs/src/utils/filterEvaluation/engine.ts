@@ -33,13 +33,6 @@ const isEvaluateNodeArgs = (value: unknown): value is EvaluateNodeArgs =>
 
 const isExpressionLanguage = (type: unknown): type is ExpressionLanguage => type === 'mustache' || type === 'javascript';
 
-let debugLogging = false;
-
-/** Turns the per-filter console diagnostic on. Off by default: the log includes context values such as the signed-in user. */
-export const setFilterEvaluationDebug = (enabled: boolean): void => {
-  debugLogging = enabled;
-};
-
 interface ExpressionNode {
   expression: string;
   language: ExpressionLanguage;
@@ -60,7 +53,7 @@ const asExpressionNode = (node: object): ParsedExpressionNode | undefined => {
 };
 
 /** Every `var` path in the tree, for callers that need to look data types up before evaluating. */
-export const collectVariablePaths = (logic: object): string[] => {
+const collectVariablePaths = (logic: object): string[] => {
   const paths = new Set<string>();
   const visit = (node: unknown): void => {
     if (Array.isArray(node)) {
@@ -152,9 +145,6 @@ const resolveArgument = (session: Session, operator: string, args: unknown[], in
   const arg = args[index];
   if (typeof arg === 'object' && arg !== null) return resolveNode(session, arg, args, operator);
 
-  const override = session.options.argumentEvaluator?.(operator, args, index);
-  if (override?.handled === true) return { value: override.value, drop: false };
-
   if (operator === SPECIFICATION_OPERATOR && index === 1 && typeof arg === 'string') {
     const result = session.evaluators.javascript.evaluate(arg, session.context);
     return { value: result.status === 'resolved' ? Boolean(result.value) : false, drop: false };
@@ -199,7 +189,7 @@ const resolveLogic = (session: Session, logic: object): JsonLogicFilter | null =
   return result;
 };
 
-export const createDefaultEvaluators = (): Record<ExpressionLanguage, ExpressionEvaluator> => ({
+const createDefaultEvaluators = (): Record<ExpressionLanguage, ExpressionEvaluator> => ({
   mustache: createMustacheEvaluator(),
   javascript: createJavaScriptEvaluator(),
 });
@@ -232,17 +222,7 @@ export const resolveFilterSync = (logic: JsonLogicFilter | undefined, options: R
   const waiting = session.unresolved.some((item) => item.required && item.reason === 'empty');
   const status: FilterStatus = session.failed ? 'failed' : waiting ? 'waiting' : 'ready';
 
-  const result: ResolvedFilter = { logic: resolved ?? undefined, status, hasExpressions: session.hasExpressions, unresolved: session.unresolved };
-  logResolution(logic, result);
-  return result;
-};
-
-/** Diagnostic: what the filter looked like when saved and what will be sent. Only filters with expressions are logged. */
-const logResolution = (saved: JsonLogicFilter, result: ResolvedFilter): void => {
-  if (!debugLogging || !result.hasExpressions) return;
-  console.groupCollapsed(`[query builder] filter evaluated: ${result.status}`);
-  console.dir({ saved, evaluated: result.logic, unresolved: result.unresolved }, { depth: null });
-  console.groupEnd();
+  return { logic: resolved ?? undefined, status, hasExpressions: session.hasExpressions, unresolved: session.unresolved };
 };
 
 export type AsyncVariableDataTypeResolver = (path: string) => Promise<string | undefined>;

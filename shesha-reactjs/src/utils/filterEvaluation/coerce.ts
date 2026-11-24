@@ -6,7 +6,7 @@ interface VarNode {
   var: string;
 }
 
-export const isVarNode = (node: unknown): node is VarNode =>
+const isVarNode = (node: unknown): node is VarNode =>
   typeof node === 'object' && node !== null && 'var' in node && typeof (node as VarNode).var === 'string';
 
 /** The one data type shared by every `var` among the siblings, or undefined when they disagree or there are none. */

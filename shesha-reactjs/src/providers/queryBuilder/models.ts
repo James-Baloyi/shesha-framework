@@ -4,7 +4,7 @@ import { isDefined } from '@/utils/nullables';
 // Fields
 
 /** Opaque per-property builder config kept for API compatibility; the current builder derives everything from metadata. */
-export type QueryBuilderFieldConfig = Record<string, unknown>;
+type QueryBuilderFieldConfig = Record<string, unknown>;
 
 export interface CustomFieldSettings {
   typeShortAlias?: string;

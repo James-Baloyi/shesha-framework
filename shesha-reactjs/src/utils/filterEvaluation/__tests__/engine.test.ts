@@ -138,14 +138,6 @@ describe('resolveFilterSync', () => {
     expect(waiting.status).toBe('waiting');
   });
 
-  it('honours the legacy argument evaluator override', () => {
-    const result = resolveFilterSync({ '==': [{ var: 'id' }, 'raw'] }, {
-      context,
-      argumentEvaluator: (_operator, args, index) => index === 1 && args[index] === 'raw' ? { handled: true, value: 'overridden' } : { handled: false },
-    });
-    expect(result.logic).toEqual({ '==': [{ var: 'id' }, 'overridden'] });
-  });
-
   it('returns ready and no logic for an empty filter', () => {
     expect(resolveFilterSync(undefined, { context })).toEqual({ logic: undefined, status: 'ready', hasExpressions: false, unresolved: [] });
     expect(resolveFilterSync({}, { context }).logic).toBeUndefined();

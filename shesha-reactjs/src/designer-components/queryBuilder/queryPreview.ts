@@ -8,7 +8,7 @@ import { getEntityTypeIdentifierQueryParams } from '@/providers/metadataDispatch
 import { isDefined } from '@/utils/nullables';
 import { isRecord } from '@/utils/object';
 
-export const PREVIEW_DEBOUNCE_MS = 500;
+const PREVIEW_DEBOUNCE_MS = 500;
 
 interface EntitiesGetAllQueryParams {
   name?: string;

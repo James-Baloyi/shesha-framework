@@ -5,7 +5,7 @@ import { DoubleRightOutlined } from '@ant-design/icons';
 import { QUERY_BUILDER_DOC_URL } from '../../constants';
 import { useStyles } from '../../styles/styles';
 
-export const SKIP_WHEN_EMPTY_TOOLTIP = 'Check this if you want the criteria to be ignored, if the expression references any unassigned components.';
+const SKIP_WHEN_EMPTY_TOOLTIP = 'Check this if you want the criteria to be ignored, if the expression references any unassigned components.';
 
 interface RequiredToggleProps {
   /** The model flag: true means the rule must resolve before the query runs. The checkbox shows its inverse. */

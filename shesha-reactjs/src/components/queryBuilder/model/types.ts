@@ -6,12 +6,12 @@ export type ExpressionLanguage = 'mustache' | 'javascript';
 
 export type ScalarValue = string | number | boolean | null;
 
-export interface ConstantValue {
+interface ConstantValue {
   source: 'value';
   value?: ScalarValue | ScalarValue[] | undefined;
 }
 
-export interface FieldValue {
+interface FieldValue {
   source: 'field';
   path?: string | undefined;
 }

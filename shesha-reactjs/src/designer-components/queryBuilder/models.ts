@@ -1,6 +1,5 @@
 import { JsonLogicFilter } from "@/interfaces/jsonLogic";
 import { IEntityTypeIdentifier } from "@/providers/sheshaApplication/publicApi/entities/models";
-import { FC } from "react";
 
 export interface IQueryBuilderProps {
   jsonExpanded?: boolean | undefined;
@@ -19,4 +18,3 @@ export interface IQueryBuilderFieldProps {
   readOnly?: boolean | undefined;
 }
 
-export type QueryBuilderFieldType = FC<IQueryBuilderFieldProps>;
